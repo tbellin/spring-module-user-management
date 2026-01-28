@@ -10,27 +10,27 @@ See: .planning/PROJECT.md (updated 2026-01-28)
 ## Current Position
 
 Phase: 1 of 8 (Project Bootstrap & Infrastructure)
-Plan: 7 of 9 in current phase
+Plan: 8 of 9 in current phase
 Status: In progress
-Last activity: 2026-01-28 -- Completed 01-07-PLAN.md (Docker & Compose)
+Last activity: 2026-01-28 -- Completed 01-08-PLAN.md (Test Infrastructure)
 
-Progress: [███████░░░] ~30%
+Progress: [████████░░] ~33%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 7
+- Total plans completed: 8
 - Average duration: 3min
-- Total execution time: 19min
+- Total execution time: 21min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 1. Project Bootstrap | 7/9 | 19min | 3min |
+| 1. Project Bootstrap | 8/9 | 21min | 3min |
 
 **Recent Trend:**
-- Last 5 plans: 01-07 (2min), 01-06 (2min), 01-05 (2min), 01-04 (2min), 01-03 (2min)
+- Last 5 plans: 01-08 (2min), 01-07 (2min), 01-06 (2min), 01-05 (2min), 01-04 (2min)
 - Trend: stable, fast
 
 *Updated after each plan completion*
@@ -63,6 +63,7 @@ Recent decisions affecting current work:
 - 01-07: Non-root appuser in container for security
 - 01-07: App connects to PostgreSQL via Docker service name 'db' (not localhost)
 - 01-07: All compose credentials configurable via env vars with safe defaults
+- 01-08: ModularityTests as plain unit test (not @SpringBootTest) for fast module boundary verification
 
 ### Pending Todos
 
@@ -74,6 +75,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-01-28T17:37:44Z
-Stopped at: Completed 01-07-PLAN.md
+Last session: 2026-01-28T17:42:58Z
+Stopped at: Completed 01-08-PLAN.md
 Resume file: None
