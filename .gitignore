@@ -1,0 +1,30 @@
+# Environment (CRITICAL - never commit secrets)
+.env
+.env.local
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.project
+.classpath
+.settings/
+
+# Build
+target/
+*.class
+*.jar
+*.war
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Maven
+.mvn/wrapper/maven-wrapper.jar
+
+# Docker
+docker-compose.override.yml
