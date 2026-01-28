@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-01-28)
 ## Current Position
 
 Phase: 1 of 8 (Project Bootstrap & Infrastructure)
-Plan: 2 of 9 in current phase
+Plan: 4 of 9 in current phase
 Status: In progress
-Last activity: 2026-01-28 -- Completed 01-01-PLAN.md (Maven project skeleton with Spring Boot 4.0.1)
+Last activity: 2026-01-28 -- Completed 01-04-PLAN.md (Spring Modulith modules & SecurityConfig)
 
-Progress: [██░░░░░░░░] ~10%
+Progress: [████░░░░░░] ~17%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
-- Average duration: 5min
-- Total execution time: 9min
+- Total plans completed: 4
+- Average duration: 3min
+- Total execution time: 13min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 1. Project Bootstrap | 2/9 | 9min | 5min |
+| 1. Project Bootstrap | 4/9 | 13min | 3min |
 
 **Recent Trend:**
-- Last 5 plans: 01-02 (4min), 01-01 (5min)
-- Trend: --
+- Last 5 plans: 01-04 (2min), 01-03 (2min), 01-02 (4min), 01-01 (5min)
+- Trend: accelerating
 
 *Updated after each plan completion*
 
@@ -49,6 +49,8 @@ Recent decisions affecting current work:
 - 01-01: Maven wrapper 3.9.9 for build reproducibility
 - 01-02: Added .env.local to .gitignore since existing file contains actual credentials
 - 01-02: Simple cp-based template processing (not envsubst) since users must manually edit CHANGE_ME values
+- 01-04: Module dependency hierarchy: auth -> user -> shared (enforced via Spring Modulith @ApplicationModule)
+- 01-04: SecurityConfig in shared/config subpackage (cross-cutting concern); minimal Phase 1 config to be replaced in Phase 2
 
 ### Pending Todos
 
@@ -60,6 +62,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-01-28T17:26:46Z
-Stopped at: Completed 01-01-PLAN.md
+Last session: 2026-01-28T17:32:33Z
+Stopped at: Completed 01-04-PLAN.md
 Resume file: None
