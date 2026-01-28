@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-01-28)
 ## Current Position
 
 Phase: 1 of 8 (Project Bootstrap & Infrastructure)
-Plan: 6 of 9 in current phase
+Plan: 7 of 9 in current phase
 Status: In progress
-Last activity: 2026-01-28 -- Completed 01-06-PLAN.md (Home page controller & Thymeleaf templates)
+Last activity: 2026-01-28 -- Completed 01-07-PLAN.md (Docker & Compose)
 
-Progress: [██████░░░░] ~26%
+Progress: [███████░░░] ~30%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 6
+- Total plans completed: 7
 - Average duration: 3min
-- Total execution time: 17min
+- Total execution time: 19min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 1. Project Bootstrap | 6/9 | 17min | 3min |
+| 1. Project Bootstrap | 7/9 | 19min | 3min |
 
 **Recent Trend:**
-- Last 5 plans: 01-06 (2min), 01-05 (2min), 01-04 (2min), 01-03 (2min), 01-02 (4min)
-- Trend: accelerating
+- Last 5 plans: 01-07 (2min), 01-06 (2min), 01-05 (2min), 01-04 (2min), 01-03 (2min)
+- Trend: stable, fast
 
 *Updated after each plan completion*
 
@@ -59,6 +59,10 @@ Recent decisions affecting current work:
 - 01-05: ON DELETE CASCADE on all FKs for clean user deletion; TIMESTAMP without TZ (app handles timezone)
 - 01-06: HomeController in shared.web subpackage (cross-cutting, accessible by all modules)
 - 01-06: Thymeleaf Layout Dialect pattern: pages extend layout/default.html via layout:decorate
+- 01-07: eclipse-temurin:21-jdk for build, 21-jre for runtime (multi-stage Dockerfile)
+- 01-07: Non-root appuser in container for security
+- 01-07: App connects to PostgreSQL via Docker service name 'db' (not localhost)
+- 01-07: All compose credentials configurable via env vars with safe defaults
 
 ### Pending Todos
 
@@ -71,5 +75,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-28T17:37:44Z
-Stopped at: Completed 01-06-PLAN.md
+Stopped at: Completed 01-07-PLAN.md
 Resume file: None
