@@ -33,12 +33,18 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. `docker compose up` launches App + PostgreSQL + PgAdmin and all containers reach healthy state
   4. Flyway executes initial schema migration on startup in both dev and prod profiles
   5. `.env` values are injected into application config via `.template` file processing, and setup script bootstraps a working environment from scratch
-**Plans**: TBD
+**Plans**: 9 plans in 5 waves
 
 Plans:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
-- [ ] 01-03: TBD
+- [ ] 01-01-PLAN.md - Maven project foundation with Spring Boot 4.0.1 dependencies
+- [ ] 01-02-PLAN.md - Environment configuration templates and setup scripts
+- [ ] 01-03-PLAN.md - Spring profiles for dual-database configuration
+- [ ] 01-04-PLAN.md - Module structure and minimal security configuration
+- [ ] 01-05-PLAN.md - Flyway migration with user management schema
+- [ ] 01-06-PLAN.md - Home page controller and Thymeleaf templates
+- [ ] 01-07-PLAN.md - Docker infrastructure (Dockerfile and compose.yaml)
+- [ ] 01-08-PLAN.md - Application and modularity tests
+- [ ] 01-09-PLAN.md - Phase verification checkpoint
 
 ### Phase 2: Security & API Foundation
 **Goal**: Security infrastructure is fully configured with role-based access control, password hashing, selective CSRF protection, stateless JWT for API endpoints, and consistent error responses that prevent user enumeration
@@ -158,7 +164,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 
 | Phase | Plans Complete | Status | Completed |
 |-------|---------------|--------|-----------|
-| 1. Project Bootstrap & Infrastructure | 0/TBD | Not started | - |
+| 1. Project Bootstrap & Infrastructure | 0/9 | Planned | - |
 | 2. Security & API Foundation | 0/TBD | Not started | - |
 | 3. Registration & Login | 0/TBD | Not started | - |
 | 4. Email Verification | 0/TBD | Not started | - |
