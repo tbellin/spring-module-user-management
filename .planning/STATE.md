@@ -49,6 +49,9 @@ Recent decisions affecting current work:
 - 01-01: Maven wrapper 3.9.9 for build reproducibility
 - 01-02: Added .env.local to .gitignore since existing file contains actual credentials
 - 01-02: Simple cp-based template processing (not envsubst) since users must manually edit CHANGE_ME values
+- 01-03: open-in-view: false, ddl-auto: validate (Flyway manages schema)
+- 01-03: H2 MODE=PostgreSQL + DATABASE_TO_LOWER + DEFAULT_NULL_ORDERING for dev/prod parity
+- 01-03: No credential defaults in prod profile (DB_USERNAME/DB_PASSWORD must be provided)
 - 01-04: Module dependency hierarchy: auth -> user -> shared (enforced via Spring Modulith @ApplicationModule)
 - 01-04: SecurityConfig in shared/config subpackage (cross-cutting concern); minimal Phase 1 config to be replaced in Phase 2
 
