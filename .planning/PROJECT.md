@@ -53,6 +53,7 @@ Secure, modular user authentication and management that works identically in dev
 - **Config templating:** `.template` files contain placeholders; scripts in `./bin/` process them using `.env` values to produce actual config files
 - **Docker Compose:** Full production stack — application JAR, PostgreSQL, PgAdmin — all orchestrated together
 - **Pages:** Thymeleaf with Bootstrap 5, server-side rendered — home page, login/register forms, password management flows
+- **Test user:** username `tiziano`, email `tizianobellin@yahoo.com` — use for email verification and password reset testing
 
 ## Constraints
 

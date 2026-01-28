@@ -1,0 +1,172 @@
+# Roadmap: Spring Boot User Management Server
+
+## Overview
+
+This roadmap delivers a complete Spring Boot 4 user management server through 8 phases, progressing from infrastructure foundation through security, authentication flows, user management, and finally developer tooling. Each phase delivers a coherent, verifiable capability. The first three phases establish the foundation and core auth; phases 4-6 complete all user-facing features; phases 7-8 add API documentation and developer experience polish.
+
+## Phases
+
+**Phase Numbering:**
+- Integer phases (1, 2, 3): Planned milestone work
+- Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
+
+Decimal phases appear between their surrounding integers in numeric order.
+
+- [ ] **Phase 1: Project Bootstrap & Infrastructure** - Spring Boot 4 project with dual-database, Docker Compose, Flyway, and config tooling
+- [ ] **Phase 2: Security & API Foundation** - Dual SecurityFilterChain, BCrypt, CSRF, JWT infrastructure, role model, error handling
+- [ ] **Phase 3: Registration & Login** - User registration, login, logout with Thymeleaf pages and REST endpoints
+- [ ] **Phase 4: Email Verification** - Email verification flow with SMTP, token lifecycle, and resend capability
+- [ ] **Phase 5: Password Management** - Change password, lost password request, and reset password via email token
+- [ ] **Phase 6: User Profile & Admin Operations** - User self-service profile and admin CRUD with search/filter
+- [ ] **Phase 7: API Documentation & Swagger** - REST API completeness verification and Swagger UI integration
+- [ ] **Phase 8: Tooling & Project Documentation** - Dev/prod run scripts, cURL tests, project docs, and README
+
+## Phase Details
+
+### Phase 1: Project Bootstrap & Infrastructure
+**Goal**: Developer can clone the project, run setup, and launch the application in both dev (H2) and prod (PostgreSQL + Docker) modes with proper database migrations and environment configuration
+**Depends on**: Nothing (first phase)
+**Requirements**: INFRA-01, INFRA-02, INFRA-03, INFRA-04, INFRA-05, INFRA-06, TOOL-01, TOOL-04
+**Success Criteria** (what must be TRUE):
+  1. Application starts in dev mode with H2 in-memory database using Spring `dev` profile
+  2. Application starts in prod mode with PostgreSQL using Spring `prod` profile
+  3. `docker compose up` launches App + PostgreSQL + PgAdmin and all containers reach healthy state
+  4. Flyway executes initial schema migration on startup in both dev and prod profiles
+  5. `.env` values are injected into application config via `.template` file processing, and setup script bootstraps a working environment from scratch
+**Plans**: TBD
+
+Plans:
+- [ ] 01-01: TBD
+- [ ] 01-02: TBD
+- [ ] 01-03: TBD
+
+### Phase 2: Security & API Foundation
+**Goal**: Security infrastructure is fully configured with role-based access control, password hashing, selective CSRF protection, stateless JWT for API endpoints, and consistent error responses that prevent user enumeration
+**Depends on**: Phase 1
+**Requirements**: ROLE-01, ROLE-02, SEC-01, SEC-02, SEC-03, SEC-04, API-03
+**Success Criteria** (what must be TRUE):
+  1. Two SecurityFilterChain beans are active: one for `/api/**` (stateless, no CSRF, JWT-based) and one for `/**` (session-based, CSRF enabled, form login)
+  2. Passwords are stored using BCrypt hashing (raw passwords never persisted)
+  3. Protected endpoints return 401/403 for unauthenticated/unauthorized requests, and ADMIN-only endpoints reject USER-role access
+  4. API error responses follow a consistent JSON structure with appropriate HTTP status codes, and authentication error messages do not reveal whether an email exists in the system
+  5. New user records are assigned the USER role by default
+**Plans**: TBD
+
+Plans:
+- [ ] 02-01: TBD
+- [ ] 02-02: TBD
+- [ ] 02-03: TBD
+
+### Phase 3: Registration & Login
+**Goal**: Users can create accounts, log in with email and password to receive a JWT, and log out -- through both Thymeleaf pages and REST API endpoints
+**Depends on**: Phase 2
+**Requirements**: AUTH-01, AUTH-04, AUTH-05, PAGE-01, PAGE-02, PAGE-03, PAGE-08
+**Success Criteria** (what must be TRUE):
+  1. User can register with email and password via the registration page or POST to `/api/v1/auth/register`, and account is created with hashed password and default USER role
+  2. User can log in with verified email and password via the login page or POST to `/api/v1/auth/login`, receiving a valid JWT token
+  3. User can log out, which discards the token (client-side) and redirects to the login page from Thymeleaf, or returns success from the API
+  4. Home page is accessible to all visitors (authenticated and anonymous)
+  5. Login, registration, and logout pages render correctly with Bootstrap 5 styling and CSRF tokens on forms
+**Plans**: TBD
+
+Plans:
+- [ ] 03-01: TBD
+- [ ] 03-02: TBD
+- [ ] 03-03: TBD
+
+### Phase 4: Email Verification
+**Goal**: New user registrations require email verification before the account is activated, with the ability to resend the verification email
+**Depends on**: Phase 3
+**Requirements**: AUTH-02, AUTH-03, PAGE-04
+**Success Criteria** (what must be TRUE):
+  1. After registration, user receives an email containing a verification link sent via real SMTP
+  2. Clicking the verification link activates the account and displays a confirmation page
+  3. User can request a new verification email if the original was lost or expired
+  4. Unverified accounts cannot log in (login attempt returns appropriate error without revealing account existence)
+**Plans**: TBD
+
+Plans:
+- [ ] 04-01: TBD
+- [ ] 04-02: TBD
+
+### Phase 5: Password Management
+**Goal**: Users can change their password while authenticated and recover access to their account through an email-based password reset flow
+**Depends on**: Phase 4
+**Requirements**: PASS-01, PASS-02, PASS-03, PAGE-05, PAGE-06, PAGE-07
+**Success Criteria** (what must be TRUE):
+  1. Authenticated user can change their password by providing current password and new password, via the change password page or REST API
+  2. User can request a password reset by entering their email on the lost password page or via REST API, and receives an email with a reset link
+  3. User can set a new password using a valid, non-expired, single-use reset token via the reset password page or REST API
+  4. Reset tokens expire after a defined period and cannot be reused; error responses do not reveal whether the email exists
+**Plans**: TBD
+
+Plans:
+- [ ] 05-01: TBD
+- [ ] 05-02: TBD
+
+### Phase 6: User Profile & Admin Operations
+**Goal**: Authenticated users can view their own profile, and administrators can fully manage all user accounts including creation, updates, enable/disable, and search
+**Depends on**: Phase 5
+**Requirements**: PROF-01, ADMIN-01, ADMIN-02, ADMIN-03, ADMIN-04, ADMIN-05
+**Success Criteria** (what must be TRUE):
+  1. Authenticated user can view their own profile details (email, role, account status) via Thymeleaf page or REST API
+  2. Admin can list all users with pagination via Thymeleaf admin page or REST API
+  3. Admin can create a new user with a specified role, and update existing user details
+  4. Admin can enable or disable user accounts (soft delete) without destroying account data
+  5. Admin can search and filter users by name, email, role, or status
+**Plans**: TBD
+
+Plans:
+- [ ] 06-01: TBD
+- [ ] 06-02: TBD
+- [ ] 06-03: TBD
+
+### Phase 7: API Documentation & Swagger
+**Goal**: Every feature is accessible through a versioned REST API, and all endpoints are documented and testable through Swagger UI
+**Depends on**: Phase 6
+**Requirements**: API-01, API-02
+**Success Criteria** (what must be TRUE):
+  1. All features (auth, password management, profile, admin operations) are accessible via REST API endpoints under `/api/v1/`
+  2. Swagger UI is available at a known URL and displays all API endpoints with request/response schemas
+  3. Protected API endpoints can be tested directly from Swagger UI using JWT bearer token authentication
+**Plans**: TBD
+
+Plans:
+- [ ] 07-01: TBD
+
+### Phase 8: Tooling & Project Documentation
+**Goal**: Complete developer experience with run scripts for both environments, automated cURL test coverage of all features, and comprehensive project documentation
+**Depends on**: Phase 7
+**Requirements**: TOOL-02, TOOL-03, TOOL-05, TOOL-06, TOOL-07
+**Success Criteria** (what must be TRUE):
+  1. Developer can start the application in dev mode using `./bin/` dev run script (single command)
+  2. Developer can start the full production stack using `./bin/` prod run script (Docker Compose orchestration)
+  3. cURL test scripts in `./bin/` exercise all features (registration, login, verification, password flows, profile, admin CRUD) and report pass/fail
+  4. Project documentation in `./doc/` covers setup, architecture, API usage, and deployment
+  5. `README.md` links to all documentation files and provides quick-start instructions
+**Plans**: TBD
+
+Plans:
+- [ ] 08-01: TBD
+- [ ] 08-02: TBD
+- [ ] 08-03: TBD
+
+## Progress
+
+**Execution Order:**
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
+
+| Phase | Plans Complete | Status | Completed |
+|-------|---------------|--------|-----------|
+| 1. Project Bootstrap & Infrastructure | 0/TBD | Not started | - |
+| 2. Security & API Foundation | 0/TBD | Not started | - |
+| 3. Registration & Login | 0/TBD | Not started | - |
+| 4. Email Verification | 0/TBD | Not started | - |
+| 5. Password Management | 0/TBD | Not started | - |
+| 6. User Profile & Admin Operations | 0/TBD | Not started | - |
+| 7. API Documentation & Swagger | 0/TBD | Not started | - |
+| 8. Tooling & Project Documentation | 0/TBD | Not started | - |
+
+---
+*Roadmap created: 2026-01-28*
+*Last updated: 2026-01-28*
