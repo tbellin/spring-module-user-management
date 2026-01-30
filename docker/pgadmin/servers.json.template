@@ -1,0 +1,13 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "User Management DB",
+      "Group": "Servers",
+      "Host": "db",
+      "Port": @DB_PORT@,
+      "MaintenanceDB": "@DB_NAME@",
+      "Username": "@DB_USERNAME@",
+      "SSLMode": "prefer"
+    }
+  }
+}
