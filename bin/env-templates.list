@@ -1,0 +1,9 @@
+# env-templates.list
+# One template file path per line (relative to project root).
+# Lines starting with # are comments.
+# Run: ./bin/env.sh substitute-all
+#
+# Format: path/to/file.ext.template
+# Output: path/to/file.ext (same directory, .template extension dropped)
+#
+# Add new templates here -- no script changes needed.
