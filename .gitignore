@@ -26,5 +26,15 @@ Thumbs.db
 # Maven
 .mvn/wrapper/maven-wrapper.jar
 
+# Generated config files (from .template processing)
+# Run: ./bin/env.sh substitute-all
+# These contain resolved secrets -- never commit.
+pom.xml
+compose.yaml
+Dockerfile
+src/main/resources/application-dev.yml
+src/main/resources/application-prod.yml
+docker/pgadmin/servers.json
+
 # Docker
 docker-compose.override.yml
