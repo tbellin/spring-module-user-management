@@ -10,27 +10,27 @@ See: .planning/PROJECT.md (updated 2026-01-28)
 ## Current Position
 
 Phase: 1 of 8 (Project Bootstrap & Infrastructure)
-Plan: 10 of 12 in current phase
+Plan: 11 of 12 in current phase
 Status: In progress
-Last activity: 2026-01-30 -- Completed 01-10-PLAN.md (Environment CLI)
+Last activity: 2026-01-30 -- Completed 01-11-PLAN.md (Config Template Conversion)
 
-Progress: [█████████░░░] ~75% (9/12 plans complete)
+Progress: [██████████░░] ~83% (10/12 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 9
+- Total plans completed: 10
 - Average duration: 3min
-- Total execution time: 24min
+- Total execution time: 26min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 1. Project Bootstrap | 9/12 | 24min | 3min |
+| 1. Project Bootstrap | 10/12 | 26min | 3min |
 
 **Recent Trend:**
-- Last 5 plans: 01-10 (3min), 01-08 (2min), 01-07 (2min), 01-06 (2min), 01-05 (2min)
+- Last 5 plans: 01-11 (2min), 01-10 (3min), 01-08 (2min), 01-07 (2min), 01-06 (2min)
 - Trend: stable, fast
 
 *Updated after each plan completion*
@@ -66,6 +66,9 @@ Recent decisions affecting current work:
 - 01-08: ModularityTests as plain unit test (not @SpringBootTest) for fast module boundary verification
 - 01-10: .env.example is a reference doc (not copy-to-use), validated by env.sh load
 - 01-10: @VARIABLE@ substitution syntax for template processing (not envsubst $VARIABLE)
+- 01-11: db-only mode via service selection (docker compose up db pgadmin) instead of --profile flag
+- 01-11: All config files are .template with @VARIABLE@ placeholders, originals gitignored
+- 01-11: Container names follow usermgmt-{service} convention
 
 ### Pending Todos
 
@@ -77,6 +80,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-01-30T15:17:48Z
-Stopped at: Completed 01-10-PLAN.md
+Last session: 2026-01-30T15:24:10Z
+Stopped at: Completed 01-11-PLAN.md
 Resume file: None
