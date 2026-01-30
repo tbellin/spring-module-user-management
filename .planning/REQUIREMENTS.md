@@ -64,19 +64,19 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Infrastructure
 
-- [ ] **INFRA-01**: Dev mode with H2 in-memory database (Spring profile)
-- [ ] **INFRA-02**: Prod mode with PostgreSQL (Spring profile)
-- [ ] **INFRA-03**: Docker Compose orchestrates App + PostgreSQL + PgAdmin
-- [ ] **INFRA-04**: Flyway manages database schema migrations
-- [ ] **INFRA-05**: `.env` file configures all environment-specific variables
-- [ ] **INFRA-06**: `.template` files processed by scripts to generate config files
+- [x] **INFRA-01**: Dev mode with H2 in-memory database (Spring profile)
+- [x] **INFRA-02**: Prod mode with PostgreSQL (Spring profile)
+- [x] **INFRA-03**: Docker Compose orchestrates App + PostgreSQL + PgAdmin
+- [x] **INFRA-04**: Flyway manages database schema migrations
+- [x] **INFRA-05**: `.env` file configures all environment-specific variables
+- [x] **INFRA-06**: `.template` files processed by scripts to generate config files
 
 ### Tooling
 
-- [ ] **TOOL-01**: `./bin/` setup script (dependencies, initial config)
+- [x] **TOOL-01**: `./bin/` setup script (dependencies, initial config)
 - [ ] **TOOL-02**: `./bin/` dev mode run script
 - [ ] **TOOL-03**: `./bin/` prod mode run script (Docker)
-- [ ] **TOOL-04**: `./bin/` config template processing script
+- [x] **TOOL-04**: `./bin/` config template processing script
 - [ ] **TOOL-05**: `./bin/` cURL test scripts for all features
 - [ ] **TOOL-06**: `./doc/` project documentation
 - [ ] **TOOL-07**: `README.md` links to all doc files
@@ -163,16 +163,16 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SEC-02 | Phase 2 | Pending |
 | SEC-03 | Phase 2 | Pending |
 | SEC-04 | Phase 2 | Pending |
-| INFRA-01 | Phase 1 | Pending |
-| INFRA-02 | Phase 1 | Pending |
-| INFRA-03 | Phase 1 | Pending |
-| INFRA-04 | Phase 1 | Pending |
-| INFRA-05 | Phase 1 | Pending |
-| INFRA-06 | Phase 1 | Pending |
-| TOOL-01 | Phase 1 | Pending |
+| INFRA-01 | Phase 1 | Complete |
+| INFRA-02 | Phase 1 | Complete |
+| INFRA-03 | Phase 1 | Complete |
+| INFRA-04 | Phase 1 | Complete |
+| INFRA-05 | Phase 1 | Complete |
+| INFRA-06 | Phase 1 | Complete |
+| TOOL-01 | Phase 1 | Complete |
 | TOOL-02 | Phase 8 | Pending |
 | TOOL-03 | Phase 8 | Pending |
-| TOOL-04 | Phase 1 | Pending |
+| TOOL-04 | Phase 1 | Complete |
 | TOOL-05 | Phase 8 | Pending |
 | TOOL-06 | Phase 8 | Pending |
 | TOOL-07 | Phase 8 | Pending |
@@ -184,4 +184,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-01-28*
-*Last updated: 2026-01-28 after roadmap creation (traceability updated)*
+*Last updated: 2026-01-30 (Phase 1 requirements marked Complete)*

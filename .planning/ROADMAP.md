@@ -12,7 +12,7 @@ This roadmap delivers a complete Spring Boot 4 user management server through 8 
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Project Bootstrap & Infrastructure** - Spring Boot 4 project with dual-database, Docker Compose, Flyway, and config tooling
+- [x] **Phase 1: Project Bootstrap & Infrastructure** - Spring Boot 4 project with dual-database, Docker Compose, Flyway, and config tooling
 - [ ] **Phase 2: Security & API Foundation** - Dual SecurityFilterChain, BCrypt, CSRF, JWT infrastructure, role model, error handling
 - [ ] **Phase 3: Registration & Login** - User registration, login, logout with Thymeleaf pages and REST endpoints
 - [ ] **Phase 4: Email Verification** - Email verification flow with SMTP, token lifecycle, and resend capability
@@ -44,10 +44,10 @@ Plans:
 - [x] 01-06-PLAN.md - Home page controller and Thymeleaf templates (wave 3)
 - [x] 01-07-PLAN.md - Docker infrastructure (Dockerfile and compose.yaml) (wave 3)
 - [x] 01-08-PLAN.md - Application and modularity tests (wave 4)
-- [ ] 01-10-PLAN.md - env.sh CLI tool and template infrastructure (wave 5)
-- [ ] 01-11-PLAN.md - Convert config files to @VARIABLE@ templates (wave 6)
-- [ ] 01-12-PLAN.md - Flyway split, seed data, startup banner, and schema test (wave 6)
-- [ ] 01-09-PLAN.md - Phase verification checkpoint (wave 7, depends on ALL)
+- [x] 01-10-PLAN.md - env.sh CLI tool and template infrastructure (wave 5)
+- [x] 01-11-PLAN.md - Convert config files to @VARIABLE@ templates (wave 6)
+- [x] 01-12-PLAN.md - Flyway split, seed data, startup banner, and schema test (wave 6)
+- [x] 01-09-PLAN.md - Phase verification checkpoint (wave 7, depends on ALL)
 
 ### Phase 2: Security & API Foundation
 **Goal**: Security infrastructure is fully configured with role-based access control, password hashing, selective CSRF protection, stateless JWT for API endpoints, and consistent error responses that prevent user enumeration
@@ -167,7 +167,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 
 | Phase | Plans Complete | Status | Completed |
 |-------|---------------|--------|-----------|
-| 1. Project Bootstrap & Infrastructure | 8/12 | In progress | - |
+| 1. Project Bootstrap & Infrastructure | 12/12 | ✓ Complete | 2026-01-30 |
 | 2. Security & API Foundation | 0/TBD | Not started | - |
 | 3. Registration & Login | 0/TBD | Not started | - |
 | 4. Email Verification | 0/TBD | Not started | - |
@@ -178,4 +178,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 
 ---
 *Roadmap created: 2026-01-28*
-*Last updated: 2026-01-28*
+*Last updated: 2026-01-30*
