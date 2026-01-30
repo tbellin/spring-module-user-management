@@ -176,7 +176,7 @@ cmd_substitute_all() {
 
             # Escape special sed characters in the value
             local escaped_value
-            escaped_value=$(printf '%s\n' "$var_value" | sed 's/[&/\]/\\&/g')
+            escaped_value=$(printf '%s\n' "$var_value" | sed 's/[&/\|]/\\&/g')
             sed_args+=(-e "s|@${var_name}@|${escaped_value}|g")
         done
 
