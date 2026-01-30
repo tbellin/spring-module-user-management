@@ -31,7 +31,11 @@ Secure, modular user authentication and management that works identically in dev
 - [ ] Prod mode: Full Docker Compose stack (App + PostgreSQL + PgAdmin)
 - [ ] Shell scripts in `./bin/` for setup, dev run, prod run, config templating, cURL tests
 - [ ] Documentation in `./doc/` with links from README.md
-- [ ] `.env`-driven configuration with `.template` file processing
+- [ ] `.env`
+- [ ] Create script.sh who read value from `.env` and run script to execute as system variable.( source env.sh load - env.sh show )
+- [ ] Files config like pom.xml, compose.yml application-xxx.yml etc. are produced by <file name>.<ext>.template files.
+- [ ] `.env.sh` with option substitute-all to charge value from template to config files 
+- [ ] `.gitignore` with esclude `.env`
 - [ ] cURL test scripts exercising all features
 
 ### Out of Scope
