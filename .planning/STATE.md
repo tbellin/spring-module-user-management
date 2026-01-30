@@ -5,33 +5,35 @@
 See: .planning/PROJECT.md (updated 2026-01-28)
 
 **Core value:** Secure, modular user authentication and management that works identically in dev (H2, local) and prod (PostgreSQL, Docker) with zero code changes between environments.
-**Current focus:** Phase 1 - Project Bootstrap & Infrastructure
+**Current focus:** Phase 1 complete. Ready for Phase 2 - Security Foundation.
 
 ## Current Position
 
 Phase: 1 of 8 (Project Bootstrap & Infrastructure)
-Plan: 11 of 12 in current phase
-Status: In progress
-Last activity: 2026-01-30 -- Completed 01-11-PLAN.md (Config Template Conversion)
+Plan: 12 of 12 in current phase
+Status: Phase complete
+Last activity: 2026-01-30 -- Completed 01-12-PLAN.md (Vendor-Specific Flyway Migrations)
 
-Progress: [██████████░░] ~83% (10/12 plans complete)
+Progress: [████████████] 100% (12/12 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 10
+- Total plans completed: 11
 - Average duration: 3min
-- Total execution time: 28min
+- Total execution time: 41min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 1. Project Bootstrap | 10/12 | 28min | 3min |
+| 1. Project Bootstrap | 11/12 | 41min | 4min |
+
+Note: Plan 01-09 had no SUMMARY.md (verification-only plan).
 
 **Recent Trend:**
-- Last 5 plans: 01-11 (4min), 01-10 (3min), 01-08 (2min), 01-07 (2min), 01-06 (2min)
-- Trend: stable, fast
+- Last 5 plans: 01-12 (13min), 01-11 (4min), 01-10 (3min), 01-08 (2min), 01-07 (2min)
+- Trend: stable
 
 *Updated after each plan completion*
 
@@ -69,6 +71,9 @@ Recent decisions affecting current work:
 - 01-11: db-only mode via service selection (docker compose up db pgadmin) instead of --profile flag
 - 01-11: All config files are .template with @VARIABLE@ placeholders, originals gitignored
 - 01-11: Container names follow usermgmt-{service} convention
+- 01-12: Dev seed data in h2/ directory only (vendor isolation via {vendor} placeholder)
+- 01-12: Schema comparison test filters seed migrations from structural parity check
+- 01-12: StartupBanner uses ApplicationReadyEvent for post-context-load logging
 
 ### Pending Todos
 
@@ -80,6 +85,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-01-30T15:26:00Z
-Stopped at: Completed 01-11-PLAN.md
+Last session: 2026-01-30T15:35:26Z
+Stopped at: Completed 01-12-PLAN.md (Phase 1 complete)
 Resume file: None
