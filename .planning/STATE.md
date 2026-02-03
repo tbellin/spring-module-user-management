@@ -5,33 +5,33 @@
 See: .planning/PROJECT.md (updated 2026-01-28)
 
 **Core value:** Secure, modular user authentication and management that works identically in dev (H2, local) and prod (PostgreSQL, Docker) with zero code changes between environments.
-**Current focus:** Phase 2 - Security & API Foundation (Plan 04 complete).
+**Current focus:** Phase 2 - Security & API Foundation (Plan 05 complete).
 
 ## Current Position
 
 Phase: 2 of 8 (Security & API Foundation)
-Plan: 4 of ? in current phase
+Plan: 5 of ? in current phase
 Status: In progress
-Last activity: 2026-02-03 -- Completed 02-04-PLAN.md (Dual SecurityFilterChain Configuration)
+Last activity: 2026-02-03 -- Completed 02-05-PLAN.md (GlobalExceptionHandler)
 
-Progress: [██████░░░░] ~20% (1/8 phases + 4 plans)
+Progress: [██████░░░░] ~22% (1/8 phases + 5 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 16
+- Total plans completed: 17
 - Average duration: 3min
-- Total execution time: ~54min
+- Total execution time: ~55min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1. Project Bootstrap | 12/12 | ~45min | ~4min |
-| 2. Security & API Foundation | 4/? | 9min | 2.3min |
+| 2. Security & API Foundation | 5/? | 10min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 02-04 (2min), 02-03 (2min), 02-02 (2min), 02-01 (3min), 01-09 (verification)
+- Last 5 plans: 02-05 (1min), 02-04 (2min), 02-03 (2min), 02-02 (2min), 02-01 (3min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -87,6 +87,9 @@ Recent decisions affecting current work:
 - 02-04: JwtAuthenticationFilter not a Spring bean (prevents global registration)
 - 02-04: API chain @Order(1) before web chain @Order(2) for proper matcher priority
 - 02-04: SecurityConfig moved from shared.config to auth.internal where it belongs
+- 02-05: GlobalExceptionHandler extends ResponseEntityExceptionHandler for Spring MVC inheritance
+- 02-05: Generic 500 message to prevent internal detail leakage
+- 02-05: Debug-level logging for expected errors (404, 409, 400); ERROR for unexpected (500)
 
 ### Pending Todos
 
@@ -99,5 +102,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-03
-Stopped at: Completed 02-04-PLAN.md (Dual SecurityFilterChain Configuration)
+Stopped at: Completed 02-05-PLAN.md (GlobalExceptionHandler)
 Resume file: None
