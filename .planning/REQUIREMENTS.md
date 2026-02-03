@@ -23,8 +23,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Roles & Authorization
 
-- [ ] **ROLE-01**: System enforces ADMIN and USER roles on all protected endpoints
-- [ ] **ROLE-02**: New users are assigned USER role by default
+- [x] **ROLE-01**: System enforces ADMIN and USER roles on all protected endpoints
+- [x] **ROLE-02**: New users are assigned USER role by default
 
 ### Admin Operations
 
@@ -53,14 +53,14 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [ ] **API-01**: All features accessible via REST API under `/api/v1/`
 - [ ] **API-02**: Swagger UI available for interactive API testing
-- [ ] **API-03**: API endpoints return consistent JSON error responses
+- [x] **API-03**: API endpoints return consistent JSON error responses
 
 ### Security
 
-- [ ] **SEC-01**: Error messages do not leak whether email exists (no user enumeration)
-- [ ] **SEC-02**: Passwords stored with BCrypt hashing
-- [ ] **SEC-03**: CSRF protection on all Thymeleaf forms
-- [ ] **SEC-04**: JWT API endpoints are stateless (no CSRF needed)
+- [x] **SEC-01**: Error messages do not leak whether email exists (no user enumeration)
+- [x] **SEC-02**: Passwords stored with BCrypt hashing
+- [x] **SEC-03**: CSRF protection on all Thymeleaf forms
+- [x] **SEC-04**: JWT API endpoints are stateless (no CSRF needed)
 
 ### Infrastructure
 
@@ -140,8 +140,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PASS-01 | Phase 5 | Pending |
 | PASS-02 | Phase 5 | Pending |
 | PASS-03 | Phase 5 | Pending |
-| ROLE-01 | Phase 2 | Pending |
-| ROLE-02 | Phase 2 | Pending |
+| ROLE-01 | Phase 2 | Complete |
+| ROLE-02 | Phase 2 | Complete |
 | ADMIN-01 | Phase 6 | Pending |
 | ADMIN-02 | Phase 6 | Pending |
 | ADMIN-03 | Phase 6 | Pending |
@@ -158,11 +158,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PAGE-08 | Phase 3 | Pending |
 | API-01 | Phase 7 | Pending |
 | API-02 | Phase 7 | Pending |
-| API-03 | Phase 2 | Pending |
-| SEC-01 | Phase 2 | Pending |
-| SEC-02 | Phase 2 | Pending |
-| SEC-03 | Phase 2 | Pending |
-| SEC-04 | Phase 2 | Pending |
+| API-03 | Phase 2 | Complete |
+| SEC-01 | Phase 2 | Complete |
+| SEC-02 | Phase 2 | Complete |
+| SEC-03 | Phase 2 | Complete |
+| SEC-04 | Phase 2 | Complete |
 | INFRA-01 | Phase 1 | Complete |
 | INFRA-02 | Phase 1 | Complete |
 | INFRA-03 | Phase 1 | Complete |
@@ -184,4 +184,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-01-28*
-*Last updated: 2026-01-30 (Phase 1 requirements marked Complete)*
+*Last updated: 2026-02-03 (Phase 2 requirements marked Complete)*

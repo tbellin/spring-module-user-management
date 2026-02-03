@@ -13,7 +13,7 @@ This roadmap delivers a complete Spring Boot 4 user management server through 8 
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Project Bootstrap & Infrastructure** - Spring Boot 4 project with dual-database, Docker Compose, Flyway, and config tooling
-- [ ] **Phase 2: Security & API Foundation** - Dual SecurityFilterChain, BCrypt, CSRF, JWT infrastructure, role model, error handling
+- [x] **Phase 2: Security & API Foundation** - Dual SecurityFilterChain, BCrypt, CSRF, JWT infrastructure, role model, error handling
 - [ ] **Phase 3: Registration & Login** - User registration, login, logout with Thymeleaf pages and REST endpoints
 - [ ] **Phase 4: Email Verification** - Email verification flow with SMTP, token lifecycle, and resend capability
 - [ ] **Phase 5: Password Management** - Change password, lost password request, and reset password via email token
@@ -63,11 +63,11 @@ Plans:
 
 Plans:
 - [x] 02-01-PLAN.md - User Module JPA Layer (entities, repositories, UserService API) (wave 1)
-- [ ] 02-02-PLAN.md - JJWT dependencies and JWT/error configuration (wave 1)
-- [ ] 02-03-PLAN.md - JwtService, CustomUserDetailsService, BCryptPasswordEncoder (wave 2)
-- [ ] 02-04-PLAN.md - Dual SecurityFilterChain with JWT filter and API error handlers (wave 3)
-- [ ] 02-05-PLAN.md - GlobalExceptionHandler and custom exception classes (wave 3)
-- [ ] 02-06-PLAN.md - Security integration tests (wave 4)
+- [x] 02-02-PLAN.md - JJWT dependencies and JWT/error configuration (wave 1)
+- [x] 02-03-PLAN.md - JwtService, CustomUserDetailsService, BCryptPasswordEncoder (wave 2)
+- [x] 02-04-PLAN.md - Dual SecurityFilterChain with JWT filter and API error handlers (wave 3)
+- [x] 02-05-PLAN.md - GlobalExceptionHandler and custom exception classes (wave 3)
+- [x] 02-06-PLAN.md - Security integration tests (wave 4)
 
 ### Phase 3: Registration & Login
 **Goal**: Users can create accounts, log in with email and password to receive a JWT, and log out -- through both Thymeleaf pages and REST API endpoints
@@ -171,7 +171,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | Phase | Plans Complete | Status | Completed |
 |-------|---------------|--------|-----------|
 | 1. Project Bootstrap & Infrastructure | 12/12 | ✓ Complete | 2026-01-30 |
-| 2. Security & API Foundation | 1/6 | In progress | - |
+| 2. Security & API Foundation | 6/6 | ✓ Complete | 2026-02-03 |
 | 3. Registration & Login | 0/TBD | Not started | - |
 | 4. Email Verification | 0/TBD | Not started | - |
 | 5. Password Management | 0/TBD | Not started | - |
