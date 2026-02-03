@@ -59,12 +59,15 @@ Plans:
   3. Protected endpoints return 401/403 for unauthenticated/unauthorized requests, and ADMIN-only endpoints reject USER-role access
   4. API error responses follow a consistent JSON structure with appropriate HTTP status codes, and authentication error messages do not reveal whether an email exists in the system
   5. New user records are assigned the USER role by default
-**Plans**: TBD
+**Plans**: 6 plans in 4 waves
 
 Plans:
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
-- [ ] 02-03: TBD
+- [x] 02-01-PLAN.md - User Module JPA Layer (entities, repositories, UserService API) (wave 1)
+- [ ] 02-02-PLAN.md - JJWT dependencies and JWT/error configuration (wave 1)
+- [ ] 02-03-PLAN.md - JwtService, CustomUserDetailsService, BCryptPasswordEncoder (wave 2)
+- [ ] 02-04-PLAN.md - Dual SecurityFilterChain with JWT filter and API error handlers (wave 3)
+- [ ] 02-05-PLAN.md - GlobalExceptionHandler and custom exception classes (wave 3)
+- [ ] 02-06-PLAN.md - Security integration tests (wave 4)
 
 ### Phase 3: Registration & Login
 **Goal**: Users can create accounts, log in with email and password to receive a JWT, and log out -- through both Thymeleaf pages and REST API endpoints
@@ -168,7 +171,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | Phase | Plans Complete | Status | Completed |
 |-------|---------------|--------|-----------|
 | 1. Project Bootstrap & Infrastructure | 12/12 | ✓ Complete | 2026-01-30 |
-| 2. Security & API Foundation | 0/TBD | Not started | - |
+| 2. Security & API Foundation | 1/6 | In progress | - |
 | 3. Registration & Login | 0/TBD | Not started | - |
 | 4. Email Verification | 0/TBD | Not started | - |
 | 5. Password Management | 0/TBD | Not started | - |
@@ -178,4 +181,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 
 ---
 *Roadmap created: 2026-01-28*
-*Last updated: 2026-01-30*
+*Last updated: 2026-02-03*
