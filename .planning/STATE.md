@@ -5,33 +5,33 @@
 See: .planning/PROJECT.md (updated 2026-01-28)
 
 **Core value:** Secure, modular user authentication and management that works identically in dev (H2, local) and prod (PostgreSQL, Docker) with zero code changes between environments.
-**Current focus:** Phase 2 - Security & API Foundation (Plan 01 complete).
+**Current focus:** Phase 2 - Security & API Foundation (Plan 03 complete).
 
 ## Current Position
 
 Phase: 2 of 8 (Security & API Foundation)
-Plan: 2 of ? in current phase
+Plan: 3 of ? in current phase
 Status: In progress
-Last activity: 2026-02-03 -- Completed 02-02-PLAN.md (JJWT Dependencies and JWT Configuration)
+Last activity: 2026-02-03 -- Completed 02-03-PLAN.md (Core Security Components)
 
-Progress: [██████░░░░] ~17% (1/8 phases + 2 plans)
+Progress: [██████░░░░] ~18% (1/8 phases + 3 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 14
+- Total plans completed: 15
 - Average duration: 3min
-- Total execution time: ~50min
+- Total execution time: ~52min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1. Project Bootstrap | 12/12 | ~45min | ~4min |
-| 2. Security & API Foundation | 2/? | 5min | 2.5min |
+| 2. Security & API Foundation | 3/? | 7min | 2.3min |
 
 **Recent Trend:**
-- Last 5 plans: 02-02 (2min), 02-01 (3min), 01-09 (verification), 01-12 (13min), 01-11 (4min)
+- Last 5 plans: 02-03 (2min), 02-02 (2min), 02-01 (3min), 01-09 (verification), 01-12 (13min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -81,6 +81,9 @@ Recent decisions affecting current work:
 - 02-02: jjwt-gson backend (not jjwt-jackson) to avoid Jackson 2/3 conflict with Spring Boot 4
 - 02-02: Record-based @ConfigurationProperties for type-safe app.* config access
 - 02-02: AppProperties nested record pattern for configuration (app.jwt.* -> AppProperties.Jwt)
+- 02-03: JwtService in auth package (public API), CustomUserDetailsService in auth.internal (private)
+- 02-03: PasswordConfig in shared.config (cross-cutting concern for auth and user modules)
+- 02-03: Generic "Bad credentials" message in CustomUserDetailsService for SEC-01 compliance
 
 ### Pending Todos
 
@@ -93,5 +96,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-03
-Stopped at: Completed 02-02-PLAN.md (JJWT Dependencies and JWT Configuration)
+Stopped at: Completed 02-03-PLAN.md (Core Security Components)
 Resume file: None
