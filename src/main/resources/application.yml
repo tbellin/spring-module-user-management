@@ -8,6 +8,14 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration/{vendor}
+  mvc:
+    problemdetails:
+      enabled: true  # Enable RFC 9457 ProblemDetail error responses
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:}
+    expiration-ms: ${JWT_EXPIRATION_MS:3600000}  # 1 hour default
 
 server:
   port: ${APP_PORT:8080}
