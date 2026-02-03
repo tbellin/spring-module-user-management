@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-01-28)
 ## Current Position
 
 Phase: 2 of 8 (Security & API Foundation)
-Plan: 1 of ? in current phase
+Plan: 2 of ? in current phase
 Status: In progress
-Last activity: 2026-02-03 -- Completed 02-01-PLAN.md (User Module JPA Layer)
+Last activity: 2026-02-03 -- Completed 02-02-PLAN.md (JJWT Dependencies and JWT Configuration)
 
-Progress: [██████░░░░] ~15% (1/8 phases + 1 plan)
+Progress: [██████░░░░] ~17% (1/8 phases + 2 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 13
+- Total plans completed: 14
 - Average duration: 3min
-- Total execution time: ~48min
+- Total execution time: ~50min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1. Project Bootstrap | 12/12 | ~45min | ~4min |
-| 2. Security & API Foundation | 1/? | 3min | 3min |
+| 2. Security & API Foundation | 2/? | 5min | 2.5min |
 
 **Recent Trend:**
-- Last 5 plans: 02-01 (3min), 01-09 (verification), 01-12 (13min), 01-11 (4min), 01-10 (3min)
+- Last 5 plans: 02-02 (2min), 02-01 (3min), 01-09 (verification), 01-12 (13min), 01-11 (4min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -78,6 +78,9 @@ Recent decisions affecting current work:
 - 02-01: UserDto in shared.dto for general cross-module user data without sensitive fields
 - 02-01: Entities and repositories in user.internal (Spring Modulith module-private)
 - 02-01: UserService in user package root as the sole public module API
+- 02-02: jjwt-gson backend (not jjwt-jackson) to avoid Jackson 2/3 conflict with Spring Boot 4
+- 02-02: Record-based @ConfigurationProperties for type-safe app.* config access
+- 02-02: AppProperties nested record pattern for configuration (app.jwt.* -> AppProperties.Jwt)
 
 ### Pending Todos
 
@@ -90,5 +93,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-03
-Stopped at: Completed 02-01-PLAN.md (User Module JPA Layer)
+Stopped at: Completed 02-02-PLAN.md (JJWT Dependencies and JWT Configuration)
 Resume file: None
