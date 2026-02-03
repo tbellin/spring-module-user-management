@@ -5,33 +5,33 @@
 See: .planning/PROJECT.md (updated 2026-01-28)
 
 **Core value:** Secure, modular user authentication and management that works identically in dev (H2, local) and prod (PostgreSQL, Docker) with zero code changes between environments.
-**Current focus:** Phase 2 - Security & API Foundation (Plan 05 complete).
+**Current focus:** Phase 2 - Security & API Foundation (COMPLETE).
 
 ## Current Position
 
-Phase: 2 of 8 (Security & API Foundation)
-Plan: 5 of ? in current phase
-Status: In progress
-Last activity: 2026-02-03 -- Completed 02-05-PLAN.md (GlobalExceptionHandler)
+Phase: 2 of 8 (Security & API Foundation) - COMPLETE
+Plan: 6 of 6 in current phase
+Status: Phase complete
+Last activity: 2026-02-03 -- Completed 02-06-PLAN.md (Security Tests)
 
-Progress: [██████░░░░] ~22% (1/8 phases + 5 plans)
+Progress: [███████░░░] ~25% (2/8 phases complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 17
+- Total plans completed: 18
 - Average duration: 3min
-- Total execution time: ~55min
+- Total execution time: ~60min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1. Project Bootstrap | 12/12 | ~45min | ~4min |
-| 2. Security & API Foundation | 5/? | 10min | 2min |
+| 2. Security & API Foundation | 6/6 | 15min | 2.5min |
 
 **Recent Trend:**
-- Last 5 plans: 02-05 (1min), 02-04 (2min), 02-03 (2min), 02-02 (2min), 02-01 (3min)
+- Last 5 plans: 02-06 (5min), 02-05 (1min), 02-04 (2min), 02-03 (2min), 02-02 (2min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -90,6 +90,9 @@ Recent decisions affecting current work:
 - 02-05: GlobalExceptionHandler extends ResponseEntityExceptionHandler for Spring MVC inheritance
 - 02-05: Generic 500 message to prevent internal detail leakage
 - 02-05: Debug-level logging for expected errors (404, 409, 400); ERROR for unexpected (500)
+- 02-06: SecurityMockMvcRequestPostProcessors.user() for API chain tests (not @WithMockUser)
+- 02-06: spring-boot-starter-webmvc-test dependency for Boot 4 (AutoConfigureMockMvc relocated)
+- 02-06: Test 404 to verify authorization passed when endpoints don't exist yet
 
 ### Pending Todos
 
@@ -102,5 +105,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-03
-Stopped at: Completed 02-05-PLAN.md (GlobalExceptionHandler)
+Stopped at: Completed 02-06-PLAN.md (Security Tests) - Phase 2 COMPLETE
 Resume file: None
