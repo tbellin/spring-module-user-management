@@ -5,32 +5,33 @@
 See: .planning/PROJECT.md (updated 2026-01-28)
 
 **Core value:** Secure, modular user authentication and management that works identically in dev (H2, local) and prod (PostgreSQL, Docker) with zero code changes between environments.
-**Current focus:** Phase 1 complete. Ready for Phase 2 - Security & API Foundation.
+**Current focus:** Phase 2 - Security & API Foundation (Plan 01 complete).
 
 ## Current Position
 
-Phase: 1 of 8 (Project Bootstrap & Infrastructure) — COMPLETE
-Plan: 12 of 12 in current phase
-Status: Phase complete, verified
-Last activity: 2026-01-30 -- Phase 1 verified and approved
+Phase: 2 of 8 (Security & API Foundation)
+Plan: 1 of ? in current phase
+Status: In progress
+Last activity: 2026-02-03 -- Completed 02-01-PLAN.md (User Module JPA Layer)
 
-Progress: [█████░░░░░] ~12.5% (1/8 phases complete)
+Progress: [██████░░░░] ~15% (1/8 phases + 1 plan)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 12
+- Total plans completed: 13
 - Average duration: 3min
-- Total execution time: ~45min
+- Total execution time: ~48min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1. Project Bootstrap | 12/12 | ~45min | ~4min |
+| 2. Security & API Foundation | 1/? | 3min | 3min |
 
 **Recent Trend:**
-- Last 5 plans: 01-09 (verification), 01-12 (13min), 01-11 (4min), 01-10 (3min), 01-08 (2min)
+- Last 5 plans: 02-01 (3min), 01-09 (verification), 01-12 (13min), 01-11 (4min), 01-10 (3min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -72,6 +73,11 @@ Recent decisions affecting current work:
 - 01-12: Dev seed data in h2/ directory only (vendor isolation via {vendor} placeholder)
 - 01-12: Schema comparison test filters seed migrations from structural parity check
 - 01-12: StartupBanner uses ApplicationReadyEvent for post-context-load logging
+- 02-01: GenerationType.IDENTITY for H2/PostgreSQL compatibility (not AUTO or SEQUENCE)
+- 02-01: UserAuthDto in user package for auth-specific data with passwordHash
+- 02-01: UserDto in shared.dto for general cross-module user data without sensitive fields
+- 02-01: Entities and repositories in user.internal (Spring Modulith module-private)
+- 02-01: UserService in user package root as the sole public module API
 
 ### Pending Todos
 
@@ -83,6 +89,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-01-30
-Stopped at: Phase 1 complete, verified, approved
+Last session: 2026-02-03
+Stopped at: Completed 02-01-PLAN.md (User Module JPA Layer)
 Resume file: None
