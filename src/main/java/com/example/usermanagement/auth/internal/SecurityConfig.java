@@ -59,10 +59,12 @@ public class SecurityConfig {
                 .authenticationEntryPoint(new ApiAuthenticationEntryPoint())
                 .accessDeniedHandler(new ApiAccessDeniedHandler()))
             .authorizeHttpRequests(auth -> auth
-                // Public API endpoints (will be added in Phase 3)
-                .requestMatchers("/api/auth/**").permitAll()
+                // Public API endpoints
+                .requestMatchers("/api/auth/**").permitAll()      // Keep for backward compat
+                .requestMatchers("/api/v1/auth/**").permitAll()   // Versioned auth endpoints
                 // Admin-only endpoints (SUCCESS CRITERIA #3)
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")  // Future admin API
                 // All other API endpoints require authentication
                 .anyRequest().authenticated())
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
