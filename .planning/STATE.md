@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-28)
 ## Current Position
 
 Phase: 4 of 8 (Email Verification)
-Plan: 1 of 8 in current phase
+Plan: 3 of 8 in current phase
 Status: In progress
-Last activity: 2026-02-05 -- Completed 04-01-PLAN.md (Mail & Verification Config)
+Last activity: 2026-02-05 -- Completed 04-03-PLAN.md (Verification Token Infrastructure)
 
-Progress: [████████░░] ~43% (24/56 plans complete)
+Progress: [████████░░] ~45% (25/56 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 24
+- Total plans completed: 25
 - Average duration: 4min
-- Total execution time: ~85min
+- Total execution time: ~88min
 
 **By Phase:**
 
@@ -30,10 +30,10 @@ Progress: [████████░░] ~43% (24/56 plans complete)
 | 1. Project Bootstrap | 12/12 | ~45min | ~4min |
 | 2. Security & API Foundation | 6/6 | 15min | 2.5min |
 | 3. Registration & Login | 5/5 | 21min | 4min |
-| 4. Email Verification | 1/8 | 4min | 4min |
+| 4. Email Verification | 2/8 | 7min | 3.5min |
 
 **Recent Trend:**
-- Last 5 plans: 04-01 (4min), 03-05 (2min), 03-04 (7min), 03-03 (6min), 03-02 (3min)
+- Last 5 plans: 04-03 (3min), 04-01 (4min), 03-05 (2min), 03-04 (7min), 03-03 (6min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -114,6 +114,9 @@ Recent decisions affecting current work:
 - 04-01: Sender address default noreply@jbeltsolution.com (per CONTEXT.md)
 - 04-01: Verification token expiration default 24 hours (per CONTEXT.md)
 - 04-01: AppProperties extended with Mail(from) and Verification(expirationHours, baseUrl) nested records
+- 04-03: VerificationService directly uses UserRepository (auth -> user internal access allowed by module hierarchy)
+- 04-03: Sealed interface VerificationResult with 5 outcome types for compile-time exhaustiveness
+- 04-03: Token invalidation via deleteByUser (delete all old tokens) rather than marking old tokens unused
 
 ### Pending Todos
 
@@ -127,5 +130,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-05
-Stopped at: Completed 04-01-PLAN.md (Mail & Verification Config)
+Stopped at: Completed 04-03-PLAN.md (Verification Token Infrastructure)
 Resume file: None
