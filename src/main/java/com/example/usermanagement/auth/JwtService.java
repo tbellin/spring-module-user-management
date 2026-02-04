@@ -24,6 +24,7 @@ public class JwtService {
 
     private final SecretKey signingKey;
     private final long expirationMs;
+    private final long rememberMeExpirationMs;
 
     public JwtService(AppProperties appProperties) {
         // Decode Base64-encoded secret to create signing key
@@ -32,24 +33,58 @@ public class JwtService {
             Decoders.BASE64.decode(appProperties.jwt().secret())
         );
         this.expirationMs = appProperties.jwt().expirationMs();
+        this.rememberMeExpirationMs = appProperties.jwt().rememberMeExpirationMs();
     }
 
     /**
-     * Generates a JWT token for the given user details.
+     * Generates a JWT token for the given user details with standard expiration.
      *
      * @param userDetails the authenticated user
      * @return a signed JWT token string
      */
     public String generateToken(UserDetails userDetails) {
+        return generateToken(userDetails, false);
+    }
+
+    /**
+     * Generates a JWT token for the given user details.
+     * <p>
+     * When rememberMe is true, uses extended expiration time (7 days by default).
+     * Otherwise uses standard expiration (1 hour by default).
+     *
+     * @param userDetails the authenticated user
+     * @param rememberMe  whether to use extended expiration
+     * @return a signed JWT token string
+     */
+    public String generateToken(UserDetails userDetails, boolean rememberMe) {
+        long expiration = rememberMe ? rememberMeExpirationMs : expirationMs;
         return Jwts.builder()
             .subject(userDetails.getUsername())
             .claim("roles", userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .toList())
             .issuedAt(new Date())
-            .expiration(new Date(System.currentTimeMillis() + expirationMs))
+            .expiration(new Date(System.currentTimeMillis() + expiration))
             .signWith(signingKey)
             .compact();
+    }
+
+    /**
+     * Returns the standard token expiration time in milliseconds.
+     *
+     * @return expiration time in milliseconds
+     */
+    public long getExpirationMs() {
+        return expirationMs;
+    }
+
+    /**
+     * Returns the remember-me token expiration time in milliseconds.
+     *
+     * @return remember-me expiration time in milliseconds
+     */
+    public long getRememberMeExpirationMs() {
+        return rememberMeExpirationMs;
     }
 
     /**

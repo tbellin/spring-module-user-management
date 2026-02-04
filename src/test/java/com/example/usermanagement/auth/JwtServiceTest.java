@@ -29,10 +29,11 @@ class JwtServiceTest {
         "this-is-a-test-secret-key-32bytes".getBytes()
     );
     private static final long EXPIRATION_MS = 3600000; // 1 hour
+    private static final long REMEMBER_ME_EXPIRATION_MS = 604800000; // 7 days
 
     @BeforeEach
     void setUp() {
-        AppProperties.Jwt jwtProps = new AppProperties.Jwt(TEST_SECRET, EXPIRATION_MS);
+        AppProperties.Jwt jwtProps = new AppProperties.Jwt(TEST_SECRET, EXPIRATION_MS, REMEMBER_ME_EXPIRATION_MS);
         AppProperties appProperties = new AppProperties(jwtProps);
         jwtService = new JwtService(appProperties);
 
@@ -92,7 +93,7 @@ class JwtServiceTest {
     @DisplayName("Expired token should throw ExpiredJwtException")
     void isTokenValid_throwsForExpiredToken() {
         // Create service with 0ms expiration (immediate expiry)
-        AppProperties.Jwt expiredJwtProps = new AppProperties.Jwt(TEST_SECRET, 0);
+        AppProperties.Jwt expiredJwtProps = new AppProperties.Jwt(TEST_SECRET, 0, 0);
         AppProperties expiredAppProperties = new AppProperties(expiredJwtProps);
         JwtService expiredJwtService = new JwtService(expiredAppProperties);
 

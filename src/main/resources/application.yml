@@ -16,6 +16,7 @@ app:
   jwt:
     secret: ${JWT_SECRET:}
     expiration-ms: ${JWT_EXPIRATION_MS:3600000}  # 1 hour default
+    remember-me-expiration-ms: ${JWT_REMEMBER_ME_EXPIRATION_MS:604800000}  # 7 days default
 
 server:
   port: ${APP_PORT:8080}

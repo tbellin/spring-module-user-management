@@ -16,9 +16,10 @@ public record AppProperties(Jwt jwt) {
     /**
      * JWT configuration properties.
      *
-     * @param secret       Base64-encoded secret key for signing JWTs (min 256 bits for HS256)
-     * @param expirationMs Token expiration time in milliseconds
+     * @param secret                 Base64-encoded secret key for signing JWTs (min 256 bits for HS256)
+     * @param expirationMs           Token expiration time in milliseconds
+     * @param rememberMeExpirationMs Token expiration time for remember-me sessions (milliseconds)
      */
-    public record Jwt(String secret, long expirationMs) {
+    public record Jwt(String secret, long expirationMs, long rememberMeExpirationMs) {
     }
 }
