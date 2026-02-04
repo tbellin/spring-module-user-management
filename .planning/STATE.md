@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-28)
 ## Current Position
 
 Phase: 3 of 8 (Registration & Login)
-Plan: 2 of 6 in current phase
+Plan: 3 of 6 in current phase
 Status: In progress
-Last activity: 2026-02-04 -- Completed 03-02-PLAN.md (Auth REST Endpoints)
+Last activity: 2026-02-04 -- Completed 03-03-PLAN.md (Auth Web Pages)
 
-Progress: [███████░░░] ~32% (2/8 phases + 2 plans complete)
+Progress: [███████░░░] ~35% (2/8 phases + 3 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 20
+- Total plans completed: 21
 - Average duration: 3min
-- Total execution time: ~66min
+- Total execution time: ~72min
 
 **By Phase:**
 
@@ -29,10 +29,10 @@ Progress: [███████░░░] ~32% (2/8 phases + 2 plans complete)
 |-------|-------|-------|----------|
 | 1. Project Bootstrap | 12/12 | ~45min | ~4min |
 | 2. Security & API Foundation | 6/6 | 15min | 2.5min |
-| 3. Registration & Login | 2/6 | 6min | 3min |
+| 3. Registration & Login | 3/6 | 12min | 4min |
 
 **Recent Trend:**
-- Last 5 plans: 03-02 (3min), 03-01 (3min), 02-06 (5min), 02-05 (1min), 02-04 (2min)
+- Last 5 plans: 03-03 (6min), 03-02 (3min), 03-01 (3min), 02-06 (5min), 02-05 (1min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -101,6 +101,10 @@ Recent decisions affecting current work:
 - 03-02: Login endpoint uses email as displayName (UserDetails lacks full user profile)
 - 03-02: Registration uses standard token expiration (no remember-me option)
 - 03-02: Versioned API paths /api/v1/{resource}/** pattern established for REST endpoints
+- 03-03: RegistrationForm mutable class (not record) for Thymeleaf form binding
+- 03-03: Toast convenience constructor derives title from type (success/danger)
+- 03-03: Remember-me for web sessions: 7-day validity with fixed key for restart persistence
+- 03-03: Auth-aware nav using sec:authorize with isAnonymous()/isAuthenticated()
 
 ### Pending Todos
 
@@ -113,5 +117,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-04
-Stopped at: Completed 03-02-PLAN.md (Auth REST Endpoints)
+Stopped at: Completed 03-03-PLAN.md (Auth Web Pages)
 Resume file: None
