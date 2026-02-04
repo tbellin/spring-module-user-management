@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       lang="en">
 <head>
     <meta charset="UTF-8">
@@ -21,6 +22,17 @@
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/}">Home</a>
                     </li>
+                    <li class="nav-item" sec:authorize="isAnonymous()">
+                        <a class="nav-link" th:href="@{/login}">Login</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAnonymous()">
+                        <a class="nav-link" th:href="@{/register}">Register</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                        <form th:action="@{/logout}" method="post" class="d-inline">
+                            <button type="submit" class="nav-link btn btn-link">Logout</button>
+                        </form>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -38,5 +50,29 @@
     </footer>
 
     <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+
+    <!-- Toast notifications -->
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <div th:if="${toast}" class="toast show" role="alert" data-bs-autohide="true" data-bs-delay="5000">
+            <div class="toast-header" th:classappend="${toast.type() == 'success'} ? 'bg-success text-white' : 'bg-danger text-white'">
+                <strong class="me-auto" th:text="${toast.title()}">Notification</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body" th:text="${toast.message()}"></div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize all toasts on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            var toastElList = [].slice.call(document.querySelectorAll('.toast'));
+            toastElList.map(function(toastEl) {
+                return new bootstrap.Toast(toastEl);
+            });
+        });
+    </script>
+
+    <!-- Page-specific scripts -->
+    <th:block layout:fragment="scripts"></th:block>
 </body>
 </html>
