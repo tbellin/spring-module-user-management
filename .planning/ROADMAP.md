@@ -97,15 +97,17 @@ Plans:
   2. Clicking the verification link activates the account and displays a confirmation page
   3. User can request a new verification email if the original was lost or expired
   4. Unverified accounts cannot log in (login attempt returns appropriate error without revealing account existence)
-**Plans**: 6 plans in 4 waves
+**Plans**: 8 plans in 5 waves
 
 Plans:
-- [ ] 04-01-PLAN.md - Mail configuration and EmailService (wave 1)
-- [ ] 04-02-PLAN.md - VerificationToken entity and VerificationService (wave 1)
-- [ ] 04-03-PLAN.md - Registration email trigger and resend API endpoint (wave 2)
-- [ ] 04-04-PLAN.md - Verification web pages and controllers (wave 2)
-- [ ] 04-05-PLAN.md - Block unverified user login (wave 3)
-- [ ] 04-06-PLAN.md - Integration tests and manual verification (wave 4)
+- [ ] 04-01-PLAN.md — Mail and verification configuration (wave 1)
+- [ ] 04-02-PLAN.md — EmailService and email templates (wave 2)
+- [ ] 04-03-PLAN.md — VerificationToken entity and VerificationService (wave 1)
+- [ ] 04-04-PLAN.md — Registration email trigger and resend API endpoint (wave 3)
+- [ ] 04-05-PLAN.md — EmailVerificationController and success/error pages (wave 2)
+- [ ] 04-06-PLAN.md — Resend verification page and AuthWebController resend (wave 4)
+- [ ] 04-07-PLAN.md — Block unverified user login (wave 4)
+- [ ] 04-08-PLAN.md — Integration tests and manual verification (wave 5)
 
 ### Phase 5: Password Management
 **Goal**: Users can change their password while authenticated and recover access to their account through an email-based password reset flow
@@ -179,7 +181,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | 1. Project Bootstrap & Infrastructure | 12/12 | Complete | 2026-01-30 |
 | 2. Security & API Foundation | 6/6 | Complete | 2026-02-03 |
 | 3. Registration & Login | 5/5 | Complete | 2026-02-04 |
-| 4. Email Verification | 0/6 | Not started | - |
+| 4. Email Verification | 0/8 | Not started | - |
 | 5. Password Management | 0/TBD | Not started | - |
 | 6. User Profile & Admin Operations | 0/TBD | Not started | - |
 | 7. API Documentation & Swagger | 0/TBD | Not started | - |
