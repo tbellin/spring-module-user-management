@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-28)
 ## Current Position
 
 Phase: 3 of 8 (Registration & Login)
-Plan: 3 of 6 in current phase
+Plan: 4 of 6 in current phase
 Status: In progress
-Last activity: 2026-02-04 -- Completed 03-03-PLAN.md (Auth Web Pages)
+Last activity: 2026-02-04 -- Completed 03-04-PLAN.md (Auth Integration Tests)
 
-Progress: [███████░░░] ~35% (2/8 phases + 3 plans complete)
+Progress: [███████░░░] ~38% (2/8 phases + 4 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 21
-- Average duration: 3min
-- Total execution time: ~72min
+- Total plans completed: 22
+- Average duration: 4min
+- Total execution time: ~79min
 
 **By Phase:**
 
@@ -29,10 +29,10 @@ Progress: [███████░░░] ~35% (2/8 phases + 3 plans complete)
 |-------|-------|-------|----------|
 | 1. Project Bootstrap | 12/12 | ~45min | ~4min |
 | 2. Security & API Foundation | 6/6 | 15min | 2.5min |
-| 3. Registration & Login | 3/6 | 12min | 4min |
+| 3. Registration & Login | 4/6 | 19min | 5min |
 
 **Recent Trend:**
-- Last 5 plans: 03-03 (6min), 03-02 (3min), 03-01 (3min), 02-06 (5min), 02-05 (1min)
+- Last 5 plans: 03-04 (7min), 03-03 (6min), 03-02 (3min), 03-01 (3min), 02-06 (5min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -105,6 +105,9 @@ Recent decisions affecting current work:
 - 03-03: Toast convenience constructor derives title from type (success/danger)
 - 03-03: Remember-me for web sessions: 7-day validity with fixed key for restart persistence
 - 03-03: Auth-aware nav using sec:authorize with isAnonymous()/isAuthenticated()
+- 03-04: Jackson 3 JsonMapper for test JSON (not ObjectMapper bean)
+- 03-04: UUID-based unique test emails for test isolation
+- 03-04: AuthenticationException handler in GlobalExceptionHandler for 401 responses
 
 ### Pending Todos
 
@@ -113,9 +116,10 @@ None yet.
 ### Blockers/Concerns
 
 - SpringDoc OpenAPI compatibility with Spring Boot 4 must be verified before Phase 7
+- ModularityTests has pre-existing failure (reports violations even for allowed dependencies)
 
 ## Session Continuity
 
 Last session: 2026-02-04
-Stopped at: Completed 03-03-PLAN.md (Auth Web Pages)
+Stopped at: Completed 03-04-PLAN.md (Auth Integration Tests)
 Resume file: None
