@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-28)
 ## Current Position
 
 Phase: 3 of 8 (Registration & Login)
-Plan: 1 of 6 in current phase
+Plan: 2 of 6 in current phase
 Status: In progress
-Last activity: 2026-02-04 -- Completed 03-01-PLAN.md (Auth Service Layer)
+Last activity: 2026-02-04 -- Completed 03-02-PLAN.md (Auth REST Endpoints)
 
-Progress: [███████░░░] ~30% (2/8 phases + 1 plan complete)
+Progress: [███████░░░] ~32% (2/8 phases + 2 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 19
+- Total plans completed: 20
 - Average duration: 3min
-- Total execution time: ~63min
+- Total execution time: ~66min
 
 **By Phase:**
 
@@ -29,10 +29,10 @@ Progress: [███████░░░] ~30% (2/8 phases + 1 plan complete)
 |-------|-------|-------|----------|
 | 1. Project Bootstrap | 12/12 | ~45min | ~4min |
 | 2. Security & API Foundation | 6/6 | 15min | 2.5min |
-| 3. Registration & Login | 1/6 | 3min | 3min |
+| 3. Registration & Login | 2/6 | 6min | 3min |
 
 **Recent Trend:**
-- Last 5 plans: 03-01 (3min), 02-06 (5min), 02-05 (1min), 02-04 (2min), 02-03 (2min)
+- Last 5 plans: 03-02 (3min), 03-01 (3min), 02-06 (5min), 02-05 (1min), 02-04 (2min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -98,6 +98,9 @@ Recent decisions affecting current work:
 - 03-01: displayName goes to firstName field (UserService.createUser signature unchanged)
 - 03-01: Remember-me expiration 7 days (604800000ms) vs standard 1 hour
 - 03-01: DuplicateResourceException thrown without exposing email value (SEC-01 compliance)
+- 03-02: Login endpoint uses email as displayName (UserDetails lacks full user profile)
+- 03-02: Registration uses standard token expiration (no remember-me option)
+- 03-02: Versioned API paths /api/v1/{resource}/** pattern established for REST endpoints
 
 ### Pending Todos
 
@@ -110,5 +113,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-04
-Stopped at: Completed 03-01-PLAN.md (Auth Service Layer)
+Stopped at: Completed 03-02-PLAN.md (Auth REST Endpoints)
 Resume file: None
