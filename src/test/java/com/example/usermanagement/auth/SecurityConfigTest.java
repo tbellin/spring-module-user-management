@@ -101,12 +101,12 @@ class SecurityConfigTest {
         }
 
         @Test
-        @DisplayName("Login URL is public (returns 404 until controller exists)")
+        @DisplayName("Login URL is public and returns login page")
         void loginUrl_isPublic() throws Exception {
-            // /login is permitAll but no controller exists yet
-            // Key verification: returns 404 (not 401/302) proving the path is public
+            // /login is permitAll and returns the login form
+            // Key verification: returns 200 (not 401/302) proving the path is public
             mockMvc.perform(get("/login"))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isOk());
         }
 
         @Test

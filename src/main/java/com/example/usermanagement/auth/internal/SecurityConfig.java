@@ -105,6 +105,11 @@ public class SecurityConfig {
             .logout(logout -> logout
                 .logoutSuccessUrl("/login?logout")
                 .permitAll())
+            .rememberMe(remember -> remember
+                .key("user-management-remember-me-key")
+                .tokenValiditySeconds(7 * 24 * 60 * 60)  // 7 days
+                .rememberMeParameter("remember-me")
+                .userDetailsService(userDetailsService))
             // H2 console uses frames
             .headers(headers -> headers
                 .frameOptions(frame -> frame.sameOrigin()))
