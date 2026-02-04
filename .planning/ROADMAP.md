@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Project Bootstrap & Infrastructure** - Spring Boot 4 project with dual-database, Docker Compose, Flyway, and config tooling
 - [x] **Phase 2: Security & API Foundation** - Dual SecurityFilterChain, BCrypt, CSRF, JWT infrastructure, role model, error handling
-- [ ] **Phase 3: Registration & Login** - User registration, login, logout with Thymeleaf pages and REST endpoints
+- [x] **Phase 3: Registration & Login** - User registration, login, logout with Thymeleaf pages and REST endpoints
 - [ ] **Phase 4: Email Verification** - Email verification flow with SMTP, token lifecycle, and resend capability
 - [ ] **Phase 5: Password Management** - Change password, lost password request, and reset password via email token
 - [ ] **Phase 6: User Profile & Admin Operations** - User self-service profile and admin CRUD with search/filter
@@ -82,11 +82,11 @@ Plans:
 **Plans**: 5 plans in 4 waves
 
 Plans:
-- [ ] 03-01-PLAN.md - Auth DTOs, JwtService remember-me, and AuthService (wave 1)
-- [ ] 03-02-PLAN.md - REST API AuthController with /register and /login (wave 2)
-- [ ] 03-03-PLAN.md - Thymeleaf login/register pages and AuthWebController (wave 2)
-- [ ] 03-04-PLAN.md - Integration tests for API and web auth (wave 3)
-- [ ] 03-05-PLAN.md - Manual verification checkpoint (wave 4)
+- [x] 03-01-PLAN.md - Auth DTOs, JwtService remember-me, and AuthService (wave 1)
+- [x] 03-02-PLAN.md - REST API AuthController with /register and /login (wave 2)
+- [x] 03-03-PLAN.md - Thymeleaf login/register pages and AuthWebController (wave 2)
+- [x] 03-04-PLAN.md - Integration tests for API and web auth (wave 3)
+- [x] 03-05-PLAN.md - Manual verification checkpoint (wave 4)
 
 ### Phase 4: Email Verification
 **Goal**: New user registrations require email verification before the account is activated, with the ability to resend the verification email
@@ -174,7 +174,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 |-------|---------------|--------|-----------|
 | 1. Project Bootstrap & Infrastructure | 12/12 | Complete | 2026-01-30 |
 | 2. Security & API Foundation | 6/6 | Complete | 2026-02-03 |
-| 3. Registration & Login | 0/5 | Planned | - |
+| 3. Registration & Login | 5/5 | Complete | 2026-02-04 |
 | 4. Email Verification | 0/TBD | Not started | - |
 | 5. Password Management | 0/TBD | Not started | - |
 | 6. User Profile & Admin Operations | 0/TBD | Not started | - |

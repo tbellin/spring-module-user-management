@@ -9,11 +9,11 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Authentication
 
-- [ ] **AUTH-01**: User can register with email and password
+- [x] **AUTH-01**: User can register with email and password
 - [ ] **AUTH-02**: User receives email verification link after registration
 - [ ] **AUTH-03**: User can resend verification email
-- [ ] **AUTH-04**: User can log in with verified email/password, receiving JWT
-- [ ] **AUTH-05**: User can log out (client-side token discard)
+- [x] **AUTH-04**: User can log in with verified email/password, receiving JWT
+- [x] **AUTH-05**: User can log out (client-side token discard)
 
 ### Password Management
 
@@ -40,14 +40,14 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Pages (Thymeleaf + Bootstrap 5)
 
-- [ ] **PAGE-01**: Home page accessible to all visitors
-- [ ] **PAGE-02**: Login page with email/password form
-- [ ] **PAGE-03**: Registration page with email/password form
+- [x] **PAGE-01**: Home page accessible to all visitors
+- [x] **PAGE-02**: Login page with email/password form
+- [x] **PAGE-03**: Registration page with email/password form
 - [ ] **PAGE-04**: Email verification confirmation page
 - [ ] **PAGE-05**: Change password page (authenticated)
 - [ ] **PAGE-06**: Lost password page (request reset link)
 - [ ] **PAGE-07**: Reset password page (set new password via token)
-- [ ] **PAGE-08**: Logout redirects to login page
+- [x] **PAGE-08**: Logout redirects to login page
 
 ### API & Documentation
 
@@ -132,11 +132,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 | Phase 3 | Pending |
+| AUTH-01 | Phase 3 | Complete |
 | AUTH-02 | Phase 4 | Pending |
 | AUTH-03 | Phase 4 | Pending |
-| AUTH-04 | Phase 3 | Pending |
-| AUTH-05 | Phase 3 | Pending |
+| AUTH-04 | Phase 3 | Complete |
+| AUTH-05 | Phase 3 | Complete |
 | PASS-01 | Phase 5 | Pending |
 | PASS-02 | Phase 5 | Pending |
 | PASS-03 | Phase 5 | Pending |
@@ -148,14 +148,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ADMIN-04 | Phase 6 | Pending |
 | ADMIN-05 | Phase 6 | Pending |
 | PROF-01 | Phase 6 | Pending |
-| PAGE-01 | Phase 3 | Pending |
-| PAGE-02 | Phase 3 | Pending |
-| PAGE-03 | Phase 3 | Pending |
+| PAGE-01 | Phase 3 | Complete |
+| PAGE-02 | Phase 3 | Complete |
+| PAGE-03 | Phase 3 | Complete |
 | PAGE-04 | Phase 4 | Pending |
 | PAGE-05 | Phase 5 | Pending |
 | PAGE-06 | Phase 5 | Pending |
 | PAGE-07 | Phase 5 | Pending |
-| PAGE-08 | Phase 3 | Pending |
+| PAGE-08 | Phase 3 | Complete |
 | API-01 | Phase 7 | Pending |
 | API-02 | Phase 7 | Pending |
 | API-03 | Phase 2 | Complete |
@@ -184,4 +184,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-01-28*
-*Last updated: 2026-02-03 (Phase 2 requirements marked Complete)*
+*Last updated: 2026-02-04 (Phase 3 requirements marked Complete)*
