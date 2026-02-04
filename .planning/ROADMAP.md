@@ -79,12 +79,14 @@ Plans:
   3. User can log out, which discards the token (client-side) and redirects to the login page from Thymeleaf, or returns success from the API
   4. Home page is accessible to all visitors (authenticated and anonymous)
   5. Login, registration, and logout pages render correctly with Bootstrap 5 styling and CSRF tokens on forms
-**Plans**: TBD
+**Plans**: 5 plans in 4 waves
 
 Plans:
-- [ ] 03-01: TBD
-- [ ] 03-02: TBD
-- [ ] 03-03: TBD
+- [ ] 03-01-PLAN.md - Auth DTOs, JwtService remember-me, and AuthService (wave 1)
+- [ ] 03-02-PLAN.md - REST API AuthController with /register and /login (wave 2)
+- [ ] 03-03-PLAN.md - Thymeleaf login/register pages and AuthWebController (wave 2)
+- [ ] 03-04-PLAN.md - Integration tests for API and web auth (wave 3)
+- [ ] 03-05-PLAN.md - Manual verification checkpoint (wave 4)
 
 ### Phase 4: Email Verification
 **Goal**: New user registrations require email verification before the account is activated, with the ability to resend the verification email
@@ -170,9 +172,9 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 
 | Phase | Plans Complete | Status | Completed |
 |-------|---------------|--------|-----------|
-| 1. Project Bootstrap & Infrastructure | 12/12 | ✓ Complete | 2026-01-30 |
-| 2. Security & API Foundation | 6/6 | ✓ Complete | 2026-02-03 |
-| 3. Registration & Login | 0/TBD | Not started | - |
+| 1. Project Bootstrap & Infrastructure | 12/12 | Complete | 2026-01-30 |
+| 2. Security & API Foundation | 6/6 | Complete | 2026-02-03 |
+| 3. Registration & Login | 0/5 | Planned | - |
 | 4. Email Verification | 0/TBD | Not started | - |
 | 5. Password Management | 0/TBD | Not started | - |
 | 6. User Profile & Admin Operations | 0/TBD | Not started | - |
@@ -181,4 +183,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 
 ---
 *Roadmap created: 2026-01-28*
-*Last updated: 2026-02-03*
+*Last updated: 2026-02-04*
