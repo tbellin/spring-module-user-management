@@ -13,16 +13,16 @@
                     <div class="card-body">
                         <h2 class="card-title text-center mb-4">Create Account</h2>
 
-                        <!-- Error summary at top (per CONTEXT.md) -->
-                        <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
-                            <ul class="mb-0">
-                                <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
-                            </ul>
-                        </div>
-
                         <!-- Registration form -->
                         <form th:action="@{/register}" th:object="${registrationForm}" method="post" novalidate>
                             <!-- CSRF auto-injected by Thymeleaf -->
+
+                            <!-- Error summary at top (per CONTEXT.md) - must be inside form for #fields to work -->
+                            <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+                                <ul class="mb-0">
+                                    <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+                                </ul>
+                            </div>
 
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email address</label>
