@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-28)
 
 **Core value:** Secure, modular user authentication and management that works identically in dev (H2, local) and prod (PostgreSQL, Docker) with zero code changes between environments.
-**Current focus:** Phase 3 - Registration & Login - COMPLETE.
+**Current focus:** Phase 4 - Email Verification - In progress.
 
 ## Current Position
 
-Phase: 3 of 8 (Registration & Login) - COMPLETE
-Plan: 5 of 5 in current phase
-Status: Phase complete
-Last activity: 2026-02-04 -- Completed 03-05-PLAN.md (Manual Verification)
+Phase: 4 of 8 (Email Verification)
+Plan: 1 of 8 in current phase
+Status: In progress
+Last activity: 2026-02-05 -- Completed 04-01-PLAN.md (Mail & Verification Config)
 
-Progress: [████████░░] ~42% (3/8 phases complete)
+Progress: [████████░░] ~43% (24/56 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 23
+- Total plans completed: 24
 - Average duration: 4min
-- Total execution time: ~81min
+- Total execution time: ~85min
 
 **By Phase:**
 
@@ -30,9 +30,10 @@ Progress: [████████░░] ~42% (3/8 phases complete)
 | 1. Project Bootstrap | 12/12 | ~45min | ~4min |
 | 2. Security & API Foundation | 6/6 | 15min | 2.5min |
 | 3. Registration & Login | 5/5 | 21min | 4min |
+| 4. Email Verification | 1/8 | 4min | 4min |
 
 **Recent Trend:**
-- Last 5 plans: 03-05 (2min), 03-04 (7min), 03-03 (6min), 03-02 (3min), 03-01 (3min)
+- Last 5 plans: 04-01 (4min), 03-05 (2min), 03-04 (7min), 03-03 (6min), 03-02 (3min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -109,6 +110,10 @@ Recent decisions affecting current work:
 - 03-04: UUID-based unique test emails for test isolation
 - 03-04: AuthenticationException handler in GlobalExceptionHandler for 401 responses
 - 03-05: All manual verification checks passed - Phase 3 complete and ready for Phase 4
+- 04-01: SMTP defaults smtp.example.com:587 with TLS and timeouts (5s connect, 3s read, 5s write)
+- 04-01: Sender address default noreply@jbeltsolution.com (per CONTEXT.md)
+- 04-01: Verification token expiration default 24 hours (per CONTEXT.md)
+- 04-01: AppProperties extended with Mail(from) and Verification(expirationHours, baseUrl) nested records
 
 ### Pending Todos
 
@@ -121,6 +126,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-04
-Stopped at: Completed 03-05-PLAN.md (Manual Verification) - Phase 3 complete
+Last session: 2026-02-05
+Stopped at: Completed 04-01-PLAN.md (Mail & Verification Config)
 Resume file: None
