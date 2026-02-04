@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-28)
 
 **Core value:** Secure, modular user authentication and management that works identically in dev (H2, local) and prod (PostgreSQL, Docker) with zero code changes between environments.
-**Current focus:** Phase 2 - Security & API Foundation (COMPLETE).
+**Current focus:** Phase 3 - Registration & Login.
 
 ## Current Position
 
-Phase: 2 of 8 (Security & API Foundation) - COMPLETE
-Plan: 6 of 6 in current phase
-Status: Phase complete
-Last activity: 2026-02-03 -- Completed 02-06-PLAN.md (Security Tests)
+Phase: 3 of 8 (Registration & Login)
+Plan: 1 of 6 in current phase
+Status: In progress
+Last activity: 2026-02-04 -- Completed 03-01-PLAN.md (Auth Service Layer)
 
-Progress: [███████░░░] ~25% (2/8 phases complete)
+Progress: [███████░░░] ~30% (2/8 phases + 1 plan complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 18
+- Total plans completed: 19
 - Average duration: 3min
-- Total execution time: ~60min
+- Total execution time: ~63min
 
 **By Phase:**
 
@@ -29,9 +29,10 @@ Progress: [███████░░░] ~25% (2/8 phases complete)
 |-------|-------|-------|----------|
 | 1. Project Bootstrap | 12/12 | ~45min | ~4min |
 | 2. Security & API Foundation | 6/6 | 15min | 2.5min |
+| 3. Registration & Login | 1/6 | 3min | 3min |
 
 **Recent Trend:**
-- Last 5 plans: 02-06 (5min), 02-05 (1min), 02-04 (2min), 02-03 (2min), 02-02 (2min)
+- Last 5 plans: 03-01 (3min), 02-06 (5min), 02-05 (1min), 02-04 (2min), 02-03 (2min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -93,6 +94,10 @@ Recent decisions affecting current work:
 - 02-06: SecurityMockMvcRequestPostProcessors.user() for API chain tests (not @WithMockUser)
 - 02-06: spring-boot-starter-webmvc-test dependency for Boot 4 (AutoConfigureMockMvc relocated)
 - 02-06: Test 404 to verify authorization passed when endpoints don't exist yet
+- 03-01: Email used as username (per RESEARCH.md recommendation, simplifies login flow)
+- 03-01: displayName goes to firstName field (UserService.createUser signature unchanged)
+- 03-01: Remember-me expiration 7 days (604800000ms) vs standard 1 hour
+- 03-01: DuplicateResourceException thrown without exposing email value (SEC-01 compliance)
 
 ### Pending Todos
 
@@ -104,6 +109,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-03
-Stopped at: Completed 02-06-PLAN.md (Security Tests) - Phase 2 COMPLETE
+Last session: 2026-02-04
+Stopped at: Completed 03-01-PLAN.md (Auth Service Layer)
 Resume file: None
