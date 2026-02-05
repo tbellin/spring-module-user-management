@@ -32,16 +32,28 @@ public class CustomUserDetailsService implements UserDetailsService {
      * <p>
      * IMPORTANT: The exception message is generic ("Bad credentials") to prevent
      * user enumeration attacks (SEC-01). Do NOT use messages like "User not found"
-     * or "Email does not exist".
+     * or "Email does not exist". The same message is used for:
+     * <ul>
+     *     <li>Non-existent accounts</li>
+     *     <li>Unverified accounts</li>
+     *     <li>Wrong password (handled by Spring Security later in the auth flow)</li>
+     * </ul>
      *
      * @param username the email address (used as username)
      * @return UserDetails for Spring Security authentication
-     * @throws UsernameNotFoundException if user not found (with generic message)
+     * @throws UsernameNotFoundException if user not found or email not verified (with generic message)
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserAuthDto authDto = userService.getUserAuthDetailsByEmail(username)
             .orElseThrow(() -> new UsernameNotFoundException("Bad credentials"));
+
+        // SEC-01: Block unverified users with SAME error message as non-existent users
+        // This prevents user enumeration - attacker cannot distinguish between
+        // "account doesn't exist" and "account exists but unverified"
+        if (!authDto.emailVerified()) {
+            throw new UsernameNotFoundException("Bad credentials");
+        }
 
         // Convert roles to Spring Security authorities
         var authorities = authDto.roles().stream()
