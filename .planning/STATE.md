@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-28)
 ## Current Position
 
 Phase: 4 of 8 (Email Verification)
-Plan: 6 of 8 in current phase
+Plan: 7 of 8 in current phase
 Status: In progress
-Last activity: 2026-02-05 -- Completed 04-04-PLAN.md (Registration Email Trigger & Resend API)
+Last activity: 2026-02-05 -- Completed 04-06-PLAN.md (Resend Verification Page & Web Endpoints)
 
-Progress: [█████████░] ~50% (28/56 plans complete)
+Progress: [██████████░] ~52% (29/56 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 28
+- Total plans completed: 29
 - Average duration: 4min
-- Total execution time: ~98min
+- Total execution time: ~100min
 
 **By Phase:**
 
@@ -30,10 +30,10 @@ Progress: [█████████░] ~50% (28/56 plans complete)
 | 1. Project Bootstrap | 12/12 | ~45min | ~4min |
 | 2. Security & API Foundation | 6/6 | 15min | 2.5min |
 | 3. Registration & Login | 5/5 | 21min | 4min |
-| 4. Email Verification | 5/8 | 17min | 3.4min |
+| 4. Email Verification | 6/8 | 19min | 3.2min |
 
 **Recent Trend:**
-- Last 5 plans: 04-04 (5min), 04-05 (2min), 04-02 (3min), 04-03 (3min), 04-01 (4min)
+- Last 5 plans: 04-06 (2min), 04-04 (5min), 04-05 (2min), 04-02 (3min), 04-03 (3min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -125,6 +125,8 @@ Recent decisions affecting current work:
 - 04-04: sendVerificationEmail is package-private on AuthService for reuse by resend flow only within auth.internal
 - 04-04: In-memory ConcurrentHashMap rate limiter with 60-second cooldown per normalized email
 - 04-04: Fixed EmailTemplateConfig circular dependency (textTemplateResolver no longer injects SpringTemplateEngine)
+- 04-06: Resend endpoints at /auth/resend-verification (explicit path, no class-level RequestMapping on AuthWebController)
+- 04-06: /auth/resend-verification added to SecurityConfig permitAll (unauthenticated access required for resend flow)
 
 ### Pending Todos
 
@@ -138,5 +140,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-05
-Stopped at: Completed 04-04-PLAN.md (Registration Email Trigger & Resend API)
+Stopped at: Completed 04-06-PLAN.md (Resend Verification Page & Web Endpoints)
 Resume file: None
