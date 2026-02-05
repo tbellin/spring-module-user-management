@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-28)
 ## Current Position
 
 Phase: 4 of 8 (Email Verification)
-Plan: 4 of 8 in current phase
+Plan: 5 of 8 in current phase
 Status: In progress
-Last activity: 2026-02-05 -- Completed 04-02-PLAN.md (Email Service & Templates)
+Last activity: 2026-02-05 -- Completed 04-05-PLAN.md (Verification Controller & Pages)
 
-Progress: [████████░░] ~46% (26/56 plans complete)
+Progress: [████████░░] ~48% (27/56 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 26
+- Total plans completed: 27
 - Average duration: 4min
-- Total execution time: ~91min
+- Total execution time: ~93min
 
 **By Phase:**
 
@@ -30,10 +30,10 @@ Progress: [████████░░] ~46% (26/56 plans complete)
 | 1. Project Bootstrap | 12/12 | ~45min | ~4min |
 | 2. Security & API Foundation | 6/6 | 15min | 2.5min |
 | 3. Registration & Login | 5/5 | 21min | 4min |
-| 4. Email Verification | 3/8 | 10min | 3.3min |
+| 4. Email Verification | 4/8 | 12min | 3min |
 
 **Recent Trend:**
-- Last 5 plans: 04-02 (3min), 04-03 (3min), 04-01 (4min), 03-05 (2min), 03-04 (7min)
+- Last 5 plans: 04-05 (2min), 04-02 (3min), 04-03 (3min), 04-01 (4min), 03-05 (2min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -119,6 +119,8 @@ Recent decisions affecting current work:
 - 04-03: Token invalidation via deleteByUser (delete all old tokens) rather than marking old tokens unused
 - 04-02: EmailTemplateConfig adds TEXT-mode ClassLoaderTemplateResolver for .txt email templates (default resolver only handles .html)
 - 04-02: HTML template name omits .html extension (default resolver appends it); text template name includes .txt (matched by resolvablePatterns)
+- 04-05: Login link uses /login (not /auth/login) matching SecurityConfig loginPage configuration
+- 04-05: /verify/** added to SecurityConfig web chain permitAll (unauthenticated email link access)
 
 ### Pending Todos
 
@@ -132,5 +134,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-05
-Stopped at: Completed 04-02-PLAN.md (Email Service & Templates)
+Stopped at: Completed 04-05-PLAN.md (Verification Controller & Pages)
 Resume file: None
