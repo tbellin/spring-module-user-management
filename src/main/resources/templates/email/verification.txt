@@ -1,0 +1,7 @@
+Please verify your email address by visiting the following link:
+
+[(${verificationLink})]
+
+This link expires in 24 hours.
+
+If you did not create an account, please ignore this email.
