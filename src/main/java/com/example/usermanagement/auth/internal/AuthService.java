@@ -1,7 +1,10 @@
 package com.example.usermanagement.auth.internal;
 
 import com.example.usermanagement.auth.JwtService;
+import com.example.usermanagement.auth.internal.verification.VerificationService;
+import com.example.usermanagement.auth.internal.verification.VerificationToken;
 import com.example.usermanagement.shared.dto.UserDto;
+import com.example.usermanagement.shared.email.EmailService;
 import com.example.usermanagement.shared.exception.DuplicateResourceException;
 import com.example.usermanagement.user.UserService;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,15 +30,21 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final EmailService emailService;
+    private final VerificationService verificationService;
 
     public AuthService(UserService userService,
                        PasswordEncoder passwordEncoder,
                        AuthenticationManager authenticationManager,
-                       JwtService jwtService) {
+                       JwtService jwtService,
+                       EmailService emailService,
+                       VerificationService verificationService) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
+        this.emailService = emailService;
+        this.verificationService = verificationService;
     }
 
     /**
@@ -60,7 +69,27 @@ public class AuthService {
 
         // Use email as username (per RESEARCH.md recommendation)
         // displayName goes to firstName field, lastName is null
-        return userService.createUser(email, email, passwordHash, displayName, null);
+        UserDto createdUser = userService.createUser(email, email, passwordHash, displayName, null);
+
+        // Send verification email
+        sendVerificationEmail(email);
+
+        return createdUser;
+    }
+
+    /**
+     * Creates a verification token and sends verification email.
+     * <p>
+     * Package-private for use by resend flow in AuthController.
+     *
+     * @param email the user's email address
+     */
+    void sendVerificationEmail(String email) {
+        verificationService.findUserByEmail(email).ifPresent(user -> {
+            VerificationToken token = verificationService.createToken(user);
+            String verificationUrl = verificationService.buildVerificationUrl(token);
+            emailService.sendVerificationEmail(email, verificationUrl);
+        });
     }
 
     /**
