@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-28)
 ## Current Position
 
 Phase: 4 of 8 (Email Verification)
-Plan: 3 of 8 in current phase
+Plan: 4 of 8 in current phase
 Status: In progress
-Last activity: 2026-02-05 -- Completed 04-03-PLAN.md (Verification Token Infrastructure)
+Last activity: 2026-02-05 -- Completed 04-02-PLAN.md (Email Service & Templates)
 
-Progress: [████████░░] ~45% (25/56 plans complete)
+Progress: [████████░░] ~46% (26/56 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 25
+- Total plans completed: 26
 - Average duration: 4min
-- Total execution time: ~88min
+- Total execution time: ~91min
 
 **By Phase:**
 
@@ -30,10 +30,10 @@ Progress: [████████░░] ~45% (25/56 plans complete)
 | 1. Project Bootstrap | 12/12 | ~45min | ~4min |
 | 2. Security & API Foundation | 6/6 | 15min | 2.5min |
 | 3. Registration & Login | 5/5 | 21min | 4min |
-| 4. Email Verification | 2/8 | 7min | 3.5min |
+| 4. Email Verification | 3/8 | 10min | 3.3min |
 
 **Recent Trend:**
-- Last 5 plans: 04-03 (3min), 04-01 (4min), 03-05 (2min), 03-04 (7min), 03-03 (6min)
+- Last 5 plans: 04-02 (3min), 04-03 (3min), 04-01 (4min), 03-05 (2min), 03-04 (7min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -117,6 +117,8 @@ Recent decisions affecting current work:
 - 04-03: VerificationService directly uses UserRepository (auth -> user internal access allowed by module hierarchy)
 - 04-03: Sealed interface VerificationResult with 5 outcome types for compile-time exhaustiveness
 - 04-03: Token invalidation via deleteByUser (delete all old tokens) rather than marking old tokens unused
+- 04-02: EmailTemplateConfig adds TEXT-mode ClassLoaderTemplateResolver for .txt email templates (default resolver only handles .html)
+- 04-02: HTML template name omits .html extension (default resolver appends it); text template name includes .txt (matched by resolvablePatterns)
 
 ### Pending Todos
 
@@ -130,5 +132,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-05
-Stopped at: Completed 04-03-PLAN.md (Verification Token Infrastructure)
+Stopped at: Completed 04-02-PLAN.md (Email Service & Templates)
 Resume file: None
