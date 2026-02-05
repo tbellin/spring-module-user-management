@@ -1,5 +1,6 @@
 package com.example.usermanagement.auth.internal;
 
+import com.example.usermanagement.auth.internal.verification.ResendRateLimiter;
 import com.example.usermanagement.shared.dto.Toast;
 import com.example.usermanagement.shared.exception.DuplicateResourceException;
 import jakarta.validation.Valid;
@@ -13,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
@@ -26,10 +28,14 @@ public class AuthWebController {
 
     private final AuthService authService;
     private final AuthenticationManager authenticationManager;
+    private final ResendRateLimiter rateLimiter;
 
-    public AuthWebController(AuthService authService, AuthenticationManager authenticationManager) {
+    public AuthWebController(AuthService authService,
+                             AuthenticationManager authenticationManager,
+                             ResendRateLimiter rateLimiter) {
         this.authService = authService;
         this.authenticationManager = authenticationManager;
+        this.rateLimiter = rateLimiter;
     }
 
     /**
@@ -99,5 +105,43 @@ public class AuthWebController {
             result.rejectValue("email", "duplicate", "An account with this email already exists");
             return "auth/register";
         }
+    }
+
+    /**
+     * Shows the resend verification email form.
+     *
+     * @return the resend verification view name
+     */
+    @GetMapping("/auth/resend-verification")
+    public String showResendVerificationForm() {
+        return "auth/resend-verification";
+    }
+
+    /**
+     * Handles resend verification form submission.
+     * <p>
+     * SEC-01 compliance: Returns the same message regardless of whether
+     * the account exists, is already verified, or doesn't exist.
+     * Rate limiting prevents abuse of the resend functionality.
+     *
+     * @param email the email address to resend verification to
+     * @param model the Spring MVC model
+     * @return the resend verification view name
+     */
+    @PostMapping("/auth/resend-verification")
+    public String resendVerification(@RequestParam String email, Model model) {
+        if (!rateLimiter.canResend(email)) {
+            long remaining = rateLimiter.getRemainingCooldownSeconds(email);
+            model.addAttribute("error",
+                    "Please wait " + remaining + " seconds before requesting another email.");
+            return "auth/resend-verification";
+        }
+
+        authService.sendVerificationEmail(email);
+        rateLimiter.recordResend(email);
+
+        model.addAttribute("message",
+                "If an account exists with this email, a verification link has been sent.");
+        return "auth/resend-verification";
     }
 }
