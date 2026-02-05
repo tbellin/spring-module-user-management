@@ -89,6 +89,7 @@ public class SecurityConfig {
                 // Public pages
                 .requestMatchers("/", "/error").permitAll()
                 .requestMatchers("/login", "/register").permitAll()
+                .requestMatchers("/verify/**").permitAll()
                 .requestMatchers("/actuator/health", "/actuator/info").permitAll()
                 // Static resources
                 .requestMatchers("/css/**", "/js/**", "/webjars/**").permitAll()
