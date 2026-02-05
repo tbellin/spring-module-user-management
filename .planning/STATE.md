@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-28)
 ## Current Position
 
 Phase: 4 of 8 (Email Verification)
-Plan: 5 of 8 in current phase
+Plan: 6 of 8 in current phase
 Status: In progress
-Last activity: 2026-02-05 -- Completed 04-05-PLAN.md (Verification Controller & Pages)
+Last activity: 2026-02-05 -- Completed 04-04-PLAN.md (Registration Email Trigger & Resend API)
 
-Progress: [████████░░] ~48% (27/56 plans complete)
+Progress: [█████████░] ~50% (28/56 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 27
+- Total plans completed: 28
 - Average duration: 4min
-- Total execution time: ~93min
+- Total execution time: ~98min
 
 **By Phase:**
 
@@ -30,10 +30,10 @@ Progress: [████████░░] ~48% (27/56 plans complete)
 | 1. Project Bootstrap | 12/12 | ~45min | ~4min |
 | 2. Security & API Foundation | 6/6 | 15min | 2.5min |
 | 3. Registration & Login | 5/5 | 21min | 4min |
-| 4. Email Verification | 4/8 | 12min | 3min |
+| 4. Email Verification | 5/8 | 17min | 3.4min |
 
 **Recent Trend:**
-- Last 5 plans: 04-05 (2min), 04-02 (3min), 04-03 (3min), 04-01 (4min), 03-05 (2min)
+- Last 5 plans: 04-04 (5min), 04-05 (2min), 04-02 (3min), 04-03 (3min), 04-01 (4min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -121,6 +121,10 @@ Recent decisions affecting current work:
 - 04-02: HTML template name omits .html extension (default resolver appends it); text template name includes .txt (matched by resolvablePatterns)
 - 04-05: Login link uses /login (not /auth/login) matching SecurityConfig loginPage configuration
 - 04-05: /verify/** added to SecurityConfig web chain permitAll (unauthenticated email link access)
+- 04-04: ResendVerificationRequest as standalone record (consistent with RegistrationRequest/LoginRequest pattern)
+- 04-04: sendVerificationEmail is package-private on AuthService for reuse by resend flow only within auth.internal
+- 04-04: In-memory ConcurrentHashMap rate limiter with 60-second cooldown per normalized email
+- 04-04: Fixed EmailTemplateConfig circular dependency (textTemplateResolver no longer injects SpringTemplateEngine)
 
 ### Pending Todos
 
@@ -134,5 +138,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-05
-Stopped at: Completed 04-05-PLAN.md (Verification Controller & Pages)
+Stopped at: Completed 04-04-PLAN.md (Registration Email Trigger & Resend API)
 Resume file: None
