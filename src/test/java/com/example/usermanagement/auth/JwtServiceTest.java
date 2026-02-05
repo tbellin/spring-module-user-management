@@ -34,7 +34,9 @@ class JwtServiceTest {
     @BeforeEach
     void setUp() {
         AppProperties.Jwt jwtProps = new AppProperties.Jwt(TEST_SECRET, EXPIRATION_MS, REMEMBER_ME_EXPIRATION_MS);
-        AppProperties appProperties = new AppProperties(jwtProps);
+        AppProperties.Mail mailProps = new AppProperties.Mail("noreply@test.com");
+        AppProperties.Verification verificationProps = new AppProperties.Verification(24, "http://localhost:8080");
+        AppProperties appProperties = new AppProperties(jwtProps, mailProps, verificationProps);
         jwtService = new JwtService(appProperties);
 
         testUser = User.builder()
@@ -94,7 +96,9 @@ class JwtServiceTest {
     void isTokenValid_throwsForExpiredToken() {
         // Create service with 0ms expiration (immediate expiry)
         AppProperties.Jwt expiredJwtProps = new AppProperties.Jwt(TEST_SECRET, 0, 0);
-        AppProperties expiredAppProperties = new AppProperties(expiredJwtProps);
+        AppProperties.Mail mailProps = new AppProperties.Mail("noreply@test.com");
+        AppProperties.Verification verificationProps = new AppProperties.Verification(24, "http://localhost:8080");
+        AppProperties expiredAppProperties = new AppProperties(expiredJwtProps, mailProps, verificationProps);
         JwtService expiredJwtService = new JwtService(expiredAppProperties);
 
         String token = expiredJwtService.generateToken(testUser);

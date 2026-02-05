@@ -2,7 +2,6 @@ package com.example.usermanagement.shared.email;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
@@ -25,7 +24,7 @@ class EmailTemplateConfig {
      * resolver for .html templates.
      */
     @Bean
-    ClassLoaderTemplateResolver textTemplateResolver(SpringTemplateEngine templateEngine) {
+    ClassLoaderTemplateResolver textTemplateResolver() {
         ClassLoaderTemplateResolver resolver = new ClassLoaderTemplateResolver();
         resolver.setPrefix("templates/");
         resolver.setSuffix("");
@@ -34,8 +33,6 @@ class EmailTemplateConfig {
         resolver.setOrder(2);
         resolver.setCheckExistence(true);
         resolver.setResolvablePatterns(java.util.Set.of("*.txt"));
-
-        templateEngine.addTemplateResolver(resolver);
         return resolver;
     }
 }
