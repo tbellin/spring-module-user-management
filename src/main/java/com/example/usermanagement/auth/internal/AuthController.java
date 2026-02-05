@@ -1,6 +1,7 @@
 package com.example.usermanagement.auth.internal;
 
 import com.example.usermanagement.auth.AuthResponse;
+import com.example.usermanagement.auth.internal.verification.ResendRateLimiter;
 import com.example.usermanagement.shared.dto.UserDto;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
  * <ul>
  *   <li>POST /api/v1/auth/register - User registration</li>
  *   <li>POST /api/v1/auth/login - User authentication</li>
+ *   <li>POST /api/v1/auth/resend-verification - Resend verification email</li>
  * </ul>
  * <p>
  * Error handling is delegated to GlobalExceptionHandler:
@@ -39,9 +42,11 @@ import java.util.stream.Collectors;
 public class AuthController {
 
     private final AuthService authService;
+    private final ResendRateLimiter rateLimiter;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, ResendRateLimiter rateLimiter) {
         this.authService = authService;
+        this.rateLimiter = rateLimiter;
     }
 
     /**
@@ -122,6 +127,44 @@ public class AuthController {
         );
 
         return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Resends verification email.
+     * <p>
+     * SEC-01 compliance: Returns the same message regardless of whether
+     * the account exists, is already verified, or doesn't exist.
+     * This prevents user enumeration attacks.
+     * <p>
+     * Rate limited: 60 second cooldown between resend attempts per email.
+     *
+     * @param request the resend request containing email
+     * @return success message (always the same for SEC-01)
+     */
+    @PostMapping("/resend-verification")
+    public ResponseEntity<Map<String, String>> resendVerification(
+            @Valid @RequestBody ResendVerificationRequest request) {
+
+        String email = request.email();
+
+        // Check rate limit
+        if (!rateLimiter.canResend(email)) {
+            long remaining = rateLimiter.getRemainingCooldownSeconds(email);
+            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                .body(Map.of(
+                    "message", "Please wait before requesting another verification email",
+                    "retryAfter", String.valueOf(remaining)
+                ));
+        }
+
+        // Send email (if account exists and is unverified)
+        // SEC-01: Same response regardless of outcome
+        authService.sendVerificationEmail(email);
+        rateLimiter.recordResend(email);
+
+        return ResponseEntity.ok(Map.of(
+            "message", "If an account exists with this email, a verification link has been sent"
+        ));
     }
 
     /**
