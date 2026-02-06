@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-28)
 
 **Core value:** Secure, modular user authentication and management that works identically in dev (H2, local) and prod (PostgreSQL, Docker) with zero code changes between environments.
-**Current focus:** Phase 4 - Email Verification - In progress.
+**Current focus:** Phase 4 - Email Verification - COMPLETE. Ready for Phase 5 - Password Reset.
 
 ## Current Position
 
-Phase: 4 of 8 (Email Verification)
-Plan: 8 of 8 in current phase
-Status: In progress
-Last activity: 2026-02-05 -- Completed 04-07-PLAN.md (Login Blocking for Unverified Users)
+Phase: 4 of 8 (Email Verification) - COMPLETE
+Plan: 8 of 8 in current phase - COMPLETE
+Status: Phase complete
+Last activity: 2026-02-06 -- Completed 04-08-PLAN.md (Integration Testing & Manual Verification)
 
-Progress: [███████████░] ~54% (30/56 plans complete)
+Progress: [████████████░░░░░░░░] ~55% (31/56 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 30
+- Total plans completed: 31
 - Average duration: 4min
-- Total execution time: ~101min
+- Total execution time: ~116min
 
 **By Phase:**
 
@@ -30,11 +30,11 @@ Progress: [███████████░] ~54% (30/56 plans complete)
 | 1. Project Bootstrap | 12/12 | ~45min | ~4min |
 | 2. Security & API Foundation | 6/6 | 15min | 2.5min |
 | 3. Registration & Login | 5/5 | 21min | 4min |
-| 4. Email Verification | 7/8 | 20min | 2.9min |
+| 4. Email Verification | 8/8 | 35min | 4.4min |
 
 **Recent Trend:**
-- Last 5 plans: 04-07 (1min), 04-06 (2min), 04-04 (5min), 04-05 (2min), 04-02 (3min)
-- Trend: stable
+- Last 5 plans: 04-08 (15min), 04-07 (1min), 04-06 (2min), 04-04 (5min), 04-05 (2min)
+- Trend: 04-08 longer due to manual verification checkpoint
 
 *Updated after each plan completion*
 
@@ -128,6 +128,10 @@ Recent decisions affecting current work:
 - 04-06: Resend endpoints at /auth/resend-verification (explicit path, no class-level RequestMapping on AuthWebController)
 - 04-06: /auth/resend-verification added to SecurityConfig permitAll (unauthenticated access required for resend flow)
 - 04-07: SEC-01 emailVerified gate in CustomUserDetailsService - same "Bad credentials" for non-existent and unverified accounts
+- 04-08: MockBean JavaMailSender prevents actual SMTP calls during tests
+- 04-08: Template system: application.yml generated from application.yml.template with @VARIABLE@ placeholders
+- 04-08: bin/env.sh loads both .env and .env.local (local overrides)
+- 04-08: All manual verification checks passed - Phase 4 complete and ready for Phase 5
 
 ### Pending Todos
 
@@ -140,6 +144,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-05
-Stopped at: Completed 04-07-PLAN.md (Login Blocking for Unverified Users)
+Last session: 2026-02-06
+Stopped at: Completed 04-08-PLAN.md (Integration Testing & Manual Verification) - Phase 4 COMPLETE
 Resume file: None
