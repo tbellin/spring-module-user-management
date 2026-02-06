@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -50,44 +51,28 @@ public class AuthController {
     }
 
     /**
-     * Registers a new user and returns a JWT token.
+     * Registers a new user and returns confirmation to check email.
      * <p>
-     * Creates the user, authenticates them, and generates a token in one request.
-     * Registration does not support remember-me (standard expiration).
+     * Creates the user and sends a verification email. The user must verify
+     * their email before they can log in. No JWT is returned at registration
+     * since the account is not yet verified.
      *
      * @param request the registration details (email, password, displayName)
-     * @return 201 Created with AuthResponse containing JWT
+     * @return 201 Created with confirmation message
      */
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegistrationRequest request) {
-        // Create the user
+    public ResponseEntity<Map<String, Object>> register(@Valid @RequestBody RegistrationRequest request) {
+        // Create the user (sends verification email)
         UserDto user = authService.registerUser(
             request.email(),
             request.password(),
             request.displayName()
         );
 
-        // Authenticate the newly created user
-        Authentication authentication = authService.authenticate(
-            request.email(),
-            request.password()
-        );
-
-        // Generate token (registration doesn't use remember-me)
-        String token = authService.generateToken(authentication, false);
-        long expiresIn = authService.getTokenExpiration(false);
-
-        // Extract roles from authentication
-        Set<String> roles = extractRoles(authentication);
-
-        // Build response
-        AuthResponse response = new AuthResponse(
-            token,
-            expiresIn,
-            user.email(),
-            user.firstName(), // displayName stored in firstName
-            roles
-        );
+        // Return confirmation (no JWT - user must verify email first)
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("message", "Registration successful. Please check your email to verify your account.");
+        response.put("email", user.email());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

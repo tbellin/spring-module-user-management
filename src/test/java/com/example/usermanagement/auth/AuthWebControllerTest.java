@@ -1,5 +1,7 @@
 package com.example.usermanagement.auth;
 
+import com.example.usermanagement.user.internal.AppUser;
+import com.example.usermanagement.user.internal.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,8 +57,8 @@ class AuthWebControllerTest {
     // ========== Registration Tests ==========
 
     @Test
-    @DisplayName("POST /register with valid data redirects to home with success toast")
-    void register_withValidData_redirectsToHome() throws Exception {
+    @DisplayName("POST /register with valid data redirects to login with verification toast")
+    void register_withValidData_redirectsToLogin() throws Exception {
         String uniqueEmail = "webuser-" + UUID.randomUUID() + "@example.com";
 
         mockMvc.perform(post("/register")
@@ -65,7 +67,7 @@ class AuthWebControllerTest {
                 .param("password", "password123")
                 .param("displayName", "Web User"))
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/"))
+            .andExpect(redirectedUrl("/login"))
             .andExpect(flash().attributeExists("toast"));
     }
 

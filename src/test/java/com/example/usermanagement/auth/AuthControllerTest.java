@@ -1,5 +1,7 @@
 package com.example.usermanagement.auth;
 
+import com.example.usermanagement.user.internal.AppUser;
+import com.example.usermanagement.user.internal.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,13 +34,16 @@ class AuthControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private UserRepository userRepository;
+
     private final JsonMapper jsonMapper = JsonMapper.builder().build();
 
     // ========== Registration Tests ==========
 
     @Test
-    @DisplayName("Register with valid data returns 201 with JWT")
-    void register_withValidData_returns201WithJwt() throws Exception {
+    @DisplayName("Register with valid data returns 201 with verification message")
+    void register_withValidData_returns201WithVerificationMessage() throws Exception {
         String uniqueEmail = "newuser-" + UUID.randomUUID() + "@example.com";
 
         var request = Map.of(
@@ -51,12 +56,8 @@ class AuthControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonMapper.writeValueAsString(request)))
             .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.token").isNotEmpty())
-            .andExpect(jsonPath("$.tokenType").value("Bearer"))
-            .andExpect(jsonPath("$.expiresIn").isNumber())
-            .andExpect(jsonPath("$.email").value(uniqueEmail))
-            .andExpect(jsonPath("$.displayName").value("New User"))
-            .andExpect(jsonPath("$.roles").isArray());
+            .andExpect(jsonPath("$.message").value("Registration successful. Please check your email to verify your account."))
+            .andExpect(jsonPath("$.email").value(uniqueEmail));
     }
 
     @Test
@@ -124,7 +125,7 @@ class AuthControllerTest {
     void login_withValidCredentials_returns200WithJwt() throws Exception {
         String email = "logintest-" + UUID.randomUUID() + "@example.com";
         String password = "password123";
-        registerUser(email, password, "Login Test User");
+        registerAndVerifyUser(email, password, "Login Test User");
 
         var loginRequest = Map.of(
             "email", email,
@@ -147,7 +148,7 @@ class AuthControllerTest {
     void login_withRememberMe_returnsLongerExpiration() throws Exception {
         String email = "rememberme-" + UUID.randomUUID() + "@example.com";
         String password = "password123";
-        registerUser(email, password, "Remember Me Test User");
+        registerAndVerifyUser(email, password, "Remember Me Test User");
 
         // Login without rememberMe
         var shortLoginRequest = Map.of(
@@ -189,7 +190,7 @@ class AuthControllerTest {
     @DisplayName("Login with invalid password returns 401 Unauthorized")
     void login_withInvalidPassword_returns401() throws Exception {
         String email = "wrongpwd-" + UUID.randomUUID() + "@example.com";
-        registerUser(email, "password123", "Wrong Password Test User");
+        registerAndVerifyUser(email, "password123", "Wrong Password Test User");
 
         var loginRequest = Map.of(
             "email", email,
@@ -227,7 +228,21 @@ class AuthControllerTest {
     // ========== Helper Methods ==========
 
     /**
-     * Registers a user for use in subsequent tests.
+     * Registers a user AND manually verifies their email for use in login tests.
+     * <p>
+     * Since email verification blocks login (04-07), login tests need verified users.
+     */
+    private void registerAndVerifyUser(String email, String password, String displayName) throws Exception {
+        registerUser(email, password, displayName);
+
+        // Manually verify the user's email (bypassing email flow for test speed)
+        AppUser user = userRepository.findByEmail(email).orElseThrow();
+        user.setEmailVerified(true);
+        userRepository.save(user);
+    }
+
+    /**
+     * Registers a user via the API (user will be unverified).
      */
     private void registerUser(String email, String password, String displayName) throws Exception {
         var request = Map.of(

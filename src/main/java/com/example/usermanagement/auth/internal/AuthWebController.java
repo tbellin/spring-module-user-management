@@ -4,10 +4,6 @@ import com.example.usermanagement.auth.internal.verification.ResendRateLimiter;
 import com.example.usermanagement.shared.dto.Toast;
 import com.example.usermanagement.shared.exception.DuplicateResourceException;
 import jakarta.validation.Valid;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,14 +23,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class AuthWebController {
 
     private final AuthService authService;
-    private final AuthenticationManager authenticationManager;
     private final ResendRateLimiter rateLimiter;
 
     public AuthWebController(AuthService authService,
-                             AuthenticationManager authenticationManager,
                              ResendRateLimiter rateLimiter) {
         this.authService = authService;
-        this.authenticationManager = authenticationManager;
         this.rateLimiter = rateLimiter;
     }
 
@@ -66,7 +59,8 @@ public class AuthWebController {
     /**
      * Process registration form submission.
      * <p>
-     * On success: creates user, auto-logs in, redirects to home with success toast.
+     * On success: creates user, sends verification email, redirects to login with
+     * a message to check email. No auto-login since the user must verify first.
      * On validation error: returns to form with errors displayed.
      * On duplicate email: returns to form with email error.
      *
@@ -86,20 +80,14 @@ public class AuthWebController {
         }
 
         try {
-            // Create the user
+            // Create the user (sends verification email automatically)
             authService.registerUser(form.getEmail(), form.getPassword(), form.getDisplayName());
 
-            // Auto-login after registration using AuthenticationManager
-            Authentication auth = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(form.getEmail(), form.getPassword())
-            );
-            SecurityContextHolder.getContext().setAuthentication(auth);
-
-            // Success toast
+            // Redirect to login with verification notice (no auto-login - user must verify first)
             redirectAttributes.addFlashAttribute("toast",
-                new Toast("success", "Welcome! Your account has been created."));
+                new Toast("success", "Registration successful! Please check your email to verify your account."));
 
-            return "redirect:/";
+            return "redirect:/login";
 
         } catch (DuplicateResourceException e) {
             result.rejectValue("email", "duplicate", "An account with this email already exists");
