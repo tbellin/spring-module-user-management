@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Project Bootstrap & Infrastructure** - Spring Boot 4 project with dual-database, Docker Compose, Flyway, and config tooling
 - [x] **Phase 2: Security & API Foundation** - Dual SecurityFilterChain, BCrypt, CSRF, JWT infrastructure, role model, error handling
 - [x] **Phase 3: Registration & Login** - User registration, login, logout with Thymeleaf pages and REST endpoints
-- [ ] **Phase 4: Email Verification** - Email verification flow with SMTP, token lifecycle, and resend capability
+- [x] **Phase 4: Email Verification** - Email verification flow with SMTP, token lifecycle, and resend capability
 - [ ] **Phase 5: Password Management** - Change password, lost password request, and reset password via email token
 - [ ] **Phase 6: User Profile & Admin Operations** - User self-service profile and admin CRUD with search/filter
 - [ ] **Phase 7: API Documentation & Swagger** - REST API completeness verification and Swagger UI integration
@@ -181,7 +181,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | 1. Project Bootstrap & Infrastructure | 12/12 | Complete | 2026-01-30 |
 | 2. Security & API Foundation | 6/6 | Complete | 2026-02-03 |
 | 3. Registration & Login | 5/5 | Complete | 2026-02-04 |
-| 4. Email Verification | 0/8 | Not started | - |
+| 4. Email Verification | 8/8 | Complete | 2026-02-06 |
 | 5. Password Management | 0/TBD | Not started | - |
 | 6. User Profile & Admin Operations | 0/TBD | Not started | - |
 | 7. API Documentation & Swagger | 0/TBD | Not started | - |
@@ -189,4 +189,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 
 ---
 *Roadmap created: 2026-01-28*
-*Last updated: 2026-02-04*
+*Last updated: 2026-02-06*
