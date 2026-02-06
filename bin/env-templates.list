@@ -8,8 +8,10 @@
 #
 # Add new templates here -- no script changes needed.
 
+src/main/resources/application.yml.template
 src/main/resources/application-dev.yml.template
 src/main/resources/application-prod.yml.template
 Dockerfile.template
 compose.yaml.template
 docker/pgadmin/servers.json.template
+src/main/resources/banner.txt.template

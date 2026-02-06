@@ -32,6 +32,7 @@ Thumbs.db
 pom.xml
 compose.yaml
 Dockerfile
+src/main/resources/application.yml
 src/main/resources/application-dev.yml
 src/main/resources/application-prod.yml
 docker/pgadmin/servers.json

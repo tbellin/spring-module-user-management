@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#!/bin/bash
+## #!/usr/bin/env bash
 # bin/env.sh -- Environment management CLI
 # Subcommands: load, show, substitute-all, check, clean, help
 set -euo pipefail
@@ -81,27 +82,40 @@ cmd_load() {
         return 0 2>/dev/null || exit 0
     fi
 
-    # Export all variables from .env
+    # Export all variables from .env (base config)
     set -a
     # shellcheck disable=SC1091
     source .env
     set +a
 
-    # Count loaded variables
+    # Count loaded variables from .env
     local count
     count=$(grep -cE '^[A-Za-z_][A-Za-z0-9_]*=' .env 2>/dev/null || echo 0)
+
+    # Load .env.local for local overrides (if exists)
+    if [ -f ".env.local" ]; then
+        set -a
+        # shellcheck disable=SC1091
+        source .env.local
+        set +a
+        local local_count
+        local_count=$(grep -cE '^[A-Za-z_][A-Za-z0-9_]*=' .env.local 2>/dev/null || echo 0)
+        green "Environment loaded: $count variables from .env + $local_count from .env.local"
+    else
+        green "Environment loaded: $count variables from .env"
+    fi
 
     # Validate required variables from .env.example
     local var_names missing=0
     var_names=$(get_variable_names)
     for var in $var_names; do
-        if [ -z "${!var:-}" ]; then
+        # Use printenv for zsh/bash compatibility
+        if ! printenv "$var" >/dev/null 2>&1; then
             yellow "Warning: $var is not set (required by .env.example)"
             missing=$((missing + 1))
         fi
     done
 
-    green "Environment loaded: $count variables from .env"
     if [ "$missing" -gt 0 ]; then
         yellow "  $missing variable(s) not set -- see warnings above"
     fi
@@ -122,7 +136,7 @@ cmd_show() {
     fi
 
     for var in $var_names; do
-        local value="${!var:-}"
+        eval "local value=\"\${$var:-}\""
         if [ -n "$value" ]; then
             echo "$var=$value"
         else
@@ -168,8 +182,9 @@ cmd_substitute_all() {
             local var_name="${placeholder#@}"
             var_name="${var_name%@}"
 
-            local var_value="${!var_name:-}"
-            if [ -z "$var_value" ] && [ "${!var_name+set}" != "set" ]; then
+            eval "local var_value=\"\${$var_name:-}\""
+            eval "local var_is_set=\"\${$var_name+set}\""
+            if [ -z "$var_value" ] && [ "$var_is_set" != "set" ]; then
                 red "Error: Variable $var_name is not set (required by $template_path)"
                 exit 1
             fi
