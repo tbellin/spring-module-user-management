@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-28)
 ## Current Position
 
 Phase: 5 of 8 (Password Management)
-Plan: 1 of 5 in current phase
+Plan: 2 of 5 in current phase
 Status: In progress
-Last activity: 2026-02-11 -- Completed 05-01-PLAN.md (Data Layer Foundation)
+Last activity: 2026-02-11 -- Completed 05-02-PLAN.md (Email & Password Templates)
 
-Progress: [████████████░░░░░░░░] ~57% (32/56 plans complete)
+Progress: [████████████░░░░░░░░] ~59% (33/56 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 32
+- Total plans completed: 33
 - Average duration: 4min
-- Total execution time: ~119min
+- Total execution time: ~121min
 
 **By Phase:**
 
@@ -31,11 +31,11 @@ Progress: [████████████░░░░░░░░] ~57% (3
 | 2. Security & API Foundation | 6/6 | 15min | 2.5min |
 | 3. Registration & Login | 5/5 | 21min | 4min |
 | 4. Email Verification | 8/8 | 35min | 4.4min |
-| 5. Password Management | 1/5 | 3min | 3min |
+| 5. Password Management | 2/5 | 5min | 2.5min |
 
 **Recent Trend:**
-- Last 5 plans: 05-01 (3min), 04-08 (15min), 04-07 (1min), 04-06 (2min), 04-04 (5min)
-- Trend: 05-01 fast data layer setup following established patterns
+- Last 5 plans: 05-02 (2min), 05-01 (3min), 04-08 (15min), 04-07 (1min), 04-06 (2min)
+- Trend: Template-only plans execute very fast with established patterns
 
 *Updated after each plan completion*
 
@@ -137,6 +137,9 @@ Recent decisions affecting current work:
 - 05-01: ChangePasswordRequest has 3 fields including currentPassword (per REQUIREMENTS.md PASS-01)
 - 05-01: password_changed_at column is nullable - existing users have no change history
 - 05-01: auth/internal/password/ package established for password management infrastructure
+- 05-02: Navbar dropdown uses sec:authentication='name' to display user email as toggle text
+- 05-02: forgot-password form hidden with th:unless after successful submission (same pattern as resend-verification)
+- 05-02: reset-error.html links back to /forgot-password (not /login) for better UX flow
 
 ### Pending Todos
 
@@ -150,5 +153,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-11
-Stopped at: Completed 05-01-PLAN.md (Data Layer Foundation)
+Stopped at: Completed 05-02-PLAN.md (Email & Password Templates)
 Resume file: None
