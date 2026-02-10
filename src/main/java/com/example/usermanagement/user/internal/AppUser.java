@@ -59,6 +59,9 @@ public class AppUser {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
+    @Column(name = "password_changed_at")
+    private LocalDateTime passwordChangedAt;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "user_role",
@@ -140,6 +143,10 @@ public class AppUser {
         return updatedAt;
     }
 
+    public LocalDateTime getPasswordChangedAt() {
+        return passwordChangedAt;
+    }
+
     public Set<AppRole> getRoles() {
         return roles;
     }
@@ -172,6 +179,10 @@ public class AppUser {
 
     public void setEmailVerified(boolean emailVerified) {
         this.emailVerified = emailVerified;
+    }
+
+    public void setPasswordChangedAt(LocalDateTime passwordChangedAt) {
+        this.passwordChangedAt = passwordChangedAt;
     }
 
     // Convenience methods
