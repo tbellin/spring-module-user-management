@@ -10,6 +10,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.function.Function;
 
@@ -107,6 +109,44 @@ public class JwtService {
     public boolean isTokenValid(String token, UserDetails userDetails) {
         String username = extractUsername(token);
         return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+    }
+
+    /**
+     * Validates the token against the user details and password change timestamp.
+     * <p>
+     * Rejects tokens issued before the user's last password change, ensuring
+     * that all tokens issued before a password change are invalidated.
+     *
+     * @param token              the JWT token
+     * @param userDetails        the user details to validate against
+     * @param passwordChangedAt  when the user's password was last changed (may be null)
+     * @return true if the token is valid, not expired, and issued after any password change
+     */
+    public boolean isTokenValid(String token, UserDetails userDetails, LocalDateTime passwordChangedAt) {
+        if (!isTokenValid(token, userDetails)) {
+            return false;
+        }
+        if (passwordChangedAt != null) {
+            Date issuedAt = extractIssuedAt(token);
+            long passwordChangedEpochMilli = passwordChangedAt
+                .atZone(ZoneId.systemDefault())
+                .toInstant()
+                .toEpochMilli();
+            if (issuedAt.getTime() < passwordChangedEpochMilli) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Extracts the issued-at timestamp from the token.
+     *
+     * @param token the JWT token
+     * @return the issued-at date
+     */
+    public Date extractIssuedAt(String token) {
+        return extractClaim(token, Claims::getIssuedAt);
     }
 
     /**

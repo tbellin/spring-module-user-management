@@ -10,17 +10,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 /**
  * JWT authentication filter for API requests.
  * <p>
  * Extracts Bearer token from Authorization header, validates it, and sets
- * the SecurityContext with the authenticated user.
+ * the SecurityContext with the authenticated user. Also checks the
+ * {@code passwordChangedAt} timestamp to reject tokens issued before a
+ * password change.
  * <p>
  * CRITICAL: This class is NOT annotated as @Component or @Bean. It is
  * instantiated directly in SecurityConfig and added only to the API
@@ -35,9 +37,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final String BEARER_PREFIX = "Bearer ";
 
     private final JwtService jwtService;
-    private final UserDetailsService userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
 
-    public JwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService) {
+    public JwtAuthenticationFilter(JwtService jwtService, CustomUserDetailsService userDetailsService) {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
     }
@@ -62,8 +64,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // Only set authentication if not already authenticated
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                LocalDateTime passwordChangedAt = userDetailsService.getPasswordChangedAt(username);
 
-                if (jwtService.isTokenValid(jwt, userDetails)) {
+                if (jwtService.isTokenValid(jwt, userDetails, passwordChangedAt)) {
                     var authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,  // No credentials needed after authentication
