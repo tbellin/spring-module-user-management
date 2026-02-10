@@ -153,7 +153,8 @@ public class UserService {
             user.getPasswordHash(),
             user.isEnabled(),
             user.isEmailVerified(),
-            roleNames
+            roleNames,
+            user.getPasswordChangedAt()
         );
     }
 }

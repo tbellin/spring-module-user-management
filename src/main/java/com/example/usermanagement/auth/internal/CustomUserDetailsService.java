@@ -9,11 +9,17 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * Custom UserDetailsService implementation that bridges Spring Security with the user module.
  * <p>
  * This service is internal to the auth module. It calls the user module's public
  * UserService API to load user authentication details.
+ * <p>
+ * Caches the {@code passwordChangedAt} timestamp during {@link #loadUserByUsername(String)}
+ * so that {@link JwtAuthenticationFilter} can check it without a second DB query.
  * <p>
  * SECURITY NOTE (SEC-01): Error messages do NOT reveal whether an email exists.
  * All auth failures return the generic "Bad credentials" message.
@@ -22,6 +28,7 @@ import org.springframework.stereotype.Service;
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserService userService;
+    private final ConcurrentHashMap<String, LocalDateTime> passwordChangedAtCache = new ConcurrentHashMap<>();
 
     public CustomUserDetailsService(UserService userService) {
         this.userService = userService;
@@ -38,6 +45,8 @@ public class CustomUserDetailsService implements UserDetailsService {
      *     <li>Unverified accounts</li>
      *     <li>Wrong password (handled by Spring Security later in the auth flow)</li>
      * </ul>
+     * <p>
+     * Also caches the {@code passwordChangedAt} timestamp for JWT invalidation checks.
      *
      * @param username the email address (used as username)
      * @return UserDetails for Spring Security authentication
@@ -53,6 +62,13 @@ public class CustomUserDetailsService implements UserDetailsService {
         // "account doesn't exist" and "account exists but unverified"
         if (!authDto.emailVerified()) {
             throw new UsernameNotFoundException("Bad credentials");
+        }
+
+        // Cache passwordChangedAt for JWT invalidation (read by JwtAuthenticationFilter)
+        if (authDto.passwordChangedAt() != null) {
+            passwordChangedAtCache.put(username, authDto.passwordChangedAt());
+        } else {
+            passwordChangedAtCache.remove(username);
         }
 
         // Convert roles to Spring Security authorities
@@ -71,5 +87,18 @@ public class CustomUserDetailsService implements UserDetailsService {
             .accountExpired(false) // Not implemented yet
             .credentialsExpired(false) // Not implemented yet
             .build();
+    }
+
+    /**
+     * Returns the cached passwordChangedAt timestamp for a given username.
+     * <p>
+     * This value is populated during {@link #loadUserByUsername(String)}, which
+     * is called on every JWT-authenticated request, so it is always fresh.
+     *
+     * @param username the email address (used as username)
+     * @return the timestamp of the last password change, or null if never changed
+     */
+    public LocalDateTime getPasswordChangedAt(String username) {
+        return passwordChangedAtCache.get(username);
     }
 }
