@@ -53,6 +53,24 @@ public class EmailService {
     }
 
     /**
+     * Sends a password reset email with HTML and plain text content.
+     *
+     * @param to        recipient email address
+     * @param resetLink the full password reset URL
+     * @throws EmailSendException if email sending fails
+     */
+    public void sendPasswordResetEmail(String to, String resetLink) {
+        Context ctx = new Context();
+        ctx.setVariable("resetLink", resetLink);
+
+        String htmlContent = templateEngine.process("email/password-reset", ctx);
+        String textContent = templateEngine.process("email/password-reset.txt", ctx);
+
+        sendMultipartEmail(to, "Reset your password", textContent, htmlContent);
+        log.info("Password reset email sent to {}", to);
+    }
+
+    /**
      * Sends a multipart email with both plain text and HTML content.
      *
      * @param to      recipient email address
