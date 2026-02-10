@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-28)
 ## Current Position
 
 Phase: 5 of 8 (Password Management)
-Plan: 2 of 5 in current phase
+Plan: 3 of 5 in current phase
 Status: In progress
-Last activity: 2026-02-11 -- Completed 05-02-PLAN.md (Email & Password Templates)
+Last activity: 2026-02-11 -- Completed 05-03-PLAN.md (Service Layer & JWT Invalidation)
 
-Progress: [████████████░░░░░░░░] ~59% (33/56 plans complete)
+Progress: [████████████░░░░░░░░] ~61% (34/56 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 33
+- Total plans completed: 34
 - Average duration: 4min
-- Total execution time: ~121min
+- Total execution time: ~127min
 
 **By Phase:**
 
@@ -31,11 +31,11 @@ Progress: [████████████░░░░░░░░] ~59% (3
 | 2. Security & API Foundation | 6/6 | 15min | 2.5min |
 | 3. Registration & Login | 5/5 | 21min | 4min |
 | 4. Email Verification | 8/8 | 35min | 4.4min |
-| 5. Password Management | 2/5 | 5min | 2.5min |
+| 5. Password Management | 3/5 | 11min | 3.7min |
 
 **Recent Trend:**
-- Last 5 plans: 05-02 (2min), 05-01 (3min), 04-08 (15min), 04-07 (1min), 04-06 (2min)
-- Trend: Template-only plans execute very fast with established patterns
+- Last 5 plans: 05-03 (6min), 05-02 (2min), 05-01 (3min), 04-08 (15min), 04-07 (1min)
+- Trend: Service layer plans take slightly longer due to cross-cutting wiring
 
 *Updated after each plan completion*
 
@@ -140,6 +140,10 @@ Recent decisions affecting current work:
 - 05-02: Navbar dropdown uses sec:authentication='name' to display user email as toggle text
 - 05-02: forgot-password form hidden with th:unless after successful submission (same pattern as resend-verification)
 - 05-02: reset-error.html links back to /forgot-password (not /login) for better UX flow
+- 05-03: ConcurrentHashMap cache in CustomUserDetailsService for passwordChangedAt (avoids second DB query per JWT request)
+- 05-03: JwtAuthenticationFilter and SecurityConfig use CustomUserDetailsService concrete type (not UserDetailsService interface)
+- 05-03: Rate limiting delegated to controllers, not PasswordService (consistent with Phase 4 pattern)
+- 05-03: Reset URL format /reset-password?token=... (query parameter for Thymeleaf form binding)
 
 ### Pending Todos
 
@@ -153,5 +157,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-11
-Stopped at: Completed 05-02-PLAN.md (Email & Password Templates)
+Stopped at: Completed 05-03-PLAN.md (Service Layer & JWT Invalidation)
 Resume file: None
