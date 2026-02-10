@@ -100,14 +100,14 @@ Plans:
 **Plans**: 8 plans in 5 waves
 
 Plans:
-- [ ] 04-01-PLAN.md — Mail and verification configuration (wave 1)
-- [ ] 04-02-PLAN.md — EmailService and email templates (wave 2)
-- [ ] 04-03-PLAN.md — VerificationToken entity and VerificationService (wave 1)
-- [ ] 04-04-PLAN.md — Registration email trigger and resend API endpoint (wave 3)
-- [ ] 04-05-PLAN.md — EmailVerificationController and success/error pages (wave 2)
-- [ ] 04-06-PLAN.md — Resend verification page and AuthWebController resend (wave 4)
-- [ ] 04-07-PLAN.md — Block unverified user login (wave 4)
-- [ ] 04-08-PLAN.md — Integration tests and manual verification (wave 5)
+- [x] 04-01-PLAN.md — Mail and verification configuration (wave 1)
+- [x] 04-02-PLAN.md — EmailService and email templates (wave 2)
+- [x] 04-03-PLAN.md — VerificationToken entity and VerificationService (wave 1)
+- [x] 04-04-PLAN.md — Registration email trigger and resend API endpoint (wave 3)
+- [x] 04-05-PLAN.md — EmailVerificationController and success/error pages (wave 2)
+- [x] 04-06-PLAN.md — Resend verification page and AuthWebController resend (wave 4)
+- [x] 04-07-PLAN.md — Block unverified user login (wave 4)
+- [x] 04-08-PLAN.md — Integration tests and manual verification (wave 5)
 
 ### Phase 5: Password Management
 **Goal**: Users can change their password while authenticated and recover access to their account through an email-based password reset flow
@@ -118,11 +118,14 @@ Plans:
   2. User can request a password reset by entering their email on the lost password page or via REST API, and receives an email with a reset link
   3. User can set a new password using a valid, non-expired, single-use reset token via the reset password page or REST API
   4. Reset tokens expire after a defined period and cannot be reused; error responses do not reveal whether the email exists
-**Plans**: TBD
+**Plans**: 5 plans in 4 waves
 
 Plans:
-- [ ] 05-01: TBD
-- [ ] 05-02: TBD
+- [ ] 05-01-PLAN.md — Database migration, PasswordResetToken entity, sealed result, and request DTOs (wave 1)
+- [ ] 05-02-PLAN.md — Email templates, Thymeleaf pages, navbar dropdown, and login page link (wave 1)
+- [ ] 05-03-PLAN.md — PasswordService, EmailService extension, and JWT invalidation wiring (wave 2)
+- [ ] 05-04-PLAN.md — REST API and web controllers, SecurityConfig updates (wave 3)
+- [ ] 05-05-PLAN.md — Integration tests and manual verification (wave 4)
 
 ### Phase 6: User Profile & Admin Operations
 **Goal**: Authenticated users can view their own profile, and administrators can fully manage all user accounts including creation, updates, enable/disable, and search
@@ -182,11 +185,11 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | 2. Security & API Foundation | 6/6 | Complete | 2026-02-03 |
 | 3. Registration & Login | 5/5 | Complete | 2026-02-04 |
 | 4. Email Verification | 8/8 | Complete | 2026-02-06 |
-| 5. Password Management | 0/TBD | Not started | - |
+| 5. Password Management | 0/5 | Planned | - |
 | 6. User Profile & Admin Operations | 0/TBD | Not started | - |
 | 7. API Documentation & Swagger | 0/TBD | Not started | - |
 | 8. Tooling & Project Documentation | 0/TBD | Not started | - |
 
 ---
 *Roadmap created: 2026-01-28*
-*Last updated: 2026-02-06*
+*Last updated: 2026-02-10*
