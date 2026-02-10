@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-28)
 
 **Core value:** Secure, modular user authentication and management that works identically in dev (H2, local) and prod (PostgreSQL, Docker) with zero code changes between environments.
-**Current focus:** Phase 4 - Email Verification - COMPLETE. Ready for Phase 5 - Password Reset.
+**Current focus:** Phase 5 - Password Management - In progress.
 
 ## Current Position
 
-Phase: 4 of 8 (Email Verification) - COMPLETE
-Plan: 8 of 8 in current phase - COMPLETE
-Status: Phase complete
-Last activity: 2026-02-06 -- Completed 04-08-PLAN.md (Integration Testing & Manual Verification)
+Phase: 5 of 8 (Password Management)
+Plan: 1 of 5 in current phase
+Status: In progress
+Last activity: 2026-02-11 -- Completed 05-01-PLAN.md (Data Layer Foundation)
 
-Progress: [████████████░░░░░░░░] ~55% (31/56 plans complete)
+Progress: [████████████░░░░░░░░] ~57% (32/56 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 31
+- Total plans completed: 32
 - Average duration: 4min
-- Total execution time: ~116min
+- Total execution time: ~119min
 
 **By Phase:**
 
@@ -31,10 +31,11 @@ Progress: [████████████░░░░░░░░] ~55% (3
 | 2. Security & API Foundation | 6/6 | 15min | 2.5min |
 | 3. Registration & Login | 5/5 | 21min | 4min |
 | 4. Email Verification | 8/8 | 35min | 4.4min |
+| 5. Password Management | 1/5 | 3min | 3min |
 
 **Recent Trend:**
-- Last 5 plans: 04-08 (15min), 04-07 (1min), 04-06 (2min), 04-04 (5min), 04-05 (2min)
-- Trend: 04-08 longer due to manual verification checkpoint
+- Last 5 plans: 05-01 (3min), 04-08 (15min), 04-07 (1min), 04-06 (2min), 04-04 (5min)
+- Trend: 05-01 fast data layer setup following established patterns
 
 *Updated after each plan completion*
 
@@ -132,6 +133,10 @@ Recent decisions affecting current work:
 - 04-08: Template system: application.yml generated from application.yml.template with @VARIABLE@ placeholders
 - 04-08: bin/env.sh loads both .env and .env.local (local overrides)
 - 04-08: All manual verification checks passed - Phase 4 complete and ready for Phase 5
+- 05-01: PasswordResetResult has 4 types (not 5 like VerificationResult) - no AlreadyReset since password reset is not idempotent
+- 05-01: ChangePasswordRequest has 3 fields including currentPassword (per REQUIREMENTS.md PASS-01)
+- 05-01: password_changed_at column is nullable - existing users have no change history
+- 05-01: auth/internal/password/ package established for password management infrastructure
 
 ### Pending Todos
 
@@ -144,6 +149,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-06
-Stopped at: Completed 04-08-PLAN.md (Integration Testing & Manual Verification) - Phase 4 COMPLETE
+Last session: 2026-02-11
+Stopped at: Completed 05-01-PLAN.md (Data Layer Foundation)
 Resume file: None
