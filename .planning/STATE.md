@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-28)
 ## Current Position
 
 Phase: 5 of 8 (Password Management)
-Plan: 3 of 5 in current phase
+Plan: 4 of 5 in current phase
 Status: In progress
-Last activity: 2026-02-11 -- Completed 05-03-PLAN.md (Service Layer & JWT Invalidation)
+Last activity: 2026-02-11 -- Completed 05-04-PLAN.md (Controllers & Security Config)
 
-Progress: [████████████░░░░░░░░] ~61% (34/56 plans complete)
+Progress: [████████████░░░░░░░░] ~63% (35/56 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 34
+- Total plans completed: 35
 - Average duration: 4min
-- Total execution time: ~127min
+- Total execution time: ~131min
 
 **By Phase:**
 
@@ -31,11 +31,11 @@ Progress: [████████████░░░░░░░░] ~61% (3
 | 2. Security & API Foundation | 6/6 | 15min | 2.5min |
 | 3. Registration & Login | 5/5 | 21min | 4min |
 | 4. Email Verification | 8/8 | 35min | 4.4min |
-| 5. Password Management | 3/5 | 11min | 3.7min |
+| 5. Password Management | 4/5 | 15min | 3.8min |
 
 **Recent Trend:**
-- Last 5 plans: 05-03 (6min), 05-02 (2min), 05-01 (3min), 04-08 (15min), 04-07 (1min)
-- Trend: Service layer plans take slightly longer due to cross-cutting wiring
+- Last 5 plans: 05-04 (4min), 05-03 (6min), 05-02 (2min), 05-01 (3min), 04-08 (15min)
+- Trend: Controller wiring plans execute quickly when service and template layers are ready
 
 *Updated after each plan completion*
 
@@ -144,6 +144,9 @@ Recent decisions affecting current work:
 - 05-03: JwtAuthenticationFilter and SecurityConfig use CustomUserDetailsService concrete type (not UserDetailsService interface)
 - 05-03: Rate limiting delegated to controllers, not PasswordService (consistent with Phase 4 pattern)
 - 05-03: Reset URL format /reset-password?token=... (query parameter for Thymeleaf form binding)
+- 05-04: Null authentication check in PasswordController.changePassword since /api/v1/auth/** is permitAll
+- 05-04: Session invalidation + SecurityContext clear on web password change forces re-login
+- 05-04: ResendRateLimiter reused for forgot-password flow (same 60s cooldown as verification resend)
 
 ### Pending Todos
 
@@ -157,5 +160,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-11
-Stopped at: Completed 05-03-PLAN.md (Service Layer & JWT Invalidation)
+Stopped at: Completed 05-04-PLAN.md (Controllers & Security Config)
 Resume file: None
