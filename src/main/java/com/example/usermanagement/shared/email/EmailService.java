@@ -71,6 +71,24 @@ public class EmailService {
     }
 
     /**
+     * Sends an invite email to a user created by an admin.
+     *
+     * @param to              recipient email address
+     * @param setPasswordLink the full URL for setting a password
+     * @throws EmailSendException if email sending fails
+     */
+    public void sendInviteEmail(String to, String setPasswordLink) {
+        Context ctx = new Context();
+        ctx.setVariable("setPasswordLink", setPasswordLink);
+
+        String htmlContent = templateEngine.process("email/invite", ctx);
+        String textContent = templateEngine.process("email/invite.txt", ctx);
+
+        sendMultipartEmail(to, "You've been invited to User Management", textContent, htmlContent);
+        log.info("Invite email sent to {}", to);
+    }
+
+    /**
      * Sends a multipart email with both plain text and HTML content.
      *
      * @param to      recipient email address
