@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Security & API Foundation** - Dual SecurityFilterChain, BCrypt, CSRF, JWT infrastructure, role model, error handling
 - [x] **Phase 3: Registration & Login** - User registration, login, logout with Thymeleaf pages and REST endpoints
 - [x] **Phase 4: Email Verification** - Email verification flow with SMTP, token lifecycle, and resend capability
-- [ ] **Phase 5: Password Management** - Change password, lost password request, and reset password via email token
+- [x] **Phase 5: Password Management** - Change password, lost password request, and reset password via email token
 - [ ] **Phase 6: User Profile & Admin Operations** - User self-service profile and admin CRUD with search/filter
 - [ ] **Phase 7: API Documentation & Swagger** - REST API completeness verification and Swagger UI integration
 - [ ] **Phase 8: Tooling & Project Documentation** - Dev/prod run scripts, cURL tests, project docs, and README
@@ -121,11 +121,11 @@ Plans:
 **Plans**: 5 plans in 4 waves
 
 Plans:
-- [ ] 05-01-PLAN.md — Database migration, PasswordResetToken entity, sealed result, and request DTOs (wave 1)
-- [ ] 05-02-PLAN.md — Email templates, Thymeleaf pages, navbar dropdown, and login page link (wave 1)
-- [ ] 05-03-PLAN.md — PasswordService, EmailService extension, and JWT invalidation wiring (wave 2)
-- [ ] 05-04-PLAN.md — REST API and web controllers, SecurityConfig updates (wave 3)
-- [ ] 05-05-PLAN.md — Integration tests and manual verification (wave 4)
+- [x] 05-01-PLAN.md — Database migration, PasswordResetToken entity, sealed result, and request DTOs (wave 1)
+- [x] 05-02-PLAN.md — Email templates, Thymeleaf pages, navbar dropdown, and login page link (wave 1)
+- [x] 05-03-PLAN.md — PasswordService, EmailService extension, and JWT invalidation wiring (wave 2)
+- [x] 05-04-PLAN.md — REST API and web controllers, SecurityConfig updates (wave 3)
+- [x] 05-05-PLAN.md — Integration tests and manual verification (wave 4)
 
 ### Phase 6: User Profile & Admin Operations
 **Goal**: Authenticated users can view their own profile, and administrators can fully manage all user accounts including creation, updates, enable/disable, and search
@@ -185,11 +185,11 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | 2. Security & API Foundation | 6/6 | Complete | 2026-02-03 |
 | 3. Registration & Login | 5/5 | Complete | 2026-02-04 |
 | 4. Email Verification | 8/8 | Complete | 2026-02-06 |
-| 5. Password Management | 0/5 | Planned | - |
+| 5. Password Management | 5/5 | Complete | 2026-02-11 |
 | 6. User Profile & Admin Operations | 0/TBD | Not started | - |
 | 7. API Documentation & Swagger | 0/TBD | Not started | - |
 | 8. Tooling & Project Documentation | 0/TBD | Not started | - |
 
 ---
 *Roadmap created: 2026-01-28*
-*Last updated: 2026-02-10*
+*Last updated: 2026-02-11*

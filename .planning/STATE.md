@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-28)
 
 **Core value:** Secure, modular user authentication and management that works identically in dev (H2, local) and prod (PostgreSQL, Docker) with zero code changes between environments.
-**Current focus:** Phase 5 - Password Management - In progress.
+**Current focus:** Phase 5 - Password Management - Complete. Ready for Phase 6.
 
 ## Current Position
 
-Phase: 5 of 8 (Password Management)
-Plan: 4 of 5 in current phase
-Status: In progress
-Last activity: 2026-02-11 -- Completed 05-04-PLAN.md (Controllers & Security Config)
+Phase: 5 of 8 (Password Management) - COMPLETE
+Plan: 5 of 5 in current phase
+Status: Complete
+Last activity: 2026-02-11 -- Completed 05-05-PLAN.md (Integration Tests & Manual Verification)
 
-Progress: [████████████░░░░░░░░] ~63% (35/56 plans complete)
+Progress: [█████████████░░░░░░░] ~66% (36/56 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 35
+- Total plans completed: 36
 - Average duration: 4min
-- Total execution time: ~131min
+- Total execution time: ~161min
 
 **By Phase:**
 
@@ -31,11 +31,11 @@ Progress: [████████████░░░░░░░░] ~63% (3
 | 2. Security & API Foundation | 6/6 | 15min | 2.5min |
 | 3. Registration & Login | 5/5 | 21min | 4min |
 | 4. Email Verification | 8/8 | 35min | 4.4min |
-| 5. Password Management | 4/5 | 15min | 3.8min |
+| 5. Password Management | 5/5 | 45min | 9min |
 
 **Recent Trend:**
-- Last 5 plans: 05-04 (4min), 05-03 (6min), 05-02 (2min), 05-01 (3min), 04-08 (15min)
-- Trend: Controller wiring plans execute quickly when service and template layers are ready
+- Last 5 plans: 05-05 (30min), 05-04 (4min), 05-03 (6min), 05-02 (2min), 05-01 (3min)
+- Trend: Testing + manual verification plans take longer due to human checkpoint; code plans remain fast
 
 *Updated after each plan completion*
 
@@ -133,6 +133,7 @@ Recent decisions affecting current work:
 - 04-08: Template system: application.yml generated from application.yml.template with @VARIABLE@ placeholders
 - 04-08: bin/env.sh loads both .env and .env.local (local overrides)
 - 04-08: All manual verification checks passed - Phase 4 complete and ready for Phase 5
+- 05-05: All password flows manually verified - Phase 5 complete and ready for Phase 6
 - 05-01: PasswordResetResult has 4 types (not 5 like VerificationResult) - no AlreadyReset since password reset is not idempotent
 - 05-01: ChangePasswordRequest has 3 fields including currentPassword (per REQUIREMENTS.md PASS-01)
 - 05-01: password_changed_at column is nullable - existing users have no change history
@@ -160,5 +161,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-11
-Stopped at: Completed 05-04-PLAN.md (Controllers & Security Config)
+Stopped at: Phase 5 complete. Ready for Phase 6.
 Resume file: None

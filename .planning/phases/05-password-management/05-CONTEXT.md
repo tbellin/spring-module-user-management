@@ -15,12 +15,12 @@ Two password flows: (1) **Change password** for authenticated users to update th
 
 ### Change Password Flow
 - Link lives in the **navbar dropdown** (alongside Logout, under user menu)
-- Form has **2 fields**: new password + confirm new password (no current password required — user is already authenticated)
+- Form has **3 fields**: current password + new password + confirm new password (requires current password per PASS-01)
 - Minimum password length: **8 characters**, no complexity rules
-- After successful change: **redirect to home page** with success toast
+- After successful change: **redirect to /login** with success toast (session invalidated, user must re-login)
 
 ### Reset Password Flow
-- Reuse existing **VerificationToken entity** with a token_type column to distinguish EMAIL_VERIFICATION from PASSWORD_RESET
+- Use **separate PasswordResetToken entity** mapping to existing `password_reset_token` table from V1 migration (cleaner separation, no schema change needed)
 - Reset tokens valid for **24 hours** (consistent with email verification tokens)
 - Non-existent email requests: **always show same success message** ("If an account exists, we sent a reset link") — SEC-01 compliance, prevents user enumeration
 - "Forgot your password?" link appears **on the login page only** (below the login form)
