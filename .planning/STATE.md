@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-28)
 ## Current Position
 
 Phase: 6 of 8 (User Profile & Admin Operations) - IN PROGRESS
-Plan: 1 of 4 in current phase
+Plan: 2 of 4 in current phase
 Status: In Progress
-Last activity: 2026-02-11 -- Completed 06-01-PLAN.md (User Profile & Service Foundation)
+Last activity: 2026-02-11 -- Completed 06-02-PLAN.md (Admin Invite Infrastructure)
 
-Progress: [██████████████░░░░░░] ~68% (37/56 plans complete)
+Progress: [██████████████░░░░░░] ~70% (38/56 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 37
+- Total plans completed: 38
 - Average duration: 4min
-- Total execution time: ~165min
+- Total execution time: ~167min
 
 **By Phase:**
 
@@ -32,11 +32,11 @@ Progress: [██████████████░░░░░░] ~68% (3
 | 3. Registration & Login | 5/5 | 21min | 4min |
 | 4. Email Verification | 8/8 | 35min | 4.4min |
 | 5. Password Management | 5/5 | 45min | 9min |
-| 6. User Profile & Admin | 1/4 | 4min | 4min |
+| 6. User Profile & Admin | 2/4 | 6min | 3min |
 
 **Recent Trend:**
-- Last 5 plans: 06-01 (4min), 05-05 (30min), 05-04 (4min), 05-03 (6min), 05-02 (2min)
-- Trend: Code-only plans remain fast (~4min); testing/verification plans take longer
+- Last 5 plans: 06-02 (2min), 06-01 (4min), 05-05 (30min), 05-04 (4min), 05-03 (6min)
+- Trend: Code-only plans remain fast (~2-4min); testing/verification plans take longer
 
 *Updated after each plan completion*
 
@@ -152,6 +152,10 @@ Recent decisions affecting current work:
 - 05-04: Null authentication check in PasswordController.changePassword since /api/v1/auth/** is permitAll
 - 05-04: Session invalidation + SecurityContext clear on web password change forces re-login
 - 05-04: ResendRateLimiter reused for forgot-password flow (same 60s cooldown as verification resend)
+- 06-02: AdminInviteService in auth.internal (not user.internal) because it needs PasswordResetTokenRepository from auth.internal.password
+- 06-02: Invited users get email as username (same as self-registration pattern per 03-01)
+- 06-02: Reuse PasswordResetToken for invite set-password flow (no new DB migration needed)
+- 06-02: UserService.getUserByEmail used for DTO conversion in AdminInviteService to avoid duplicating toUserDto
 
 ### Pending Todos
 
@@ -165,5 +169,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-11
-Stopped at: Completed 06-01-PLAN.md. Ready for 06-02-PLAN.md.
+Stopped at: Completed 06-02-PLAN.md. Ready for 06-03-PLAN.md.
 Resume file: None
