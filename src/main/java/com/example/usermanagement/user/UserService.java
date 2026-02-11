@@ -1,10 +1,16 @@
 package com.example.usermanagement.user;
 
 import com.example.usermanagement.shared.dto.UserDto;
+import com.example.usermanagement.shared.exception.BadRequestException;
+import com.example.usermanagement.shared.exception.ResourceNotFoundException;
 import com.example.usermanagement.user.internal.AppRole;
 import com.example.usermanagement.user.internal.AppUser;
 import com.example.usermanagement.user.internal.RoleRepository;
 import com.example.usermanagement.user.internal.UserRepository;
+import com.example.usermanagement.user.internal.UserSpecifications;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -111,6 +117,108 @@ public class UserService {
     }
 
     /**
+     * Retrieves a user by their unique identifier.
+     *
+     * @param id the user's ID
+     * @return an Optional containing the UserDto if found
+     */
+    public Optional<UserDto> getUserById(Long id) {
+        return userRepository.findById(id)
+            .map(this::toUserDto);
+    }
+
+    /**
+     * Finds users matching the given search, role, and status filters with pagination.
+     *
+     * @param search   partial text to match against email, firstName, or lastName (nullable)
+     * @param role     role name to filter by, e.g. "ROLE_ADMIN" (nullable)
+     * @param status   account status: "active" or "disabled" (nullable)
+     * @param pageable pagination and sorting parameters
+     * @return a page of matching UserDto instances
+     */
+    public Page<UserDto> findUsers(String search, String role, String status, Pageable pageable) {
+        Specification<AppUser> spec = UserSpecifications.withFilters(search, role, status);
+        return userRepository.findAll(spec, pageable).map(this::toUserDto);
+    }
+
+    /**
+     * Updates the profile fields for the user identified by email.
+     * <p>
+     * Only non-null, non-blank displayName overwrites the username; firstName and lastName
+     * are always updated (may be set to null).
+     *
+     * @param email       the user's email address (identity)
+     * @param displayName new display name (username); ignored if null or blank
+     * @param firstName   new first name
+     * @param lastName    new last name
+     * @return the updated UserDto
+     * @throws ResourceNotFoundException if no user exists with the given email
+     */
+    @Transactional
+    public UserDto updateProfile(String email, String displayName, String firstName, String lastName) {
+        AppUser user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new ResourceNotFoundException("User", email));
+
+        if (displayName != null && !displayName.isBlank()) {
+            user.setUsername(displayName);
+        }
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+
+        AppUser saved = userRepository.save(user);
+        return toUserDto(saved);
+    }
+
+    /**
+     * Updates a user's details by admin. Allows changing name fields and role.
+     *
+     * @param id        the user's ID
+     * @param firstName new first name
+     * @param lastName  new last name
+     * @param roleName  new role name (e.g. "ROLE_ADMIN"); if null or blank, roles are unchanged
+     * @return the updated UserDto
+     * @throws ResourceNotFoundException if no user exists with the given ID
+     * @throws BadRequestException       if the specified role name does not exist
+     */
+    @Transactional
+    public UserDto updateUser(Long id, String firstName, String lastName, String roleName) {
+        AppUser user = userRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("User", id.toString()));
+
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+
+        if (roleName != null && !roleName.isBlank()) {
+            user.getRoles().clear();
+            AppRole role = roleRepository.findByName(roleName)
+                .orElseThrow(() -> new BadRequestException("Role not found: " + roleName));
+            user.addRole(role);
+        }
+
+        AppUser saved = userRepository.save(user);
+        return toUserDto(saved);
+    }
+
+    /**
+     * Enables or disables a user account.
+     *
+     * @param id      the user's ID
+     * @param enabled true to enable, false to disable
+     * @return the updated UserDto
+     * @throws ResourceNotFoundException if no user exists with the given ID
+     */
+    @Transactional
+    public UserDto toggleUserEnabled(Long id, boolean enabled) {
+        AppUser user = userRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("User", id.toString()));
+
+        user.setEnabled(enabled);
+
+        AppUser saved = userRepository.save(user);
+        return toUserDto(saved);
+    }
+
+    /**
      * Converts an AppUser entity to a UserDto.
      * <p>
      * This method is private to avoid leaking the entity type.
@@ -131,7 +239,8 @@ public class UserService {
             user.getLastName(),
             user.isEnabled(),
             user.isEmailVerified(),
-            roleNames
+            roleNames,
+            user.getCreatedAt()
         );
     }
 

@@ -1,5 +1,6 @@
 package com.example.usermanagement.shared.dto;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 /**
@@ -16,6 +17,7 @@ import java.util.Set;
  * @param enabled       whether the user account is enabled
  * @param emailVerified whether the user's email has been verified
  * @param roles         the user's role names (e.g., "ROLE_USER", "ROLE_ADMIN")
+ * @param createdAt     when the user account was created
  */
 public record UserDto(
     Long id,
@@ -25,7 +27,8 @@ public record UserDto(
     String lastName,
     boolean enabled,
     boolean emailVerified,
-    Set<String> roles
+    Set<String> roles,
+    LocalDateTime createdAt
 ) {
 
     /**
@@ -42,6 +45,7 @@ public record UserDto(
      * @param enabled       whether the user account is enabled
      * @param emailVerified whether the user's email has been verified
      * @param roles         the user's role names
+     * @param createdAt     when the user account was created
      * @return a new UserDto instance
      */
     public static UserDto from(
@@ -52,8 +56,9 @@ public record UserDto(
         String lastName,
         boolean enabled,
         boolean emailVerified,
-        Set<String> roles
+        Set<String> roles,
+        LocalDateTime createdAt
     ) {
-        return new UserDto(id, email, username, firstName, lastName, enabled, emailVerified, roles);
+        return new UserDto(id, email, username, firstName, lastName, enabled, emailVerified, roles, createdAt);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.usermanagement.user.internal;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.Optional;
 
@@ -10,7 +11,7 @@ import java.util.Optional;
  * This repository is internal to the user module. External modules should use
  * {@link com.example.usermanagement.user.UserService} to access user data.
  */
-public interface UserRepository extends JpaRepository<AppUser, Long> {
+public interface UserRepository extends JpaRepository<AppUser, Long>, JpaSpecificationExecutor<AppUser> {
 
     /**
      * Finds a user by their email address.
