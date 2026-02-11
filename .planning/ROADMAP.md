@@ -137,12 +137,13 @@ Plans:
   3. Admin can create a new user with a specified role, and update existing user details
   4. Admin can enable or disable user accounts (soft delete) without destroying account data
   5. Admin can search and filter users by name, email, role, or status
-**Plans**: TBD
+**Plans**: 4 plans in 3 waves
 
 Plans:
-- [ ] 06-01: TBD
-- [ ] 06-02: TBD
-- [ ] 06-03: TBD
+- [ ] 06-01-PLAN.md -- Foundation + Profile: UserDto/UserService/UserRepo extensions, profile controllers, profile template, navbar links (wave 1)
+- [ ] 06-02-PLAN.md -- Invite infrastructure: EmailService.sendInviteEmail, invite templates, 403 page, AdminInviteService (wave 1)
+- [ ] 06-03-PLAN.md -- Admin CRUD: AdminController/AdminWebController, admin list page with pagination/search/filter/inline-edit/toggle, create user page (wave 2)
+- [ ] 06-04-PLAN.md -- Integration tests and manual verification (wave 3)
 
 ### Phase 7: API Documentation & Swagger
 **Goal**: Every feature is accessible through a versioned REST API, and all endpoints are documented and testable through Swagger UI
