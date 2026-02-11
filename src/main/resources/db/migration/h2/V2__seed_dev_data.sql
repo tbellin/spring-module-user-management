@@ -7,7 +7,7 @@ INSERT INTO app_user (email, username, password_hash, first_name, last_name, ena
 VALUES (
     'tizianobellin@yahoo.com',
     'tiziano',
-    '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',
+    '$2a$10$yBWlkScGgpAcu1op6QdPcumucqnaR2r80jkZQn.n1NMLf73IM1MnK',
     'Tiziano',
     'Bellin',
     TRUE,
