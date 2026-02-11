@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-28)
 ## Current Position
 
 Phase: 6 of 8 (User Profile & Admin Operations) - IN PROGRESS
-Plan: 2 of 4 in current phase
+Plan: 3 of 4 in current phase
 Status: In Progress
-Last activity: 2026-02-11 -- Completed 06-02-PLAN.md (Admin Invite Infrastructure)
+Last activity: 2026-02-11 -- Completed 06-03-PLAN.md (Admin User Management Interface)
 
-Progress: [██████████████░░░░░░] ~70% (38/56 plans complete)
+Progress: [██████████████░░░░░░] ~70% (39/56 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 38
+- Total plans completed: 39
 - Average duration: 4min
-- Total execution time: ~167min
+- Total execution time: ~170min
 
 **By Phase:**
 
@@ -32,10 +32,10 @@ Progress: [██████████████░░░░░░] ~70% (3
 | 3. Registration & Login | 5/5 | 21min | 4min |
 | 4. Email Verification | 8/8 | 35min | 4.4min |
 | 5. Password Management | 5/5 | 45min | 9min |
-| 6. User Profile & Admin | 2/4 | 6min | 3min |
+| 6. User Profile & Admin | 3/4 | 9min | 3min |
 
 **Recent Trend:**
-- Last 5 plans: 06-02 (2min), 06-01 (4min), 05-05 (30min), 05-04 (4min), 05-03 (6min)
+- Last 5 plans: 06-03 (3min), 06-02 (2min), 06-01 (4min), 05-05 (30min), 05-04 (4min)
 - Trend: Code-only plans remain fast (~2-4min); testing/verification plans take longer
 
 *Updated after each plan completion*
@@ -156,6 +156,10 @@ Recent decisions affecting current work:
 - 06-02: Invited users get email as username (same as self-registration pattern per 03-01)
 - 06-02: Reuse PasswordResetToken for invite set-password flow (no new DB migration needed)
 - 06-02: UserService.getUserByEmail used for DTO conversion in AdminInviteService to avoid duplicating toUserDto
+- 06-03: AdminController and AdminWebController both in auth.internal (not user.internal) to access both UserService and AdminInviteService without module boundary violations
+- 06-03: DTOs (CreateUserRequest, UpdateUserRequest) remain in user.internal as simple records importable by auth module
+- 06-03: Inline editing uses JavaScript fetch to REST API (not form POST) for seamless UX without page reload
+- 06-03: Toggle undo toast auto-dismisses after 8 seconds with undo button that reverses the PATCH call
 
 ### Pending Todos
 
@@ -169,5 +173,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-11
-Stopped at: Completed 06-02-PLAN.md. Ready for 06-03-PLAN.md.
+Stopped at: Completed 06-03-PLAN.md. Ready for 06-04-PLAN.md.
 Resume file: None
