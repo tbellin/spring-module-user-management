@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+<head>
+    <title>Create User</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Create User</h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/admin/users/new}" method="post">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email Address</label>
+                                <input type="email" class="form-control" id="email" name="email"
+                                       required placeholder="user@example.com">
+                            </div>
+                            <div class="mb-3">
+                                <label for="role" class="form-label">Role</label>
+                                <select class="form-select" id="role" name="role">
+                                    <option value="ROLE_USER">User</option>
+                                    <option value="ROLE_ADMIN">Admin</option>
+                                </select>
+                            </div>
+                            <div class="alert alert-info mb-3" role="alert">
+                                An invitation email will be sent to the user with a link to set their password.
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <a th:href="@{/admin/users}" class="btn btn-outline-secondary">Back to Users</a>
+                                <button type="submit" class="btn btn-primary">Send Invite</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
