@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-28)
 
 **Core value:** Secure, modular user authentication and management that works identically in dev (H2, local) and prod (PostgreSQL, Docker) with zero code changes between environments.
-**Current focus:** Phase 5 - Password Management - Complete. Ready for Phase 6.
+**Current focus:** Phase 6 - User Profile & Admin Operations - In Progress
 
 ## Current Position
 
-Phase: 5 of 8 (Password Management) - COMPLETE
-Plan: 5 of 5 in current phase
-Status: Complete
-Last activity: 2026-02-11 -- Completed 05-05-PLAN.md (Integration Tests & Manual Verification)
+Phase: 6 of 8 (User Profile & Admin Operations) - IN PROGRESS
+Plan: 1 of 4 in current phase
+Status: In Progress
+Last activity: 2026-02-11 -- Completed 06-01-PLAN.md (User Profile & Service Foundation)
 
-Progress: [█████████████░░░░░░░] ~66% (36/56 plans complete)
+Progress: [██████████████░░░░░░] ~68% (37/56 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 36
+- Total plans completed: 37
 - Average duration: 4min
-- Total execution time: ~161min
+- Total execution time: ~165min
 
 **By Phase:**
 
@@ -32,10 +32,11 @@ Progress: [█████████████░░░░░░░] ~66% (3
 | 3. Registration & Login | 5/5 | 21min | 4min |
 | 4. Email Verification | 8/8 | 35min | 4.4min |
 | 5. Password Management | 5/5 | 45min | 9min |
+| 6. User Profile & Admin | 1/4 | 4min | 4min |
 
 **Recent Trend:**
-- Last 5 plans: 05-05 (30min), 05-04 (4min), 05-03 (6min), 05-02 (2min), 05-01 (3min)
-- Trend: Testing + manual verification plans take longer due to human checkpoint; code plans remain fast
+- Last 5 plans: 06-01 (4min), 05-05 (30min), 05-04 (4min), 05-03 (6min), 05-02 (2min)
+- Trend: Code-only plans remain fast (~4min); testing/verification plans take longer
 
 *Updated after each plan completion*
 
@@ -134,6 +135,9 @@ Recent decisions affecting current work:
 - 04-08: bin/env.sh loads both .env and .env.local (local overrides)
 - 04-08: All manual verification checks passed - Phase 4 complete and ready for Phase 5
 - 05-05: All password flows manually verified - Phase 5 complete and ready for Phase 6
+- 06-01: ResourceNotFoundException uses two-arg constructor (resourceType, identifier) matching existing project convention
+- 06-01: JPA Specification pattern for dynamic queries: withFilters combines search/role/status with AND; search uses OR across email/firstName/lastName
+- 06-01: Profile inline editing uses JS view/edit mode toggle with form POST and redirect (no AJAX)
 - 05-01: PasswordResetResult has 4 types (not 5 like VerificationResult) - no AlreadyReset since password reset is not idempotent
 - 05-01: ChangePasswordRequest has 3 fields including currentPassword (per REQUIREMENTS.md PASS-01)
 - 05-01: password_changed_at column is nullable - existing users have no change history
@@ -161,5 +165,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-11
-Stopped at: Phase 5 complete. Ready for Phase 6.
+Stopped at: Completed 06-01-PLAN.md. Ready for 06-02-PLAN.md.
 Resume file: None
