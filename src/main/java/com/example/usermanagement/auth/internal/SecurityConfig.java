@@ -90,6 +90,8 @@ public class SecurityConfig {
                 .requestMatchers("/login", "/register").permitAll()
                 .requestMatchers("/auth/resend-verification").permitAll()
                 .requestMatchers("/verify/**").permitAll()
+                .requestMatchers("/forgot-password").permitAll()
+                .requestMatchers("/reset-password").permitAll()
                 .requestMatchers("/actuator/health", "/actuator/info").permitAll()
                 // Static resources
                 .requestMatchers("/css/**", "/js/**", "/webjars/**").permitAll()
