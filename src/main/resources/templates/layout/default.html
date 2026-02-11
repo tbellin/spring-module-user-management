@@ -9,6 +9,8 @@
     <title layout:title-pattern="$CONTENT_TITLE - $LAYOUT_TITLE">User Management</title>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/css/style.css}" th:if="${cssFile != null}">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -28,11 +30,15 @@
                     <li class="nav-item" sec:authorize="isAnonymous()">
                         <a class="nav-link" th:href="@{/register}">Register</a>
                     </li>
+                    <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                        <a class="nav-link" th:href="@{/admin/users}">Admin</a>
+                    </li>
                     <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
                         <a class="nav-link dropdown-toggle" href="#" role="button"
                            data-bs-toggle="dropdown" aria-expanded="false"
                            sec:authentication="name">User</a>
                         <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" th:href="@{/profile}">My Profile</a></li>
                             <li><a class="dropdown-item" th:href="@{/change-password}">Change Password</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
