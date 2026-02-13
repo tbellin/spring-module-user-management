@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-28)
 
 **Core value:** Secure, modular user authentication and management that works identically in dev (H2, local) and prod (PostgreSQL, Docker) with zero code changes between environments.
-**Current focus:** Phase 6 - User Profile & Admin Operations - In Progress
+**Current focus:** Phase 6 - User Profile & Admin Operations - COMPLETE
 
 ## Current Position
 
-Phase: 6 of 8 (User Profile & Admin Operations) - IN PROGRESS
-Plan: 3 of 4 in current phase
-Status: In Progress
-Last activity: 2026-02-11 -- Completed 06-03-PLAN.md (Admin User Management Interface)
+Phase: 6 of 8 (User Profile & Admin Operations) - COMPLETE
+Plan: 4 of 4 in current phase (all plans complete)
+Status: Phase Complete
+Last activity: 2026-02-13 -- Completed 06-04-PLAN.md (Integration Tests & Manual Verification)
 
-Progress: [██████████████░░░░░░] ~70% (39/56 plans complete)
+Progress: [████████████████░░░░] ~71% (40/56 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 39
+- Total plans completed: 40
 - Average duration: 4min
-- Total execution time: ~170min
+- Total execution time: ~177min
 
 **By Phase:**
 
@@ -32,10 +32,10 @@ Progress: [██████████████░░░░░░] ~70% (3
 | 3. Registration & Login | 5/5 | 21min | 4min |
 | 4. Email Verification | 8/8 | 35min | 4.4min |
 | 5. Password Management | 5/5 | 45min | 9min |
-| 6. User Profile & Admin | 3/4 | 9min | 3min |
+| 6. User Profile & Admin | 4/4 | 16min | 4min |
 
 **Recent Trend:**
-- Last 5 plans: 06-03 (3min), 06-02 (2min), 06-01 (4min), 05-05 (30min), 05-04 (4min)
+- Last 5 plans: 06-04 (7min), 06-03 (3min), 06-02 (2min), 06-01 (4min), 05-05 (30min)
 - Trend: Code-only plans remain fast (~2-4min); testing/verification plans take longer
 
 *Updated after each plan completion*
@@ -160,6 +160,8 @@ Recent decisions affecting current work:
 - 06-03: DTOs (CreateUserRequest, UpdateUserRequest) remain in user.internal as simple records importable by auth module
 - 06-03: Inline editing uses JavaScript fetch to REST API (not form POST) for seamless UX without page reload
 - 06-03: Toggle undo toast auto-dismisses after 8 seconds with undo button that reverses the PATCH call
+- 06-04: All Phase 6 features manually verified and approved - profile view/edit, admin list/search/filter/paginate, admin create/invite, admin inline edit, admin toggle with undo, 403 error page, self-disable prevention
+- 06-04: MockitoBean EmailService (not JavaMailSender) for test SMTP isolation to keep actuator health checks intact
 
 ### Pending Todos
 
@@ -172,6 +174,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-11
-Stopped at: Completed 06-03-PLAN.md. Ready for 06-04-PLAN.md.
+Last session: 2026-02-13
+Stopped at: Completed 06-04-PLAN.md. Phase 6 complete. Ready for Phase 7.
 Resume file: None
