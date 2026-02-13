@@ -153,10 +153,12 @@ Plans:
   1. All features (auth, password management, profile, admin operations) are accessible via REST API endpoints under `/api/v1/`
   2. Swagger UI is available at a known URL and displays all API endpoints with request/response schemas
   3. Protected API endpoints can be tested directly from Swagger UI using JWT bearer token authentication
-**Plans**: TBD
+**Plans**: 3 plans in 3 waves
 
 Plans:
-- [ ] 07-01: TBD
+- [ ] 07-01-PLAN.md -- SpringDoc dependency, configuration, OpenApiConfig bean, SecurityConfig update (wave 1)
+- [ ] 07-02-PLAN.md -- Controller @Tag/@Operation annotations and DTO @Schema annotations (wave 2)
+- [ ] 07-03-PLAN.md -- Integration tests and manual verification (wave 3)
 
 ### Phase 8: Tooling & Project Documentation
 **Goal**: Complete developer experience with run scripts for both environments, automated cURL test coverage of all features, and comprehensive project documentation
@@ -188,7 +190,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | 4. Email Verification | 8/8 | Complete | 2026-02-06 |
 | 5. Password Management | 5/5 | Complete | 2026-02-11 |
 | 6. User Profile & Admin Operations | 4/4 | Complete | 2026-02-13 |
-| 7. API Documentation & Swagger | 0/TBD | Not started | - |
+| 7. API Documentation & Swagger | 0/3 | Not started | - |
 | 8. Tooling & Project Documentation | 0/TBD | Not started | - |
 
 ---
