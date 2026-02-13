@@ -81,7 +81,7 @@ public class AuthWebController {
 
         try {
             // Create the user (sends verification email automatically)
-            authService.registerUser(form.getEmail(), form.getPassword(), form.getDisplayName());
+            authService.registerUser(form.getEmail(), form.getPassword(), form.getFirstName(), form.getLastName());
 
             // Redirect to login with verification notice (no auto-login - user must verify first)
             redirectAttributes.addFlashAttribute("toast",

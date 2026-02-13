@@ -128,10 +128,10 @@ class SecurityConfigTest {
         @Test
         @DisplayName("ADMIN role can access admin pages")
         void adminAccessingAdminPage_succeeds() throws Exception {
-            // Page doesn't exist yet, but should NOT be 403
+            // Admin users page exists (Phase 6), verify authorization passes
             mockMvc.perform(get("/admin/users")
                     .with(org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user("admin@example.com").roles("ADMIN")))
-                .andExpect(status().isNotFound()); // 404, not 403
+                .andExpect(status().isOk()); // 200, not 403 - authorization passed
         }
 
         @Test

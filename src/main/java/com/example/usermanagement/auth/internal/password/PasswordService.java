@@ -112,11 +112,17 @@ public class PasswordService {
                 PasswordResetToken token = new PasswordResetToken(tokenValue, user, expiryDate);
                 tokenRepository.save(token);
 
-                // Build reset URL and send email
+                // Build reset URL and send email (best-effort to prevent
+                // transaction rollback from deleting the token when the SMTP
+                // server is slow or unavailable)
                 String resetUrl = baseUrl + "/reset-password?token=" + tokenValue;
-                emailService.sendPasswordResetEmail(email, resetUrl);
-
-                log.info("Password reset email requested for user: {}", email);
+                try {
+                    emailService.sendPasswordResetEmail(email, resetUrl);
+                    log.info("Password reset email sent for user: {}", email);
+                } catch (Exception e) {
+                    log.warn("Password reset token created but email failed for {}: {}",
+                            email, e.getMessage());
+                }
             }
         });
     }
@@ -157,6 +163,13 @@ public class PasswordService {
 
         // Set new password and update timestamp for JWT invalidation
         AppUser user = token.getUser();
+
+        // Auto-enable on first password set (admin invite flow):
+        // passwordChangedAt is null only for users who have never set a password
+        if (!user.isEnabled() && user.getPasswordChangedAt() == null) {
+            user.setEnabled(true);
+        }
+
         user.setPasswordHash(passwordEncoder.encode(newPassword));
         user.setPasswordChangedAt(LocalDateTime.now());
         userRepository.save(user);

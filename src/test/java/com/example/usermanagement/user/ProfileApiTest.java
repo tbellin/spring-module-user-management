@@ -127,11 +127,11 @@ class ProfileApiTest {
     /**
      * Registers a user via the API and manually verifies their email.
      */
-    private void registerAndVerifyUser(String email, String password, String displayName) throws Exception {
+    private void registerAndVerifyUser(String email, String password, String firstName) throws Exception {
         var request = Map.of(
             "email", email,
             "password", password,
-            "displayName", displayName
+            "firstName", firstName
         );
         mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/api/v1/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)

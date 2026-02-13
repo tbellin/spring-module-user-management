@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -65,40 +66,66 @@ public class AdminInviteService {
     }
 
     /**
+     * Result of an admin invite operation.
+     *
+     * @param user           the created user
+     * @param emailSent      whether the invite email was sent successfully
+     * @param setPasswordUrl the URL for the user to set their password
+     */
+    public record InviteResult(UserDto user, boolean emailSent, String setPasswordUrl) {}
+
+    /**
      * Invites a new user by creating their account and sending an invite email.
      * <p>
      * The user is created with:
      * <ul>
      *     <li>{@code emailVerified = true} (admin-verified, no email confirmation needed)</li>
-     *     <li>{@code enabled = true}</li>
      *     <li>A placeholder password (random BCrypt hash that cannot be guessed)</li>
      * </ul>
      * A {@link PasswordResetToken} is generated and an invite email is sent with
      * a set-password link pointing to {@code /reset-password?token=...}.
+     * <p>
+     * If email sending fails, the user is still created and the set-password URL
+     * is returned so the admin can share it manually.
      *
-     * @param email    the email address of the user to invite
-     * @param roleName the role to assign (e.g. "ROLE_USER", "ROLE_ADMIN")
-     * @return the created user as a {@link UserDto}
+     * @param email     the email address of the user to invite
+     * @param username  the display name / username (nullable, defaults to email)
+     * @param firstName the user's first name (nullable)
+     * @param lastName  the user's last name (nullable)
+     * @param enabled   whether the account should be enabled immediately
+     * @param roleNames the roles to assign (e.g. ["ROLE_USER", "ROLE_ADMIN"])
+     * @return an {@link InviteResult} with user, email status, and set-password URL
      * @throws DuplicateResourceException if a user with the given email already exists
-     * @throws BadRequestException        if the specified role does not exist
+     * @throws BadRequestException        if any specified role does not exist
      */
     @Transactional
-    public UserDto inviteUser(String email, String roleName) {
+    public InviteResult inviteUser(String email, String username, String firstName,
+                                   String lastName, boolean enabled, List<String> roleNames) {
         // Check if email already exists
         if (userRepository.existsByEmail(email)) {
             throw new DuplicateResourceException("User", "email");
         }
 
-        // Find the requested role
-        AppRole role = roleRepository.findByName(roleName)
-            .orElseThrow(() -> new BadRequestException("Invalid role: " + roleName));
+        // Find the requested roles
+        if (roleNames == null || roleNames.isEmpty()) {
+            throw new BadRequestException("At least one role must be specified");
+        }
 
         // Create user with placeholder password (valid BCrypt hash that no one knows)
         String placeholder = passwordEncoder.encode(UUID.randomUUID().toString());
-        AppUser user = new AppUser(email, email, placeholder);
+        String displayName = (username != null && !username.isBlank()) ? username : email;
+        AppUser user = new AppUser(email, displayName, placeholder);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
         user.setEmailVerified(true);
-        user.setEnabled(true);
-        user.addRole(role);
+        user.setEnabled(enabled);
+
+        for (String roleName : roleNames) {
+            AppRole role = roleRepository.findByName(roleName)
+                .orElseThrow(() -> new BadRequestException("Invalid role: " + roleName));
+            user.addRole(role);
+        }
+
         AppUser saved = userRepository.save(user);
 
         // Generate password reset token (reuse existing infrastructure)
@@ -107,14 +134,21 @@ public class AdminInviteService {
         PasswordResetToken token = new PasswordResetToken(tokenValue, saved, expiryDate);
         tokenRepository.save(token);
 
-        // Send invite email with set-password link
+        // Send invite email with set-password link (best-effort)
         String setPasswordUrl = baseUrl + "/reset-password?token=" + tokenValue;
-        emailService.sendInviteEmail(email, setPasswordUrl);
-
-        log.info("User invited by admin: {}", email);
+        boolean emailSent = false;
+        try {
+            emailService.sendInviteEmail(email, setPasswordUrl);
+            emailSent = true;
+            log.info("User invited by admin: {}", email);
+        } catch (Exception e) {
+            log.warn("User created but invite email failed for {}: {}", email, e.getMessage());
+        }
 
         // Reuse UserService for DTO conversion to avoid duplicating logic
-        return userService.getUserByEmail(email)
+        UserDto userDto = userService.getUserByEmail(email)
             .orElseThrow(() -> new IllegalStateException("User was just created but not found: " + email));
+
+        return new InviteResult(userDto, emailSent, setPasswordUrl);
     }
 }

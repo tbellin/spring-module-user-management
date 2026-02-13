@@ -49,7 +49,7 @@ class AuthControllerTest {
         var request = Map.of(
             "email", uniqueEmail,
             "password", "password123",
-            "displayName", "New User"
+            "firstName", "New"
         );
 
         mockMvc.perform(post("/api/v1/auth/register")
@@ -72,7 +72,7 @@ class AuthControllerTest {
         var duplicateRequest = Map.of(
             "email", duplicateEmail,
             "password", "anotherpassword",
-            "displayName", "Second User"
+            "firstName", "Second"
         );
 
         mockMvc.perform(post("/api/v1/auth/register")
@@ -90,7 +90,7 @@ class AuthControllerTest {
         var request = Map.of(
             "email", "not-an-email",
             "password", "password123",
-            "displayName", "New User"
+            "firstName", "New"
         );
 
         mockMvc.perform(post("/api/v1/auth/register")
@@ -107,7 +107,7 @@ class AuthControllerTest {
         var request = Map.of(
             "email", "shortpwd-" + UUID.randomUUID() + "@example.com",
             "password", "short",
-            "displayName", "New User"
+            "firstName", "New"
         );
 
         mockMvc.perform(post("/api/v1/auth/register")
@@ -232,8 +232,8 @@ class AuthControllerTest {
      * <p>
      * Since email verification blocks login (04-07), login tests need verified users.
      */
-    private void registerAndVerifyUser(String email, String password, String displayName) throws Exception {
-        registerUser(email, password, displayName);
+    private void registerAndVerifyUser(String email, String password, String firstName) throws Exception {
+        registerUser(email, password, firstName);
 
         // Manually verify the user's email (bypassing email flow for test speed)
         AppUser user = userRepository.findByEmail(email).orElseThrow();
@@ -244,11 +244,11 @@ class AuthControllerTest {
     /**
      * Registers a user via the API (user will be unverified).
      */
-    private void registerUser(String email, String password, String displayName) throws Exception {
+    private void registerUser(String email, String password, String firstName) throws Exception {
         var request = Map.of(
             "email", email,
             "password", password,
-            "displayName", displayName
+            "firstName", firstName
         );
         mockMvc.perform(post("/api/v1/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)

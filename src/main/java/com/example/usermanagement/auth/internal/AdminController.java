@@ -82,9 +82,11 @@ public class AdminController {
      * @return the created user with HTTP 201 status
      */
     @PostMapping
-    public ResponseEntity<UserDto> createUser(@Valid @RequestBody CreateUserRequest request) {
-        UserDto created = adminInviteService.inviteUser(request.email(), request.role());
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    public ResponseEntity<AdminInviteService.InviteResult> createUser(@Valid @RequestBody CreateUserRequest request) {
+        AdminInviteService.InviteResult result = adminInviteService.inviteUser(
+            request.email(), request.username(), request.firstName(), request.lastName(),
+            request.isEnabled(), request.roles());
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
     /**
@@ -99,7 +101,7 @@ public class AdminController {
             @PathVariable Long id,
             @Valid @RequestBody UpdateUserRequest request) {
 
-        UserDto updated = userService.updateUser(id, request.firstName(), request.lastName(), request.role());
+        UserDto updated = userService.updateUser(id, request.firstName(), request.lastName(), request.roles());
         return ResponseEntity.ok(updated);
     }
 

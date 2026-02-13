@@ -1,5 +1,7 @@
 package com.example.usermanagement.user.internal;
 
+import java.util.List;
+
 /**
  * DTO for admin-initiated user profile update.
  * <p>
@@ -7,11 +9,11 @@ package com.example.usermanagement.user.internal;
  *
  * @param firstName the user's first name (nullable)
  * @param lastName  the user's last name (nullable)
- * @param role      the role name to assign (nullable; e.g., "ROLE_ADMIN")
+ * @param roles     the role names to assign (nullable; e.g., ["ROLE_USER", "ROLE_ADMIN"])
  */
 public record UpdateUserRequest(
     String firstName,
     String lastName,
-    String role
+    List<String> roles
 ) {
 }

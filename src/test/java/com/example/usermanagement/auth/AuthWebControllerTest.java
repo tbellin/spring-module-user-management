@@ -1,5 +1,6 @@
 package com.example.usermanagement.auth;
 
+import com.example.usermanagement.shared.email.EmailService;
 import com.example.usermanagement.user.internal.AppUser;
 import com.example.usermanagement.user.internal.UserRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -32,6 +34,12 @@ class AuthWebControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @MockitoBean
+    private EmailService emailService;
 
     private final JsonMapper jsonMapper = JsonMapper.builder().build();
 
@@ -65,7 +73,8 @@ class AuthWebControllerTest {
                 .with(csrf())
                 .param("email", uniqueEmail)
                 .param("password", "password123")
-                .param("displayName", "Web User"))
+                .param("firstName", "Web")
+                .param("lastName", "User"))
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("/login"))
             .andExpect(flash().attributeExists("toast"));
@@ -84,7 +93,8 @@ class AuthWebControllerTest {
                 .with(csrf())
                 .param("email", duplicateEmail)
                 .param("password", "anotherpassword")
-                .param("displayName", "Second User"))
+                .param("firstName", "Second")
+                .param("lastName", "User"))
             .andExpect(status().isOk())
             .andExpect(view().name("auth/register"))
             .andExpect(model().hasErrors())
@@ -98,7 +108,7 @@ class AuthWebControllerTest {
                 .with(csrf())
                 .param("email", "")  // empty email
                 .param("password", "short")  // too short
-                .param("displayName", ""))  // empty display name
+                .param("firstName", ""))  // empty first name
             .andExpect(status().isOk())
             .andExpect(view().name("auth/register"))
             .andExpect(model().hasErrors());
@@ -111,7 +121,7 @@ class AuthWebControllerTest {
     void login_withValidCredentials_redirectsToHome() throws Exception {
         String email = "weblogin-" + UUID.randomUUID() + "@example.com";
         String password = "password123";
-        registerUserViaApi(email, password, "Web Login User");
+        registerAndVerifyUser(email, password, "Web Login User");
 
         // Spring Security form login uses "username" parameter (email is our username)
         mockMvc.perform(post("/login")
@@ -151,15 +161,27 @@ class AuthWebControllerTest {
     /**
      * Registers a user via the API for use in subsequent web tests.
      */
-    private void registerUserViaApi(String email, String password, String displayName) throws Exception {
+    private void registerUserViaApi(String email, String password, String firstName) throws Exception {
         var request = Map.of(
             "email", email,
             "password", password,
-            "displayName", displayName
+            "firstName", firstName
         );
         mockMvc.perform(post("/api/v1/auth/register")
                 .contentType("application/json")
                 .content(jsonMapper.writeValueAsString(request)))
             .andExpect(status().isCreated());
+    }
+
+    /**
+     * Registers a user via the API and manually verifies their email.
+     * Required for login tests since email verification gate (Phase 4) blocks unverified users.
+     */
+    private void registerAndVerifyUser(String email, String password, String firstName) throws Exception {
+        registerUserViaApi(email, password, firstName);
+
+        AppUser user = userRepository.findByEmail(email).orElseThrow();
+        user.setEmailVerified(true);
+        userRepository.save(user);
     }
 }

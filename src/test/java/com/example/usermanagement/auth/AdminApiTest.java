@@ -15,6 +15,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import tools.jackson.databind.json.JsonMapper;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -99,7 +100,7 @@ class AdminApiTest {
 
             var request = Map.of(
                 "email", email,
-                "role", "ROLE_USER"
+                "roles", List.of("ROLE_USER")
             );
 
             mockMvc.perform(post("/api/v1/admin/users")
@@ -107,8 +108,9 @@ class AdminApiTest {
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(jsonMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.email").value(email))
-                .andExpect(jsonPath("$.roles").isArray());
+                .andExpect(jsonPath("$.user.email").value(email))
+                .andExpect(jsonPath("$.user.roles").isArray())
+                .andExpect(jsonPath("$.setPasswordUrl").isString());
         }
 
         @Test
@@ -119,7 +121,7 @@ class AdminApiTest {
 
             var request = Map.of(
                 "email", email,
-                "role", "ROLE_USER"
+                "roles", List.of("ROLE_USER")
             );
 
             mockMvc.perform(post("/api/v1/admin/users")
@@ -148,7 +150,7 @@ class AdminApiTest {
             var request = Map.of(
                 "firstName", "NewFirst",
                 "lastName", "NewLast",
-                "role", "ROLE_USER"
+                "roles", List.of("ROLE_USER")
             );
 
             mockMvc.perform(put("/api/v1/admin/users/" + user.getId())
@@ -212,7 +214,7 @@ class AdminApiTest {
         var request = Map.of(
             "email", email,
             "password", "password123",
-            "displayName", "Test User"
+            "firstName", "Test"
         );
         mockMvc.perform(post("/api/v1/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)

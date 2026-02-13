@@ -14,6 +14,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -170,29 +171,31 @@ public class UserService {
     }
 
     /**
-     * Updates a user's details by admin. Allows changing name fields and role.
+     * Updates a user's details by admin. Allows changing name fields and roles.
      *
      * @param id        the user's ID
      * @param firstName new first name
      * @param lastName  new last name
-     * @param roleName  new role name (e.g. "ROLE_ADMIN"); if null or blank, roles are unchanged
+     * @param roleNames the role names to assign (e.g. ["ROLE_USER", "ROLE_ADMIN"]); if null or empty, roles are unchanged
      * @return the updated UserDto
      * @throws ResourceNotFoundException if no user exists with the given ID
-     * @throws BadRequestException       if the specified role name does not exist
+     * @throws BadRequestException       if any specified role name does not exist
      */
     @Transactional
-    public UserDto updateUser(Long id, String firstName, String lastName, String roleName) {
+    public UserDto updateUser(Long id, String firstName, String lastName, List<String> roleNames) {
         AppUser user = userRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("User", id.toString()));
 
         user.setFirstName(firstName);
         user.setLastName(lastName);
 
-        if (roleName != null && !roleName.isBlank()) {
+        if (roleNames != null && !roleNames.isEmpty()) {
             user.getRoles().clear();
-            AppRole role = roleRepository.findByName(roleName)
-                .orElseThrow(() -> new BadRequestException("Role not found: " + roleName));
-            user.addRole(role);
+            for (String roleName : roleNames) {
+                AppRole role = roleRepository.findByName(roleName)
+                    .orElseThrow(() -> new BadRequestException("Role not found: " + roleName));
+                user.addRole(role);
+            }
         }
 
         AppUser saved = userRepository.save(user);

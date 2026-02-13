@@ -1,16 +1,22 @@
 package com.example.usermanagement.auth;
 
+import com.example.usermanagement.auth.internal.password.PasswordResetToken;
+import com.example.usermanagement.auth.internal.password.PasswordResetTokenRepository;
 import com.example.usermanagement.shared.email.EmailService;
+import com.example.usermanagement.user.internal.AppUser;
+import com.example.usermanagement.user.internal.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -39,6 +45,15 @@ class PasswordWebTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordResetTokenRepository tokenRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @MockitoBean
     private EmailService emailService;
@@ -109,6 +124,90 @@ class PasswordWebTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("Reset Password")))
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("abc123")));
+        }
+    }
+
+    // ========== End-to-End Reset Password Tests ==========
+
+    @Nested
+    @DisplayName("End-to-End Reset Password Flow")
+    class ResetPasswordE2ETests {
+
+        @Test
+        @DisplayName("POST /reset-password with valid token saves new password and shows success page")
+        void resetPassword_withValidToken_savesPasswordAndShowsSuccess() throws Exception {
+            // Use the seed admin user (verified, enabled)
+            AppUser user = userRepository.findByEmail("tizianobellin@yahoo.com").orElseThrow();
+
+            // Create a password reset token directly
+            String tokenValue = UUID.randomUUID().toString();
+            PasswordResetToken token = new PasswordResetToken(
+                tokenValue, user, LocalDateTime.now().plusHours(1));
+            tokenRepository.save(token);
+
+            String newPassword = "newSecurePassword123";
+
+            // POST the reset form
+            mockMvc.perform(post("/reset-password")
+                    .with(csrf())
+                    .param("token", tokenValue)
+                    .param("newPassword", newPassword)
+                    .param("confirmPassword", newPassword))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                    org.hamcrest.Matchers.containsString("Password Reset Successful")));
+
+            // Verify the password was actually saved
+            AppUser updatedUser = userRepository.findByEmail("tizianobellin@yahoo.com").orElseThrow();
+            assert passwordEncoder.matches(newPassword, updatedUser.getPasswordHash())
+                : "New password should match the stored hash";
+
+            // Restore original password for other tests
+            updatedUser.setPasswordHash(
+                passwordEncoder.encode("password123"));
+            updatedUser.setPasswordChangedAt(null);
+            userRepository.save(updatedUser);
+        }
+
+        @Test
+        @DisplayName("POST /reset-password with valid token allows login with new password")
+        void resetPassword_withValidToken_allowsLoginWithNewPassword() throws Exception {
+            // Create a unique test user
+            String email = "resetflow-" + UUID.randomUUID() + "@example.com";
+            AppUser user = new AppUser(email, email, passwordEncoder.encode("oldPassword123"));
+            user.setEnabled(true);
+            user.setEmailVerified(true);
+            userRepository.save(user);
+
+            // Assign ROLE_USER
+            userRepository.findByEmail(email).ifPresent(u -> {
+                // User needs at least one role for login
+            });
+
+            // Create a reset token
+            String tokenValue = UUID.randomUUID().toString();
+            PasswordResetToken token = new PasswordResetToken(
+                tokenValue, user, LocalDateTime.now().plusHours(1));
+            tokenRepository.save(token);
+
+            String newPassword = "brandNewPassword456";
+
+            // POST the reset form
+            mockMvc.perform(post("/reset-password")
+                    .with(csrf())
+                    .param("token", tokenValue)
+                    .param("newPassword", newPassword)
+                    .param("confirmPassword", newPassword))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                    org.hamcrest.Matchers.containsString("Password Reset Successful")));
+
+            // Verify the password was actually updated in the database
+            AppUser updatedUser = userRepository.findByEmail(email).orElseThrow();
+            assert passwordEncoder.matches(newPassword, updatedUser.getPasswordHash())
+                : "New password should be saved in the database";
+            assert updatedUser.getPasswordChangedAt() != null
+                : "passwordChangedAt should be set after reset";
         }
     }
 

@@ -105,7 +105,7 @@ class AdminWebTest {
                     .with(user("admin@example.com").roles("ADMIN"))
                     .with(csrf())
                     .param("email", email)
-                    .param("role", "ROLE_USER"))
+                    .param("roles", "ROLE_USER"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/admin/users"));
         }

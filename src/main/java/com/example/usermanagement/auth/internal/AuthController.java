@@ -57,7 +57,7 @@ public class AuthController {
      * their email before they can log in. No JWT is returned at registration
      * since the account is not yet verified.
      *
-     * @param request the registration details (email, password, displayName)
+     * @param request the registration details (email, password, firstName, lastName)
      * @return 201 Created with confirmation message
      */
     @PostMapping("/register")
@@ -66,7 +66,8 @@ public class AuthController {
         UserDto user = authService.registerUser(
             request.email(),
             request.password(),
-            request.displayName()
+            request.firstName(),
+            request.lastName()
         );
 
         // Return confirmation (no JWT - user must verify email first)

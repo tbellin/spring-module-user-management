@@ -72,7 +72,7 @@ Each task was committed atomically:
 1. **Task 1: Add sendInviteEmail to EmailService and create invite email templates** - `5e18395` (feat)
 2. **Task 2: Create AdminInviteService for user invite flow** - `bee8245` (feat)
 
-**Plan metadata:** pending (docs: complete plan)
+**Plan metadata:** `0df2903` (docs: complete plan)
 
 ## Files Created/Modified
 - `src/main/java/com/example/usermanagement/shared/email/EmailService.java` - Added sendInviteEmail method

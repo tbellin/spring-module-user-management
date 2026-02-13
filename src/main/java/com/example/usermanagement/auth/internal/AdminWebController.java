@@ -2,19 +2,32 @@ package com.example.usermanagement.auth.internal;
 
 import com.example.usermanagement.shared.dto.Toast;
 import com.example.usermanagement.shared.dto.UserDto;
+import com.example.usermanagement.shared.exception.BadRequestException;
 import com.example.usermanagement.shared.exception.DuplicateResourceException;
+import com.example.usermanagement.shared.exception.ResourceNotFoundException;
 import com.example.usermanagement.user.UserService;
+import com.example.usermanagement.user.internal.UpdateUserRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Thymeleaf controller for admin user management pages.
@@ -104,18 +117,71 @@ public class AdminWebController {
     @PostMapping("/admin/users/new")
     public String createUser(
             @RequestParam String email,
-            @RequestParam String role,
+            @RequestParam(required = false) String username,
+            @RequestParam(required = false) String firstName,
+            @RequestParam(required = false) String lastName,
+            @RequestParam(defaultValue = "false") boolean enabled,
+            @RequestParam("roles") List<String> roles,
             RedirectAttributes redirectAttributes) {
 
         try {
-            adminInviteService.inviteUser(email, role);
-            redirectAttributes.addFlashAttribute("toast",
-                new Toast("success", "Invitation sent to " + email));
+            AdminInviteService.InviteResult result =
+                adminInviteService.inviteUser(email, username, firstName, lastName, enabled, roles);
+
+            if (result.emailSent()) {
+                redirectAttributes.addFlashAttribute("toast",
+                    new Toast("success", "User created. Invitation sent to " + email));
+            } else {
+                redirectAttributes.addFlashAttribute("toast",
+                    new Toast("warning", "User created but email failed. Share this link manually:"));
+                redirectAttributes.addFlashAttribute("setPasswordUrl", result.setPasswordUrl());
+            }
             return "redirect:/admin/users";
         } catch (DuplicateResourceException e) {
             redirectAttributes.addFlashAttribute("toast",
                 new Toast("danger", "A user with this email already exists."));
             return "redirect:/admin/users/new";
         }
+    }
+
+    /**
+     * AJAX endpoint: update a user's name and roles (session-authenticated).
+     * <p>
+     * Called by JavaScript inline edit in the admin user list table.
+     * Uses the web filter chain (session + CSRF) instead of the API chain (JWT).
+     */
+    @PutMapping("/admin/users/{id}")
+    @ResponseBody
+    public ResponseEntity<UserDto> updateUser(
+            @PathVariable Long id,
+            @RequestBody UpdateUserRequest request) {
+
+        UserDto updated = userService.updateUser(id, request.firstName(), request.lastName(), request.roles());
+        return ResponseEntity.ok(updated);
+    }
+
+    /**
+     * AJAX endpoint: toggle a user's enabled/disabled status (session-authenticated).
+     * <p>
+     * Called by JavaScript toggle switch in the admin user list table.
+     * Prevents admins from disabling their own account.
+     */
+    @PatchMapping("/admin/users/{id}/status")
+    @ResponseBody
+    public ResponseEntity<UserDto> toggleUserStatus(
+            @PathVariable Long id,
+            @RequestBody Map<String, Boolean> body,
+            Authentication authentication) {
+
+        UserDto targetUser = userService.getUserById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("User", id.toString()));
+
+        if (targetUser.email().equals(authentication.getName())) {
+            throw new BadRequestException("Cannot disable your own account");
+        }
+
+        boolean enabled = body.get("enabled");
+        UserDto updated = userService.toggleUserEnabled(id, enabled);
+        return ResponseEntity.ok(updated);
     }
 }

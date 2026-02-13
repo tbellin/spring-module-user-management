@@ -30,10 +30,17 @@
                                        th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'" required autofocus>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="displayName" class="form-label">Display Name</label>
-                                <input type="text" class="form-control" th:field="*{displayName}" id="displayName"
-                                       th:classappend="${#fields.hasErrors('displayName')} ? 'is-invalid'" required>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="firstName" class="form-label">First Name</label>
+                                    <input type="text" class="form-control" th:field="*{firstName}" id="firstName"
+                                           th:classappend="${#fields.hasErrors('firstName')} ? 'is-invalid'" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="lastName" class="form-label">Last Name</label>
+                                    <input type="text" class="form-control" th:field="*{lastName}" id="lastName"
+                                           th:classappend="${#fields.hasErrors('lastName')} ? 'is-invalid'">
+                                </div>
                             </div>
 
                             <div class="mb-3">

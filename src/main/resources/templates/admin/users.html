@@ -12,6 +12,18 @@
             <a th:href="@{/admin/users/new}" class="btn btn-primary">Create User</a>
         </div>
 
+        <!-- Set-password URL alert (shown when email sending fails on invite) -->
+        <div th:if="${setPasswordUrl}" class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>Email could not be sent.</strong> Share this password setup link manually:
+            <div class="mt-2">
+                <div class="input-group">
+                    <input type="text" class="form-control" th:value="${setPasswordUrl}" readonly id="setPasswordUrlInput">
+                    <button class="btn btn-outline-secondary" type="button" onclick="copySetPasswordUrl()">Copy</button>
+                </div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
         <!-- Search and Filter Bar -->
         <form th:action="@{/admin/users}" method="get" class="card card-body mb-4">
             <div class="row g-3 align-items-end">
@@ -96,53 +108,54 @@
                 </thead>
                 <tbody>
                     <tr th:each="user : ${users.content}" th:attr="data-user-id=${user.id()}">
-                        <!-- Display Mode -->
-                        <td class="display-mode" th:text="${user.email()}">user@example.com</td>
-                        <td class="display-mode">
-                            <span th:text="${(user.firstName() != null ? user.firstName() : '') + ' ' + (user.lastName() != null ? user.lastName() : '')}"></span>
-                        </td>
-                        <td class="display-mode">
-                            <span th:each="r : ${user.roles()}"
-                                  class="badge bg-secondary me-1"
-                                  th:text="${#strings.replace(r, 'ROLE_', '')}">USER</span>
-                        </td>
+                        <!-- Email -->
+                        <td th:text="${user.email()}">user@example.com</td>
+                        <!-- Name -->
                         <td>
-                            <div class="form-check form-switch">
-                                <input type="checkbox" class="form-check-input" role="switch"
-                                       th:checked="${user.enabled()}"
-                                       th:attr="onchange='toggleUserStatus(this, ' + ${user.id()} + ')'">
-                            </div>
-                        </td>
-                        <td class="display-mode" th:text="${#temporals.format(user.createdAt(), 'yyyy-MM-dd')}">2026-01-01</td>
-                        <td class="display-mode">
-                            <button type="button" class="btn btn-sm btn-outline-primary"
-                                    th:attr="onclick='editRow(' + ${user.id()} + ')'">
-                                Edit
-                            </button>
-                        </td>
-
-                        <!-- Edit Mode (hidden by default) -->
-                        <td class="edit-mode d-none" th:text="${user.email()}">user@example.com</td>
-                        <td class="edit-mode d-none">
-                            <div class="d-flex gap-1">
+                            <span class="display-mode"
+                                  th:text="${(user.firstName() != null ? user.firstName() : '') + ' ' + (user.lastName() != null ? user.lastName() : '')}"></span>
+                            <div class="edit-mode d-none d-flex gap-1">
                                 <input type="text" class="form-control form-control-sm edit-firstName"
                                        th:value="${user.firstName()}" placeholder="First name">
                                 <input type="text" class="form-control form-control-sm edit-lastName"
                                        th:value="${user.lastName()}" placeholder="Last name">
                             </div>
                         </td>
-                        <td class="edit-mode d-none">
-                            <select class="form-select form-select-sm edit-role">
-                                <option value="ROLE_USER"
-                                        th:selected="${user.roles().contains('ROLE_USER')}">User</option>
-                                <option value="ROLE_ADMIN"
-                                        th:selected="${user.roles().contains('ROLE_ADMIN')}">Admin</option>
+                        <!-- Role -->
+                        <td>
+                            <span class="display-mode" th:remove="tag">
+                                <span th:each="r : ${user.roles()}"
+                                      class="badge bg-secondary me-1 display-mode"
+                                      th:text="${#strings.replace(r, 'ROLE_', '')}">USER</span>
+                            </span>
+                            <select class="edit-mode d-none form-select form-select-sm edit-roles" multiple size="2">
+                                <option value="ROLE_USER" th:selected="${user.roles().contains('ROLE_USER')}">User</option>
+                                <option value="ROLE_ADMIN" th:selected="${user.roles().contains('ROLE_ADMIN')}">Admin</option>
                             </select>
                         </td>
-                        <!-- Status cell is shared (not duplicated) -->
-                        <td class="edit-mode d-none" th:text="${#temporals.format(user.createdAt(), 'yyyy-MM-dd')}">2026-01-01</td>
-                        <td class="edit-mode d-none">
-                            <div class="d-flex gap-1">
+                        <!-- Status (always visible, works in both modes) -->
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="form-check form-switch mb-0">
+                                    <input type="checkbox" class="form-check-input status-toggle" role="switch"
+                                           th:checked="${user.enabled()}"
+                                           th:attr="onchange='toggleUserStatus(this, ' + ${user.id()} + ')'">
+                                </div>
+                                <span th:if="${user.emailVerified()}" class="badge bg-success">Verified</span>
+                                <span th:unless="${user.emailVerified()}" class="badge bg-warning text-dark">Unverified</span>
+                            </div>
+                        </td>
+                        <!-- Created -->
+                        <td th:text="${#temporals.format(user.createdAt(), 'yyyy-MM-dd')}">2026-01-01</td>
+                        <!-- Actions -->
+                        <td>
+                            <div class="display-mode">
+                                <button type="button" class="btn btn-sm btn-outline-primary"
+                                        th:attr="onclick='editRow(' + ${user.id()} + ')'">
+                                    Edit
+                                </button>
+                            </div>
+                            <div class="edit-mode d-none d-flex gap-1">
                                 <button type="button" class="btn btn-sm btn-success"
                                         th:attr="onclick='saveRow(' + ${user.id()} + ')'">Save</button>
                                 <button type="button" class="btn btn-sm btn-outline-secondary"
@@ -211,6 +224,15 @@
             var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
 
             /**
+             * Copy the set-password URL to clipboard.
+             */
+            function copySetPasswordUrl() {
+                var input = document.getElementById('setPasswordUrlInput');
+                input.select();
+                navigator.clipboard.writeText(input.value);
+            }
+
+            /**
              * Switch a table row into edit mode.
              */
             function editRow(userId) {
@@ -251,20 +273,29 @@
 
                 var firstName = row.querySelector('.edit-firstName').value;
                 var lastName = row.querySelector('.edit-lastName').value;
-                var role = row.querySelector('.edit-role').value;
+                var roles = [];
+                var roleSelect = row.querySelector('.edit-roles');
+                for (var i = 0; i < roleSelect.options.length; i++) {
+                    if (roleSelect.options[i].selected) roles.push(roleSelect.options[i].value);
+                }
+
+                if (roles.length === 0) {
+                    alert('At least one role must be selected.');
+                    return;
+                }
 
                 var headers = {
                     'Content-Type': 'application/json'
                 };
                 headers[csrfHeader] = csrfToken;
 
-                fetch('/api/v1/admin/users/' + userId, {
+                fetch('/admin/users/' + userId, {
                     method: 'PUT',
                     headers: headers,
                     body: JSON.stringify({
                         firstName: firstName,
                         lastName: lastName,
-                        role: role
+                        roles: roles
                     })
                 })
                 .then(function(response) {
@@ -276,18 +307,25 @@
                     return response.json();
                 })
                 .then(function(data) {
-                    // Update display cells with new values
-                    var displayCells = row.querySelectorAll('.display-mode');
-                    // Cell 0: email (unchanged)
-                    // Cell 1: name
+                    // Update display elements with new values
+                    // Name: find the display-mode span in the Name td (2nd td)
+                    var tds = row.querySelectorAll('td');
+                    var nameSpan = tds[1].querySelector('span.display-mode');
                     var nameText = (data.firstName || '') + ' ' + (data.lastName || '');
-                    displayCells[1].querySelector('span').textContent = nameText.trim();
-                    // Cell 2: role badges
-                    var rolesHtml = '';
+                    nameSpan.textContent = nameText.trim();
+                    // Role badges: find display-mode badges in Role td (3rd td)
+                    var roleTd = tds[2];
+                    roleTd.querySelectorAll('.badge.display-mode').forEach(function(el) { el.remove(); });
+                    var editDiv = roleTd.querySelector('.edit-mode');
                     data.roles.forEach(function(r) {
-                        rolesHtml += '<span class="badge bg-secondary me-1">' + r.replace('ROLE_', '') + '</span>';
+                        var badge = document.createElement('span');
+                        badge.className = 'badge bg-secondary me-1 display-mode';
+                        badge.textContent = r.replace('ROLE_', '');
+                        roleTd.insertBefore(badge, editDiv);
                     });
-                    displayCells[2].innerHTML = rolesHtml;
+                    // Update status toggle to match response
+                    var statusToggle = row.querySelector('.status-toggle');
+                    if (statusToggle) statusToggle.checked = data.enabled;
 
                     // Switch back to display mode
                     cancelEdit(userId);
@@ -308,7 +346,7 @@
                 };
                 headers[csrfHeader] = csrfToken;
 
-                fetch('/api/v1/admin/users/' + userId + '/status', {
+                fetch('/admin/users/' + userId + '/status', {
                     method: 'PATCH',
                     headers: headers,
                     body: JSON.stringify({ enabled: enabled })

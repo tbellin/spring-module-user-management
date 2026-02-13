@@ -53,14 +53,15 @@ public class AuthService {
      * The user is created with the default ROLE_USER role.
      * Password is hashed before storage.
      *
-     * @param email       the user's email address (also used as username)
-     * @param password    the user's plaintext password
-     * @param displayName the user's display name
+     * @param email     the user's email address (also used as username)
+     * @param password  the user's plaintext password
+     * @param firstName the user's first name
+     * @param lastName  the user's last name (optional)
      * @return the created user as a UserDto
      * @throws DuplicateResourceException if email is already registered
      */
     @Transactional
-    public UserDto registerUser(String email, String password, String displayName) {
+    public UserDto registerUser(String email, String password, String firstName, String lastName) {
         if (userService.existsByEmail(email)) {
             throw new DuplicateResourceException("User", "email");
         }
@@ -68,8 +69,7 @@ public class AuthService {
         String passwordHash = passwordEncoder.encode(password);
 
         // Use email as username (per RESEARCH.md recommendation)
-        // displayName goes to firstName field, lastName is null
-        UserDto createdUser = userService.createUser(email, email, passwordHash, displayName, null);
+        UserDto createdUser = userService.createUser(email, email, passwordHash, firstName, lastName);
 
         // Send verification email
         sendVerificationEmail(email);
