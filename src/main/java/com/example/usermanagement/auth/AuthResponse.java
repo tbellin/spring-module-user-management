@@ -1,5 +1,7 @@
 package com.example.usermanagement.auth;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.Set;
 
 /**
@@ -15,12 +17,19 @@ import java.util.Set;
  * @param displayName the user's display name
  * @param roles       the user's roles (e.g., ROLE_USER, ROLE_ADMIN)
  */
+@Schema(description = "Authentication response with JWT token")
 public record AuthResponse(
+    @Schema(description = "JWT access token")
     String token,
+    @Schema(description = "Token type (always Bearer)", example = "Bearer")
     String tokenType,
+    @Schema(description = "Token expiration in milliseconds", example = "900000")
     long expiresIn,
+    @Schema(description = "Authenticated user's email", example = "user@example.com")
     String email,
+    @Schema(description = "User's display name", example = "user@example.com")
     String displayName,
+    @Schema(description = "User's roles", example = "[\"ROLE_USER\"]")
     Set<String> roles
 ) {
     /**

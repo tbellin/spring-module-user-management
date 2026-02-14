@@ -1,5 +1,7 @@
 package com.example.usermanagement.shared.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -19,15 +21,25 @@ import java.util.Set;
  * @param roles         the user's role names (e.g., "ROLE_USER", "ROLE_ADMIN")
  * @param createdAt     when the user account was created
  */
+@Schema(description = "User profile data")
 public record UserDto(
+    @Schema(description = "User ID", example = "1")
     Long id,
+    @Schema(description = "Email address", example = "user@example.com")
     String email,
+    @Schema(description = "Username", example = "user@example.com")
     String username,
+    @Schema(description = "First name", example = "John")
     String firstName,
+    @Schema(description = "Last name", example = "Doe")
     String lastName,
+    @Schema(description = "Whether account is enabled", example = "true")
     boolean enabled,
+    @Schema(description = "Whether email is verified", example = "true")
     boolean emailVerified,
+    @Schema(description = "Assigned roles", example = "[\"ROLE_USER\"]")
     Set<String> roles,
+    @Schema(description = "Account creation timestamp", example = "2026-01-15T10:30:00")
     LocalDateTime createdAt
 ) {
 
