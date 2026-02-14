@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-28)
 ## Current Position
 
 Phase: 7 of 8 (API Documentation & Swagger)
-Plan: 1 of 3 in current phase (07-01 complete)
+Plan: 2 of 3 in current phase (07-02 complete)
 Status: In Progress
-Last activity: 2026-02-14 -- Completed 07-01-PLAN.md (SpringDoc + Swagger UI Setup)
+Last activity: 2026-02-14 -- Completed 07-02-PLAN.md (Controller & DTO OpenAPI Annotations)
 
-Progress: [████████████████░░░░] ~73% (41/56 plans complete)
+Progress: [█████████████████░░░] ~75% (42/56 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 41
+- Total plans completed: 42
 - Average duration: 4min
-- Total execution time: ~179min
+- Total execution time: ~183min
 
 **By Phase:**
 
@@ -33,10 +33,10 @@ Progress: [████████████████░░░░] ~73% (4
 | 4. Email Verification | 8/8 | 35min | 4.4min |
 | 5. Password Management | 5/5 | 45min | 9min |
 | 6. User Profile & Admin | 4/4 | 16min | 4min |
-| 7. API Documentation & Swagger | 1/3 | 2min | 2min |
+| 7. API Documentation & Swagger | 2/3 | 6min | 3min |
 
 **Recent Trend:**
-- Last 5 plans: 07-01 (2min), 06-04 (7min), 06-03 (3min), 06-02 (2min), 06-01 (4min)
+- Last 5 plans: 07-02 (4min), 07-01 (2min), 06-04 (7min), 06-03 (3min), 06-02 (2min)
 - Trend: Code-only plans remain fast (~2-4min); testing/verification plans take longer
 
 *Updated after each plan completion*
@@ -166,6 +166,9 @@ Recent decisions affecting current work:
 - 07-01: OpenApiConfig in shared.config (cross-cutting concern, same as PasswordConfig/AppProperties)
 - 07-01: springdoc 3.0.1 compatible with Spring Boot 4 + Jackson 3 (no fallback dependency needed)
 - 07-01: Swagger UI paths in web chain permitAll (not API chain, since /swagger-ui/** is not under /api/**)
+- 07-02: Empty @SecurityRequirements (plural) overrides global security on public endpoints, removing lock icon in Swagger UI
+- 07-02: @Schema placed before validation annotations on record components for consistent annotation ordering
+- 07-02: @Parameter(hidden = true) on Authentication parameters to hide Spring-injected values from Swagger forms
 
 ### Pending Todos
 
@@ -179,5 +182,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-14
-Stopped at: Completed 07-01-PLAN.md. Phase 7 in progress (1/3 plans complete).
+Stopped at: Completed 07-02-PLAN.md. Phase 7 in progress (2/3 plans complete).
 Resume file: None
