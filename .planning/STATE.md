@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-28)
 
 **Core value:** Secure, modular user authentication and management that works identically in dev (H2, local) and prod (PostgreSQL, Docker) with zero code changes between environments.
-**Current focus:** Phase 6 - User Profile & Admin Operations - COMPLETE
+**Current focus:** Phase 7 - API Documentation & Swagger
 
 ## Current Position
 
-Phase: 6 of 8 (User Profile & Admin Operations) - COMPLETE
-Plan: 4 of 4 in current phase (all plans complete)
-Status: Phase Complete
-Last activity: 2026-02-13 -- Completed 06-04-PLAN.md (Integration Tests & Manual Verification)
+Phase: 7 of 8 (API Documentation & Swagger)
+Plan: 1 of 3 in current phase (07-01 complete)
+Status: In Progress
+Last activity: 2026-02-14 -- Completed 07-01-PLAN.md (SpringDoc + Swagger UI Setup)
 
-Progress: [████████████████░░░░] ~71% (40/56 plans complete)
+Progress: [████████████████░░░░] ~73% (41/56 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 40
+- Total plans completed: 41
 - Average duration: 4min
-- Total execution time: ~177min
+- Total execution time: ~179min
 
 **By Phase:**
 
@@ -33,9 +33,10 @@ Progress: [████████████████░░░░] ~71% (4
 | 4. Email Verification | 8/8 | 35min | 4.4min |
 | 5. Password Management | 5/5 | 45min | 9min |
 | 6. User Profile & Admin | 4/4 | 16min | 4min |
+| 7. API Documentation & Swagger | 1/3 | 2min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 06-04 (7min), 06-03 (3min), 06-02 (2min), 06-01 (4min), 05-05 (30min)
+- Last 5 plans: 07-01 (2min), 06-04 (7min), 06-03 (3min), 06-02 (2min), 06-01 (4min)
 - Trend: Code-only plans remain fast (~2-4min); testing/verification plans take longer
 
 *Updated after each plan completion*
@@ -162,6 +163,9 @@ Recent decisions affecting current work:
 - 06-03: Toggle undo toast auto-dismisses after 8 seconds with undo button that reverses the PATCH call
 - 06-04: All Phase 6 features manually verified and approved - profile view/edit, admin list/search/filter/paginate, admin create/invite, admin inline edit, admin toggle with undo, 403 error page, self-disable prevention
 - 06-04: MockitoBean EmailService (not JavaMailSender) for test SMTP isolation to keep actuator health checks intact
+- 07-01: OpenApiConfig in shared.config (cross-cutting concern, same as PasswordConfig/AppProperties)
+- 07-01: springdoc 3.0.1 compatible with Spring Boot 4 + Jackson 3 (no fallback dependency needed)
+- 07-01: Swagger UI paths in web chain permitAll (not API chain, since /swagger-ui/** is not under /api/**)
 
 ### Pending Todos
 
@@ -169,11 +173,11 @@ None yet.
 
 ### Blockers/Concerns
 
-- SpringDoc OpenAPI compatibility with Spring Boot 4 must be verified before Phase 7
+- ~~SpringDoc OpenAPI compatibility with Spring Boot 4 must be verified before Phase 7~~ RESOLVED: springdoc 3.0.1 works with Boot 4 + Jackson 3
 - ModularityTests has pre-existing failure (reports violations even for allowed dependencies)
 
 ## Session Continuity
 
-Last session: 2026-02-13
-Stopped at: Completed 06-04-PLAN.md. Phase 6 complete. Ready for Phase 7.
+Last session: 2026-02-14
+Stopped at: Completed 07-01-PLAN.md. Phase 7 in progress (1/3 plans complete).
 Resume file: None
