@@ -108,6 +108,13 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
+        <!-- OpenAPI / Swagger UI -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+
         <!-- Spring Modulith -->
         <dependency>
             <groupId>org.springframework.modulith</groupId>
