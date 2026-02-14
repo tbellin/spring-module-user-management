@@ -93,6 +93,9 @@ public class SecurityConfig {
                 .requestMatchers("/forgot-password").permitAll()
                 .requestMatchers("/reset-password").permitAll()
                 .requestMatchers("/actuator/health", "/actuator/info").permitAll()
+                // Swagger UI and OpenAPI spec
+                .requestMatchers("/swagger-ui/**", "/swagger-ui.html",
+                                 "/v3/api-docs/**", "/v3/api-docs.yaml").permitAll()
                 // Static resources
                 .requestMatchers("/css/**", "/js/**", "/webjars/**").permitAll()
                 // H2 console (dev only)
