@@ -3,6 +3,11 @@ package com.example.usermanagement.auth.internal;
 import com.example.usermanagement.auth.AuthResponse;
 import com.example.usermanagement.auth.internal.verification.ResendRateLimiter;
 import com.example.usermanagement.shared.dto.UserDto;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +43,7 @@ import java.util.stream.Collectors;
  *   <li>MethodArgumentNotValidException (400) - validation errors</li>
  * </ul>
  */
+@Tag(name = "Authentication", description = "User registration, login, and email verification")
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthController {
@@ -60,6 +66,14 @@ public class AuthController {
      * @param request the registration details (email, password, firstName, lastName)
      * @return 201 Created with confirmation message
      */
+    @Operation(summary = "Register new user",
+              description = "Creates a user account and sends a verification email. The user must verify their email before logging in.")
+    @SecurityRequirements
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "User registered successfully"),
+        @ApiResponse(responseCode = "400", description = "Validation error"),
+        @ApiResponse(responseCode = "409", description = "Email already registered")
+    })
     @PostMapping("/register")
     public ResponseEntity<Map<String, Object>> register(@Valid @RequestBody RegistrationRequest request) {
         // Create the user (sends verification email)
@@ -87,6 +101,13 @@ public class AuthController {
      * @param request the login credentials (email, password, rememberMe)
      * @return 200 OK with AuthResponse containing JWT
      */
+    @Operation(summary = "Authenticate user",
+              description = "Validates credentials and returns a JWT token. Use the token in the Authorize dialog to access protected endpoints.")
+    @SecurityRequirements
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Authentication successful"),
+        @ApiResponse(responseCode = "401", description = "Invalid credentials")
+    })
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         // Authenticate user
@@ -127,6 +148,13 @@ public class AuthController {
      * @param request the resend request containing email
      * @return success message (always the same for SEC-01)
      */
+    @Operation(summary = "Resend verification email",
+              description = "Sends a new verification email. Returns the same response regardless of whether the email exists (SEC-01).")
+    @SecurityRequirements
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Request processed"),
+        @ApiResponse(responseCode = "429", description = "Rate limited")
+    })
     @PostMapping("/resend-verification")
     public ResponseEntity<Map<String, String>> resendVerification(
             @Valid @RequestBody ResendVerificationRequest request) {

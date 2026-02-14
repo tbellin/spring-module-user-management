@@ -6,6 +6,11 @@ import com.example.usermanagement.shared.exception.ResourceNotFoundException;
 import com.example.usermanagement.user.UserService;
 import com.example.usermanagement.user.internal.CreateUserRequest;
 import com.example.usermanagement.user.internal.UpdateUserRequest;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,6 +46,7 @@ import java.util.Map;
  * Placed in {@code auth.internal} to access both {@link UserService}
  * and {@link AdminInviteService} without violating module boundaries.
  */
+@Tag(name = "Admin User Management", description = "CRUD operations for user accounts (requires ADMIN role)")
 @RestController
 @RequestMapping("/api/v1/admin/users")
 public class AdminController {
@@ -62,6 +68,13 @@ public class AdminController {
      * @param pageable pagination and sorting parameters (default: 10 per page, sorted by createdAt DESC)
      * @return a page of matching users
      */
+    @Operation(summary = "List users",
+              description = "Lists users with optional search, role filter, status filter, and pagination. Requires ADMIN role.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "User list"),
+        @ApiResponse(responseCode = "401", description = "Not authenticated"),
+        @ApiResponse(responseCode = "403", description = "Not an admin")
+    })
     @GetMapping
     public ResponseEntity<Page<UserDto>> listUsers(
             @RequestParam(defaultValue = "") String search,
@@ -81,6 +94,13 @@ public class AdminController {
      * @param request the create user request containing email and role
      * @return the created user with HTTP 201 status
      */
+    @Operation(summary = "Create user via invite",
+              description = "Creates a user account and sends an invite email with a set-password link. Requires ADMIN role.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "User created"),
+        @ApiResponse(responseCode = "400", description = "Validation error"),
+        @ApiResponse(responseCode = "409", description = "Email already registered")
+    })
     @PostMapping
     public ResponseEntity<AdminInviteService.InviteResult> createUser(@Valid @RequestBody CreateUserRequest request) {
         AdminInviteService.InviteResult result = adminInviteService.inviteUser(
@@ -96,6 +116,12 @@ public class AdminController {
      * @param request the update request with optional firstName, lastName, and role
      * @return the updated user
      */
+    @Operation(summary = "Update user",
+              description = "Updates a user's name and/or roles. Requires ADMIN role.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "User updated"),
+        @ApiResponse(responseCode = "404", description = "User not found")
+    })
     @PutMapping("/{id}")
     public ResponseEntity<UserDto> updateUser(
             @PathVariable Long id,
@@ -116,11 +142,18 @@ public class AdminController {
      * @return the updated user
      * @throws BadRequestException if the admin attempts to disable their own account
      */
+    @Operation(summary = "Toggle user status",
+              description = "Enables or disables a user account. Cannot disable your own account. Requires ADMIN role.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Status updated"),
+        @ApiResponse(responseCode = "400", description = "Cannot disable own account"),
+        @ApiResponse(responseCode = "404", description = "User not found")
+    })
     @PatchMapping("/{id}/status")
     public ResponseEntity<UserDto> toggleUserStatus(
             @PathVariable Long id,
             @RequestBody Map<String, Boolean> body,
-            Authentication authentication) {
+            @Parameter(hidden = true) Authentication authentication) {
 
         // Self-disable prevention
         UserDto targetUser = userService.getUserById(id)

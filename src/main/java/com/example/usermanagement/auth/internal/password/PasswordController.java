@@ -1,6 +1,11 @@
 package com.example.usermanagement.auth.internal.password;
 
 import com.example.usermanagement.auth.internal.verification.ResendRateLimiter;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +33,7 @@ import java.util.Map;
  *   <li>MethodArgumentNotValidException (400) - bean validation errors</li>
  * </ul>
  */
+@Tag(name = "Password Management", description = "Change password, forgot password, and reset password flows")
 @RestController
 @RequestMapping("/api/v1/auth")
 public class PasswordController {
@@ -54,6 +60,13 @@ public class PasswordController {
      * @param authentication the authenticated user's security context
      * @return 200 on success, 401 if not authenticated, 400 if passwords don't match or current password wrong
      */
+    @Operation(summary = "Change password",
+              description = "Changes the authenticated user's password. Requires current password for verification.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Password changed"),
+        @ApiResponse(responseCode = "400", description = "Wrong current password or validation error"),
+        @ApiResponse(responseCode = "401", description = "Not authenticated")
+    })
     @PostMapping("/change-password")
     public ResponseEntity<Map<String, String>> changePassword(
             @Valid @RequestBody ChangePasswordRequest request,
@@ -88,6 +101,13 @@ public class PasswordController {
      * @param request the forgot password request containing the email address
      * @return 200 with generic message, or 429 if rate limited
      */
+    @Operation(summary = "Request password reset",
+              description = "Sends a password reset email. Returns the same response regardless of whether the email exists (SEC-01).")
+    @SecurityRequirements
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Request processed"),
+        @ApiResponse(responseCode = "429", description = "Rate limited")
+    })
     @PostMapping("/forgot-password")
     public ResponseEntity<Map<String, String>> forgotPassword(
             @Valid @RequestBody ForgotPasswordRequest request) {
@@ -123,6 +143,13 @@ public class PasswordController {
      * @param request the reset password request (token, newPassword, confirmPassword)
      * @return 200 on success, 400 on expired/invalid/used token or password mismatch
      */
+    @Operation(summary = "Reset password with token",
+              description = "Sets a new password using the token from the reset email. Token must be valid and unused.")
+    @SecurityRequirements
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Password reset successful"),
+        @ApiResponse(responseCode = "400", description = "Invalid, expired, or used token")
+    })
     @PostMapping("/reset-password")
     public ResponseEntity<Map<String, String>> resetPassword(
             @Valid @RequestBody ResetPasswordRequest request) {
