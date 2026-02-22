@@ -29,6 +29,6 @@ public class OpenApiConfig {
                         .type(SecurityScheme.Type.HTTP)
                         .scheme("bearer")
                         .bearerFormat("JWT")
-                        .description("JWT token from /api/v1/auth/login")));
+                        .description("Paste ONLY the token value (eyJ...) from the login response. Do NOT include 'Bearer ' — it is added automatically.")));
     }
 }
