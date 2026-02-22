@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-28)
 ## Current Position
 
 Phase: 8 of 8 (Tooling & Project Documentation)
-Plan: 3 of 4 in current phase (08-01, 08-02, 08-03 complete)
-Status: Executing Phase 8
-Last activity: 2026-02-22 -- Completed 08-03-PLAN.md (Project Documentation)
+Plan: 4 of 4 in current phase (08-01, 08-02, 08-03, 08-04 complete)
+Status: Phase 8 Complete -- All phases complete
+Last activity: 2026-02-22 -- Completed 08-04-PLAN.md (Project README)
 
-Progress: [███████████████████░] ~86% (48/56 plans complete)
+Progress: [████████████████████] 100% (49/56 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 46
+- Total plans completed: 47
 - Average duration: 4min
-- Total execution time: ~192min
+- Total execution time: ~193min
 
 **By Phase:**
 
@@ -34,10 +34,10 @@ Progress: [███████████████████░] ~86% (4
 | 5. Password Management | 5/5 | 45min | 9min |
 | 6. User Profile & Admin | 4/4 | 16min | 4min |
 | 7. API Documentation & Swagger | 3/3 | 14min | 4.7min |
-| 8. Tooling & Project Documentation | 3/4 | 4min | 1.3min |
+| 8. Tooling & Project Documentation | 4/4 | 5min | 1.3min |
 
 **Recent Trend:**
-- Last 5 plans: 08-03 (3min), 08-02 (n/a), 08-01 (1min), 07-03 (8min), 07-02 (4min)
+- Last 5 plans: 08-04 (1min), 08-03 (3min), 08-02 (n/a), 08-01 (1min), 07-03 (8min)
 - Trend: Documentation plans are fast (~1-3min)
 
 *Updated after each plan completion*
@@ -174,6 +174,8 @@ Recent decisions affecting current work:
 - 08-01: Keep existing run-spring-dev-mode.sh for backward compatibility
 - 08-01: run-prod.sh defaults to 'up' subcommand when no argument provided
 - 08-01: Port check uses lsof with -sTCP:LISTEN filter (not sudo) for dev script
+- 08-04: README links to doc/ files for details rather than duplicating content
+- 08-04: Scripts table includes all 6 bin/ utilities with purpose descriptions
 
 ### Pending Todos
 
@@ -187,5 +189,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-22
-Stopped at: Completed 08-03-PLAN.md (Project Documentation). Phase 8 in progress (3/4 plans).
+Stopped at: Completed 08-04-PLAN.md (Project README). Phase 8 complete (4/4 plans). All 8 phases complete.
 Resume file: None
