@@ -18,7 +18,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 4: Email Verification** - Email verification flow with SMTP, token lifecycle, and resend capability
 - [x] **Phase 5: Password Management** - Change password, lost password request, and reset password via email token
 - [x] **Phase 6: User Profile & Admin Operations** - User self-service profile and admin CRUD with search/filter
-- [ ] **Phase 7: API Documentation & Swagger** - REST API completeness verification and Swagger UI integration
+- [x] **Phase 7: API Documentation & Swagger** - REST API completeness verification and Swagger UI integration
 - [ ] **Phase 8: Tooling & Project Documentation** - Dev/prod run scripts, cURL tests, project docs, and README
 
 ## Phase Details
@@ -156,9 +156,9 @@ Plans:
 **Plans**: 3 plans in 3 waves
 
 Plans:
-- [ ] 07-01-PLAN.md -- SpringDoc dependency, configuration, OpenApiConfig bean, SecurityConfig update (wave 1)
-- [ ] 07-02-PLAN.md -- Controller @Tag/@Operation annotations and DTO @Schema annotations (wave 2)
-- [ ] 07-03-PLAN.md -- Integration tests and manual verification (wave 3)
+- [x] 07-01-PLAN.md -- SpringDoc dependency, configuration, OpenApiConfig bean, SecurityConfig update (wave 1)
+- [x] 07-02-PLAN.md -- Controller @Tag/@Operation annotations and DTO @Schema annotations (wave 2)
+- [x] 07-03-PLAN.md -- Integration tests and manual verification (wave 3)
 
 ### Phase 8: Tooling & Project Documentation
 **Goal**: Complete developer experience with run scripts for both environments, automated cURL test coverage of all features, and comprehensive project documentation
@@ -190,9 +190,9 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | 4. Email Verification | 8/8 | Complete | 2026-02-06 |
 | 5. Password Management | 5/5 | Complete | 2026-02-11 |
 | 6. User Profile & Admin Operations | 4/4 | Complete | 2026-02-13 |
-| 7. API Documentation & Swagger | 0/3 | Not started | - |
+| 7. API Documentation & Swagger | 3/3 | Complete | 2026-02-22 |
 | 8. Tooling & Project Documentation | 0/TBD | Not started | - |
 
 ---
 *Roadmap created: 2026-01-28*
-*Last updated: 2026-02-13*
+*Last updated: 2026-02-22*

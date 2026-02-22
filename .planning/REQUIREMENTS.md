@@ -51,8 +51,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### API & Documentation
 
-- [ ] **API-01**: All features accessible via REST API under `/api/v1/`
-- [ ] **API-02**: Swagger UI available for interactive API testing
+- [x] **API-01**: All features accessible via REST API under `/api/v1/`
+- [x] **API-02**: Swagger UI available for interactive API testing
 - [x] **API-03**: API endpoints return consistent JSON error responses
 
 ### Security
@@ -156,8 +156,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PAGE-06 | Phase 5 | Pending |
 | PAGE-07 | Phase 5 | Pending |
 | PAGE-08 | Phase 3 | Complete |
-| API-01 | Phase 7 | Pending |
-| API-02 | Phase 7 | Pending |
+| API-01 | Phase 7 | Complete |
+| API-02 | Phase 7 | Complete |
 | API-03 | Phase 2 | Complete |
 | SEC-01 | Phase 2 | Complete |
 | SEC-02 | Phase 2 | Complete |
@@ -184,4 +184,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-01-28*
-*Last updated: 2026-02-04 (Phase 3 requirements marked Complete)*
+*Last updated: 2026-02-22 (Phase 7 requirements marked Complete)*
