@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-28)
 
 **Core value:** Secure, modular user authentication and management that works identically in dev (H2, local) and prod (PostgreSQL, Docker) with zero code changes between environments.
-**Current focus:** Phase 7 - API Documentation & Swagger
+**Current focus:** Phase 8 - Tooling & Project Documentation
 
 ## Current Position
 
-Phase: 7 of 8 (API Documentation & Swagger)
-Plan: 3 of 3 in current phase (07-03 complete)
-Status: Phase 7 Complete
-Last activity: 2026-02-22 -- Completed 07-03-PLAN.md (Integration Tests & Manual Verification)
+Phase: 8 of 8 (Tooling & Project Documentation)
+Plan: 1 of 4 in current phase (08-01 complete)
+Status: Executing Phase 8
+Last activity: 2026-02-22 -- Completed 08-01-PLAN.md (Run Scripts)
 
-Progress: [██████████████████░░] ~80% (45/56 plans complete)
+Progress: [██████████████████░░] ~82% (46/56 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 45
+- Total plans completed: 46
 - Average duration: 4min
-- Total execution time: ~191min
+- Total execution time: ~192min
 
 **By Phase:**
 
@@ -34,10 +34,11 @@ Progress: [██████████████████░░] ~80% (4
 | 5. Password Management | 5/5 | 45min | 9min |
 | 6. User Profile & Admin | 4/4 | 16min | 4min |
 | 7. API Documentation & Swagger | 3/3 | 14min | 4.7min |
+| 8. Tooling & Project Documentation | 1/4 | 1min | 1min |
 
 **Recent Trend:**
-- Last 5 plans: 07-03 (8min), 07-02 (4min), 07-01 (2min), 06-04 (7min), 06-03 (3min)
-- Trend: Verification plans with manual checkpoints take longer (~7-8min); code-only plans remain fast (~2-4min)
+- Last 5 plans: 08-01 (1min), 07-03 (8min), 07-02 (4min), 07-01 (2min), 06-04 (7min)
+- Trend: Shell script plans are very fast (~1min); verification plans take longer (~7-8min)
 
 *Updated after each plan completion*
 
@@ -170,6 +171,9 @@ Recent decisions affecting current work:
 - 07-02: @Schema placed before validation annotations on record components for consistent annotation ordering
 - 07-02: @Parameter(hidden = true) on Authentication parameters to hide Spring-injected values from Swagger forms
 - 07-03: @ParameterObject annotation required on Pageable parameters for SpringDoc to explode into individual query params (page, size, sort); without it Swagger UI sends pageable as complex object causing 500
+- 08-01: Keep existing run-spring-dev-mode.sh for backward compatibility
+- 08-01: run-prod.sh defaults to 'up' subcommand when no argument provided
+- 08-01: Port check uses lsof with -sTCP:LISTEN filter (not sudo) for dev script
 
 ### Pending Todos
 
@@ -183,5 +187,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-22
-Stopped at: Completed 07-03-PLAN.md. Phase 7 complete (3/3 plans). Ready for Phase 8.
+Stopped at: Completed 08-01-PLAN.md (Run Scripts). Phase 8 in progress (1/4 plans).
 Resume file: None
