@@ -170,12 +170,13 @@ Plans:
   3. cURL test scripts in `./bin/` exercise all features (registration, login, verification, password flows, profile, admin CRUD) and report pass/fail
   4. Project documentation in `./doc/` covers setup, architecture, API usage, and deployment
   5. `README.md` links to all documentation files and provides quick-start instructions
-**Plans**: TBD
+**Plans**: 4 plans in 2 waves
 
 Plans:
-- [ ] 08-01: TBD
-- [ ] 08-02: TBD
-- [ ] 08-03: TBD
+- [ ] 08-01-PLAN.md -- Dev and prod run scripts (bin/run-dev.sh, bin/run-prod.sh) (wave 1)
+- [ ] 08-02-PLAN.md -- cURL API test script (bin/test-api.sh) (wave 1)
+- [ ] 08-03-PLAN.md -- Project documentation (doc/01-setup, 02-architecture, 03-api-reference, 04-deployment) (wave 1)
+- [ ] 08-04-PLAN.md -- README.md with project overview and documentation links (wave 2)
 
 ## Progress
 
@@ -191,7 +192,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | 5. Password Management | 5/5 | Complete | 2026-02-11 |
 | 6. User Profile & Admin Operations | 4/4 | Complete | 2026-02-13 |
 | 7. API Documentation & Swagger | 3/3 | Complete | 2026-02-22 |
-| 8. Tooling & Project Documentation | 0/TBD | Not started | - |
+| 8. Tooling & Project Documentation | 0/4 | Not started | - |
 
 ---
 *Roadmap created: 2026-01-28*
