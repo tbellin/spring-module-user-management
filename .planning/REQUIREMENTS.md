@@ -1,0 +1,87 @@
+# Requirements: Spring Boot User Management Server
+
+**Defined:** 2026-02-23
+**Core Value:** Secure, modular user authentication and management that works identically in dev (H2, local) and prod (PostgreSQL, Docker) with zero code changes between environments.
+
+## v1.2 Requirements
+
+Requirements for milestone v1.2 Foundation Upgrade. Each maps to roadmap phases.
+
+### Package & Version
+
+- [ ] **PKG-01**: Project root package renamed from `com.example.usermanagement` to `org.jbelt.module` across all 77 Java source files and directory tree
+- [ ] **PKG-02**: `pom.xml` `<groupId>` updated to `org.jbelt`
+- [ ] **PKG-03**: `pom.xml` `<version>` updated to `1.2.0-SNAPSHOT`
+- [ ] **PKG-04**: All existing tests pass and `ModularityTests` produces no new failures after rename
+
+### SMTP Configuration
+
+- [ ] **SMTP-01**: `.env.example` and `.env.template` updated with Gmail SMTP defaults (`smtp.gmail.com:587`)
+- [ ] **SMTP-02**: `.env.example` includes step-by-step Gmail App Password setup instructions as inline comments
+- [ ] **SMTP-03**: Documentation (`doc/`) updated with Gmail SMTP configuration guide
+
+### GitHub
+
+- [ ] **GH-01**: `pom.xml` removed from `.gitignore` (currently listed as generated — no template exists)
+- [ ] **GH-02**: Security pre-flight confirms no real credentials in tracked files before push
+- [ ] **GH-03**: `.github/workflows/ci.yml` created with Java 21 Temurin, Maven cache, `mvn --batch-mode verify`
+- [ ] **GH-04**: Repository pushed to `tbellin` GitHub account
+- [ ] **GH-05**: `README.md` updated with GitHub repository URL and CI badge
+
+## Future Requirements
+
+Deferred to future milestone. Tracked but not in current roadmap.
+
+### Security Hardening
+
+- **SEC-01**: Account lockout after N failed login attempts
+- **SEC-02**: Rate limiting on auth endpoints (login, register, forgot-password)
+- **SEC-03**: Login audit trail (IP address, user agent, timestamp)
+- **SEC-04**: Refresh token rotation
+
+### User Features
+
+- **USR-01**: Two-factor authentication (2FA)
+- **USR-02**: User avatar/image upload
+- **USR-03**: Internationalization (i18n)
+- **USR-04**: OAuth/social login beyond GitHub (Google, Apple)
+
+## Out of Scope
+
+Explicitly excluded from v1.2. Documented to prevent scope creep.
+
+| Feature | Reason |
+|---------|--------|
+| CD pipeline (deploy on push) | No deployment target configured; CI only for v1.2 |
+| Real Gmail integration tests in CI | App Password as GitHub Secret + real email on every push is brittle; mock pattern already in place |
+| Maven multi-module split | Out of scope for a namespace rename; Spring Modulith boundaries are sufficient |
+| OAuth social login | JWT with email/password is sufficient; deferred to future milestone |
+| Branch protection rules on `main` | Nice-to-have; add manually after CI is consistently green |
+
+## Traceability
+
+Which phases cover which requirements. Updated during roadmap creation.
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| PKG-01 | Phase 9 | Pending |
+| PKG-02 | Phase 9 | Pending |
+| PKG-03 | Phase 9 | Pending |
+| PKG-04 | Phase 9 | Pending |
+| SMTP-01 | Phase 10 | Pending |
+| SMTP-02 | Phase 10 | Pending |
+| SMTP-03 | Phase 10 | Pending |
+| GH-01 | Phase 10 | Pending |
+| GH-02 | Phase 11 | Pending |
+| GH-03 | Phase 11 | Pending |
+| GH-04 | Phase 11 | Pending |
+| GH-05 | Phase 11 | Pending |
+
+**Coverage:**
+- v1.2 requirements: 12 total
+- Mapped to phases: 12
+- Unmapped: 0 ✓
+
+---
+*Requirements defined: 2026-02-23*
+*Last updated: 2026-02-23 after initial definition*
