@@ -2,10 +2,10 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-01-28)
+See: .planning/PROJECT.md (updated 2026-02-23)
 
 **Core value:** Secure, modular user authentication and management that works identically in dev (H2, local) and prod (PostgreSQL, Docker) with zero code changes between environments.
-**Current focus:** Phase 8 - Tooling & Project Documentation
+**Current focus:** v1.0 shipped — planning next milestone with `/gsd:new-milestone`
 
 ## Current Position
 
@@ -46,7 +46,7 @@ Progress: [████████████████████] 100% (4
 
 ### Decisions
 
-Decisions are logged in PROJECT.md Key Decisions table.
+Decisions are logged in PROJECT.md Key Decisions table (all 14 decisions marked with outcomes after v1.0).
 Recent decisions affecting current work:
 
 - Roadmap: 8 phases derived from 44 requirements following dependency order (Infrastructure -> Security -> Auth -> Email -> Password -> Admin -> API Docs -> Tooling)
@@ -188,6 +188,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-22
-Stopped at: Completed 08-04-PLAN.md (Project README). Phase 8 complete (4/4 plans). All 8 phases complete.
+Last session: 2026-02-23
+Stopped at: Completed v1.0 milestone archival. All 8 phases complete. Tagged v1.0.
 Resume file: None
