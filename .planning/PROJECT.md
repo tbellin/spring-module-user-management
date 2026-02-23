@@ -8,6 +8,16 @@ A Spring Boot 4 user management server built with Spring Modulith architecture a
 
 Secure, modular user authentication and management that works identically in dev (H2, local) and prod (PostgreSQL, Docker) with zero code changes between environments.
 
+## Current Milestone: v1.2 Foundation Upgrade
+
+**Goal:** Modernize the project's foundations (package rename, version, SMTP config) and add GitHub OAuth as a second login path.
+
+**Target features:**
+- GitHub OAuth login (alongside email/password — auto-creates USER account from GitHub profile)
+- Package rename: `com.example.usermanagement` → `org.jbelt.module`
+- App version: `1.2.0-SNAPSHOT` (dev) / `1.2.0` (release)
+- Gmail SMTP configuration support (well-documented `.env` template for Gmail App Password flow)
+
 ## Requirements
 
 ### Validated
@@ -34,11 +44,14 @@ Secure, modular user authentication and management that works identically in dev
 
 ### Active
 
-(None — v1.0 shipped all requirements. See /gsd:new-milestone to define v2 requirements.)
+- [ ] GitHub OAuth login alongside email/password — v1.2
+- [ ] Package rename: `com.example.usermanagement` → `org.jbelt.module` — v1.2
+- [ ] App version 1.2.0-SNAPSHOT / 1.2.0 release — v1.2
+- [ ] Gmail SMTP configuration support in `.env` template — v1.2
 
 ### Out of Scope
 
-- OAuth / social login — JWT with email/password sufficient for v1
+- OAuth / social login beyond GitHub — GitHub added in v1.2; other providers (Google, Apple) deferred
 - Mobile app or SPA frontend — Thymeleaf server-side rendering for v1
 - Multi-tenancy — single-tenant server
 - Two-factor authentication (2FA) — defer to v2
@@ -95,4 +108,4 @@ Secure, modular user authentication and management that works identically in dev
 | `@ParameterObject` on Pageable | SpringDoc needs this to explode Pageable into individual query params | ✓ Good — fixes Swagger UI sending pageable as complex object (500 error) |
 
 ---
-*Last updated: 2026-02-23 after v1.0 milestone*
+*Last updated: 2026-02-23 after v1.2 milestone start*

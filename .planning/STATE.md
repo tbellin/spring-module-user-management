@@ -5,16 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-02-23)
 
 **Core value:** Secure, modular user authentication and management that works identically in dev (H2, local) and prod (PostgreSQL, Docker) with zero code changes between environments.
-**Current focus:** v1.0 shipped — planning next milestone with `/gsd:new-milestone`
+**Current focus:** v1.2 Foundation Upgrade — defining requirements
 
 ## Current Position
 
-Phase: 8 of 8 (Tooling & Project Documentation)
-Plan: 4 of 4 in current phase (08-01, 08-02, 08-03, 08-04 complete)
-Status: Phase 8 Complete -- All phases complete
-Last activity: 2026-02-22 -- Completed 08-04-PLAN.md (Project README)
-
-Progress: [████████████████████] 100% (49/56 plans complete)
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-02-23 — Milestone v1.2 started
 
 ## Performance Metrics
 
