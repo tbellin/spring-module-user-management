@@ -1,8 +1,61 @@
 # Stack Research
 
-**Domain:** Spring Boot 4 User Management Server with JWT Auth, Spring Modulith, Thymeleaf, Dual-Database
-**Researched:** 2026-01-28
-**Confidence:** MEDIUM (WebSearch/WebFetch unavailable; based on training data through May 2025 plus Spring Boot 4 milestone announcements. Spring Boot 4 / Spring Framework 7 versions must be validated against current releases.)
+**Domain:** v1.2 Foundation Upgrade — package rename, version bump, Gmail SMTP, GitHub Actions CI
+**Researched:** 2026-02-23
+**Confidence:** HIGH
+
+## v1.2 Stack Delta (NEW — what changes for this milestone)
+
+### Key Finding: No new pom.xml dependencies for any of the 4 features
+
+| Feature | Approach | New Dependencies |
+|---------|----------|-----------------|
+| Package rename | IntelliJ IDE Refactor → Rename | None |
+| Version bump | Edit `<version>` in pom.xml directly | None |
+| Gmail SMTP | Change `.env` values only (host/user/password) | None — `spring-boot-starter-mail` already present |
+| GitHub Actions CI | Add `.github/workflows/ci.yml` file | None — no pom.xml change |
+
+### GitHub Actions (verified Feb 2026)
+
+```yaml
+name: CI
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest   # Ubuntu 24.04
+    steps:
+      - uses: actions/checkout@v6        # v6.0.2 — current
+      - uses: actions/setup-java@v5      # v5.2.0 — current; handles Maven cache natively
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'                 # No separate actions/cache step needed
+      - run: mvn -B verify
+```
+
+- No SMTP secrets needed in CI — tests mock JavaMailSender
+- H2 in-memory used by default — no external DB needed in CI
+- Maven cache path: `~/.m2/repository`
+
+### Gmail SMTP .env changes
+
+| Variable | Current example | Gmail value |
+|----------|----------------|-------------|
+| `MAIL_HOST` | `smtp.example.com` | `smtp.gmail.com` |
+| `MAIL_PORT` | `587` | `587` (no change) |
+| `MAIL_USERNAME` | `user@example.com` | Gmail address |
+| `MAIL_PASSWORD` | SMTP password | **16-char App Password** (mandatory — Google removed plain-password auth for personal accounts May 2025) |
+
+`spring.mail.properties.*` (STARTTLS, auth) unchanged — already correct for Gmail.
+
+### What NOT to use
+
+| Avoid | Why | Use Instead |
+|-------|-----|-------------|
+| Maven refactor plugin | String replacement only — misses `@ApplicationModule("name")` annotation values | IntelliJ IDEA Refactor → Rename |
+| `actions/setup-java@v4` or older | v5 is current with integrated Maven cache | `actions/setup-java@v5` |
+| Gmail port 465 (SSL) | Port 587 + STARTTLS is modern standard; existing config already correct | Port 587 (no change needed) |
+| Google account password | Deprecated; Google removed plain SMTP auth for personal accounts | 16-char App Password from Google Account → Security → App passwords |
 
 ---
 

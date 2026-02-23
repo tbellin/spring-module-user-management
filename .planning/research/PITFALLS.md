@@ -496,5 +496,130 @@ Spring Security 7 removes methods that were deprecated in 6.x. Key removals like
 - Spring Boot 4.0 Release Notes / Migration Guide -- LOW confidence (both URLs returned 404; information based on training data about announced plans)
 
 ---
+
+## v1.2 Pitfalls Addendum
+
+*Researched: 2026-02-23 — Specific to package rename, version bump, Gmail SMTP, GitHub CI*
+
+### P-R1: Spring Modulith module detection breaks after incomplete package rename
+
+**What happens:** Spring Modulith discovers modules by scanning sub-packages of the `@SpringBootApplication` root. If the root moves to `org.jbelt.module` but test files or `@ApplicationModule` annotations still reference `com.example.usermanagement`, `ModularityTests` fail with "module not found" or wrong dependency violations.
+
+**Prevention:** After IDE rename, run `ModularityTests` immediately. Any failure means an annotation string value or test class wasn't caught by the refactor. Search for `"com.example"` in the entire project after rename.
+
+**Phase:** Package rename phase.
+
+---
+
+### P-R2: Incomplete package rename — non-Java files missed
+
+**What happens:** IDE refactoring updates `.java` files and directory trees, but misses: `pom.xml` `<groupId>`, `banner.txt.template` if it references the package, Dockerfile wildcard (`*.jar`) is safe but verify, any `@Value` annotation strings that reference the old package, Spring `META-INF/spring/` files if any exist.
+
+**Prevention:** After IDE rename, run `grep -r "com.example" .` (excluding `.git/`) to find any remaining references.
+
+**Phase:** Package rename phase.
+
+---
+
+### P-R3: Version bump invalidates Maven CI cache
+
+**What happens:** Maven cache in GitHub Actions is keyed on `pom.xml` hash. Bumping version from `0.0.1-SNAPSHOT` to `1.2.0-SNAPSHOT` changes `pom.xml` → cache miss on first CI run. Dependencies re-downloaded (~2-3 min penalty on first run).
+
+**Prevention:** Add `restore-keys` to the Maven cache configuration in `ci.yml` so the old cache is used as fallback:
+```yaml
+- uses: actions/setup-java@v4
+  with:
+    java-version: '21'
+    distribution: 'temurin'
+    cache: 'maven'
+```
+`setup-java`'s built-in `cache: 'maven'` already uses restore-keys internally — no extra configuration needed. Cache warms up on next run after the version bump.
+
+**Phase:** GitHub CI phase.
+
+---
+
+### P-R4: Gmail SMTP fails with regular account password
+
+**What happens:** `535-5.7.8 Username and Password not accepted` — Google permanently removed plain-password SMTP auth for personal accounts in 2024.
+
+**Prevention:** App Password is the only viable path. Document clearly in `.env.example`:
+1. Enable 2-Step Verification (prerequisite — hidden otherwise)
+2. Google Account → Security → App passwords → create one for "Mail"
+3. Use the 16-char password (strip spaces if pasted with spaces)
+
+**Additional gotchas:**
+- Port 465 (SSL) vs 587 (STARTTLS): existing config uses 587 + STARTTLS — correct for Gmail, no change needed
+- `MAIL_FROM` must match `MAIL_USERNAME` — Gmail overwrites the From header otherwise
+- Google Workspace accounts may require admin to enable App Passwords in Admin Console
+
+**Phase:** Gmail SMTP config phase.
+
+---
+
+### P-R5: GitHub Actions CI hangs because tests try to connect to real SMTP
+
+**What happens:** If any test does NOT mock `JavaMailSender`, it tries to connect to SMTP on CI. Without credentials, it either hangs (connection timeout, up to 30s per test) or fails with `AuthenticationFailedException`.
+
+**Verification:** Check existing tests — STATE.md confirms `@MockBean JavaMailSender` / `@MockitoBean EmailService` pattern used throughout. This is safe. If any new test is added without mocking, CI hangs.
+
+**Prevention:** Maintain `@MockitoBean EmailService` pattern in all integration tests. Never inject real `EmailService` in tests that load application context.
+
+**Phase:** GitHub CI phase.
+
+---
+
+### P-R6: Secrets not available in PRs from forks
+
+**What happens:** GitHub Actions does not pass repository secrets to workflows triggered by PRs from forks (security restriction). If CI relies on any secrets (SMTP credentials, JWT secret), fork PRs fail.
+
+**Prevention:** Design `mvn verify` to need zero secrets. The current approach (H2 in-memory + `@MockitoBean EmailService`) already achieves this — CI needs no environment variables. Confirm by checking that `application.yml` test profile doesn't require `@VARIABLE@` substitution.
+
+**Phase:** GitHub CI phase.
+
+---
+
+### P-R7: Accidentally committing real credentials before first push
+
+**What happens:** `application.yml` is in `.gitignore` as a generated file, but the file exists in the repo (likely force-added or generated and committed earlier). If it contains real SMTP or DB credentials, pushing to a public GitHub repo exposes them permanently (even if deleted in a subsequent commit — git history retains them).
+
+**Prevention (blocker — must do before `git push`):**
+```bash
+# Check if application.yml is tracked
+git ls-files src/main/resources/application.yml
+
+# Check if .env or .env.local is tracked
+git ls-files | grep -E "\.env$|\.env\.local"
+```
+If either returns output with real credentials, clean history with `git filter-repo` before pushing. This is a one-time hard requirement.
+
+**Phase:** GitHub repository setup phase — security pre-flight step 1 of the phase.
+
+---
+
+### P-R8: `mvnw` not executable on Linux CI runner
+
+**What happens:** On macOS (where the repo was developed), `mvnw` is executable. If committed from Windows, or if the executable bit was lost, CI fails with `Permission denied` or `./mvnw: not found`.
+
+**Symptom:** CI step `./mvnw verify` fails immediately with permission error.
+
+**Prevention:** Use `mvn --batch-mode verify` in CI (not `./mvnw`) — relies on `actions/setup-java@v4` having set up Maven. This is the recommended CI approach: let the action provide Maven, don't rely on the wrapper in CI.
+
+**Phase:** GitHub CI phase.
+
+---
+
+### P-R9: ModularityTests false-positive after rename
+
+**Context:** STATE.md documents a pre-existing `ModularityTests` false-positive (reports violations for allowed dependencies). This exists BEFORE the rename.
+
+**Risk:** After rename, additional failures are harder to distinguish from the pre-existing false positive.
+
+**Prevention:** Run `ModularityTests` before AND after the rename. Document the exact failure messages before rename. Any new messages after rename are genuine regressions to fix. The pre-existing failure should produce identical output before and after if the rename is correct.
+
+**Phase:** Package rename phase — verification step.
+
+---
+
 *Pitfalls research for: Spring Boot 4 / Spring Modulith User Management Server*
-*Researched: 2026-01-28*
+*Researched: 2026-01-28 (v1.0) + 2026-02-23 (v1.2 addendum)*

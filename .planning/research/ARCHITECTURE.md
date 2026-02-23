@@ -1,969 +1,511 @@
 # Architecture Research
 
-**Domain:** Spring Boot 4 + Spring Modulith User Management Server
-**Researched:** 2026-01-28
-**Confidence:** HIGH (Spring Modulith official docs verified, Spring Security official docs verified)
+**Domain:** Spring Boot 4 + Spring Modulith — v1.2 Foundation Upgrade integration
+**Researched:** 2026-02-23
+**Confidence:** HIGH (direct codebase inspection — 77 Java files, all config files, all scripts verified)
+
+---
 
 ## Standard Architecture
 
 ### System Overview
 
 ```
-                          HTTP Requests
-                               |
-                    +----------v-----------+
-                    |   Spring Security    |
-                    |   Filter Chain       |
-                    |  (JWT validation /   |
-                    |   form login)        |
-                    +----------+-----------+
-                               |
-              +----------------+----------------+
-              |                |                |
-     +--------v------+  +-----v--------+  +---v---------+
-     |  Auth Module  |  |  User Module |  | Shared Mod  |
-     |  (auth)       |  |  (user)      |  | (shared)    |
-     +---------------+  +--------------+  +-------------+
-     | Controllers:  |  | Controllers: |  | DTOs        |
-     |  - REST API   |  |  - REST API  |  | Exceptions  |
-     |  - Thymeleaf  |  |  - Thymeleaf |  | Base Entity |
-     | Services:     |  | Services:    |  | Events      |
-     |  - AuthSvc    |  |  - UserSvc   |  | Config      |
-     |  - JwtSvc     |  |  - AdminSvc  |  |             |
-     |  - EmailSvc   |  | Repository:  |  |             |
-     | Repository:   |  |  - UserRepo  |  |             |
-     |  - TokenRepo  |  |  - RoleRepo  |  |             |
-     | Security:     |  +--------------+  +-------------+
-     |  - Config     |        |
-     |  - Filter     |   (publishes &
-     |  - Provider   |    listens to
-     +---------------+    events)
-              |               |
-              +-------+-------+
-                      |
-               +------v------+
-               |  Database   |
-               |  H2 / PG   |
-               +-------------+
+┌────────────────────────────────────────────────────────────────┐
+│                     Spring Modulith App                        │
+│   com.example.usermanagement  →  org.jbelt.module (rename)    │
+├───────────┬───────────────────────┬────────────────────────────┤
+│  auth     │  user                 │  shared                    │
+│  module   │  module               │  module                    │
+│  (JWT,    │  (profile, admin CRUD)│  (DTOs, config, email,     │
+│  flows)   │                       │   exceptions)              │
+│  depends: │  depends:             │  depends: (none)           │
+│  user,    │  shared               │                            │
+│  shared   │                       │                            │
+├───────────┴───────────────────────┴────────────────────────────┤
+│                     Persistence Layer                          │
+│  H2 (dev, MODE=PostgreSQL)  /  PostgreSQL (prod via Docker)    │
+│  Flyway: db/migration/{h2,postgresql}/VN__*.sql               │
+├────────────────────────────────────────────────────────────────┤
+│  Config Layer: .env + .template files → env.sh substitute-all │
+│  (.env, .env.local) → @VARIABLE@ → application.yml, etc.      │
+└────────────────────────────────────────────────────────────────┘
+
+New in v1.2:
+  .github/workflows/ci.yml  (GitHub Actions — NEW FILE)
+  pom.xml: groupId + version  (MODIFIED)
+  .env.example: Gmail SMTP docs  (MODIFIED)
 ```
 
 ### Component Responsibilities
 
-| Component | Responsibility | Typical Implementation |
-|-----------|----------------|------------------------|
-| Auth Module | Authentication, authorization, JWT lifecycle, email verification, password reset tokens | Spring Security config, JWT filter, token service, email service |
-| User Module | User CRUD, profile management, admin operations, role management | UserService, AdminService, UserRepository, RoleRepository |
-| Shared Module | Cross-cutting concerns: common DTOs, exceptions, base entities, shared events | Record DTOs, exception hierarchy, base auditable entity |
-| Spring Security Filter Chain | Request interception, JWT extraction/validation, authentication context | SecurityFilterChain bean, OncePerRequestFilter for JWT |
-| Database Layer | Persistence via Spring Data JPA, dual-database via profiles | H2 (dev profile), PostgreSQL (prod profile), Flyway/schema.sql for DDL |
+| Component | Responsibility | Files Touched by v1.2 |
+|-----------|---------------|----------------------|
+| Application entry point | @SpringBootApplication, @ConfigurationPropertiesScan | Application.java — package declaration |
+| auth module | JWT, auth flows, admin invite, email verification, password reset | All .java in auth/** — package declarations + imports |
+| user module | Profile CRUD, admin CRUD, user entity | All .java in user/** — package declarations + imports |
+| shared module | AppProperties, EmailService, exceptions, DTOs | All .java in shared/** — package declarations + imports |
+| Spring Modulith @ApplicationModule | Module boundary enforcement | 3 package-info.java files — package declaration only |
+| ModularityTests | Verifies module boundaries at test time | ModularityTests.java — package + ApplicationModules.of(Application.class) ref |
+| Config templating | @VARIABLE@ substitution from .env | application.yml.template — no change; .env.example — Gmail section update |
+| CI pipeline | mvn verify on push/PR | .github/workflows/ci.yml — NEW FILE |
+| Maven build | groupId, artifactId, version | pom.xml — groupId org.jbelt, version 1.2.0-SNAPSHOT |
+| Docker image | Multi-stage build from Maven, runs JAR | Dockerfile.template — no package ref, NOT modified |
+| Banner | Startup log display of project name + version | banner.txt.template — uses @PROJECT_NAME@ + @PROJECT_VERSION@ env vars |
 
-## Recommended Project Structure
+---
 
-### Option: Single Maven Module with Package Conventions (Recommended)
-
-Spring Modulith works best as a **single Maven module** with package-level boundaries. This is the idiomatic approach and avoids the complexity of multi-module Maven builds while still enforcing strict module separation at compile and test time.
-
-```
-src/main/java/
-  com/example/usermanagement/
-  |-- Application.java                          # @Modulithic @SpringBootApplication
-  |-- package-info.java                         # (optional) root package metadata
-  |
-  |-- auth/                                     # === AUTH MODULE (application module) ===
-  |   |-- package-info.java                     # @ApplicationModule
-  |   |-- AuthController.java                   # REST: /api/auth/** endpoints
-  |   |-- AuthPageController.java               # Thymeleaf: /login, /register, /forgot-password
-  |   |-- AuthService.java                      # Public API: login, register, verify, reset
-  |   |-- JwtService.java                       # JWT creation and validation
-  |   |-- EmailService.java                     # Email sending (verification, reset links)
-  |   |-- auth.internal/                        # --- INTERNAL (hidden from other modules) ---
-  |   |   |-- SecurityConfig.java               # SecurityFilterChain bean
-  |   |   |-- JwtAuthenticationFilter.java      # OncePerRequestFilter for JWT
-  |   |   |-- CustomUserDetailsService.java     # UserDetailsService implementation
-  |   |   |-- VerificationToken.java            # Entity
-  |   |   |-- VerificationTokenRepository.java  # Repository
-  |   |   |-- PasswordResetToken.java           # Entity
-  |   |   |-- PasswordResetTokenRepository.java # Repository
-  |   |   +-- AuthMapper.java                   # Internal mapping utilities
-  |   |
-  |   +-- auth.events/                          # --- EVENTS (public API) ---
-  |       |-- UserRegisteredEvent.java          # Published when user registers
-  |       +-- PasswordResetRequestedEvent.java  # Published when reset requested
-  |
-  |-- user/                                     # === USER MODULE (application module) ===
-  |   |-- package-info.java                     # @ApplicationModule
-  |   |-- UserController.java                   # REST: /api/users/** endpoints
-  |   |-- UserPageController.java               # Thymeleaf: /profile, /change-password
-  |   |-- AdminController.java                  # REST: /api/admin/users/** endpoints
-  |   |-- AdminPageController.java              # Thymeleaf: /admin/users/**
-  |   |-- UserService.java                      # Public API: get/update profile, change password
-  |   |-- AdminService.java                     # Public API: CRUD users, manage roles
-  |   |-- user.internal/                        # --- INTERNAL (hidden from other modules) ---
-  |   |   |-- User.java                         # Entity
-  |   |   |-- Role.java                         # Entity (or Enum)
-  |   |   |-- UserRepository.java               # Repository
-  |   |   |-- RoleRepository.java               # Repository
-  |   |   +-- UserMapper.java                   # Internal mapping utilities
-  |   |
-  |   +-- user.events/                          # --- EVENTS (public API via NamedInterface) ---
-  |       |-- UserUpdatedEvent.java             # Published when profile updated
-  |       +-- UserDeletedEvent.java             # Published when user deleted
-  |
-  +-- shared/                                   # === SHARED MODULE ===
-      |-- package-info.java                     # @ApplicationModule
-      |-- dto/                                  # Public DTOs (Java records)
-      |   |-- UserDto.java                      # User data exposed to other modules
-      |   |-- AuthResponseDto.java              # Auth response with JWT token
-      |   |-- RegistrationRequest.java          # Registration form data
-      |   +-- PagedResponse.java                # Generic paged result wrapper
-      |-- exception/                            # Public exception hierarchy
-      |   |-- ResourceNotFoundException.java
-      |   |-- DuplicateResourceException.java
-      |   |-- TokenExpiredException.java
-      |   +-- GlobalExceptionHandler.java       # @ControllerAdvice
-      |-- entity/                               # Base entities
-      |   +-- BaseEntity.java                   # Auditable base (id, createdAt, updatedAt)
-      +-- config/                               # Shared configuration
-          +-- AppProperties.java                # @ConfigurationProperties for app-level config
-```
+## Recommended Project Structure After Rename
 
 ```
-src/main/resources/
-  |-- application.yml                           # Common config
-  |-- application-dev.yml                       # H2 database, debug logging
-  |-- application-prod.yml                      # PostgreSQL, Docker settings
-  |-- templates/                                # Thymeleaf templates
-  |   |-- layout.html                           # Base layout with Bootstrap 5
-  |   |-- home.html
-  |   |-- auth/
-  |   |   |-- login.html
-  |   |   |-- register.html
-  |   |   |-- forgot-password.html
-  |   |   |-- reset-password.html
-  |   |   +-- verify-email.html
-  |   |-- user/
-  |   |   |-- profile.html
-  |   |   +-- change-password.html
-  |   +-- admin/
-  |       |-- user-list.html
-  |       |-- user-form.html
-  |       +-- user-detail.html
-  |-- static/
-  |   |-- css/
-  |   +-- js/
-  +-- db/
-      +-- migration/                            # Flyway migrations (or schema.sql / data.sql)
-```
+src/
+├── main/
+│   └── java/
+│       └── org/jbelt/module/             # renamed from com/example/usermanagement/
+│           ├── Application.java          # package org.jbelt.module
+│           ├── auth/
+│           │   ├── package-info.java     # package org.jbelt.module.auth
+│           │   ├── JwtService.java
+│           │   ├── AuthResponse.java
+│           │   └── internal/
+│           │       ├── ... (all auth internal classes)
+│           │       ├── password/
+│           │       └── verification/
+│           ├── user/
+│           │   ├── package-info.java     # package org.jbelt.module.user
+│           │   ├── UserService.java
+│           │   ├── UserAuthDto.java
+│           │   └── internal/
+│           └── shared/
+│               ├── package-info.java     # package org.jbelt.module.shared
+│               ├── config/
+│               ├── dto/
+│               ├── email/
+│               ├── exception/
+│               └── web/
+└── test/
+    └── java/
+        └── org/jbelt/module/             # renamed from com/example/usermanagement/
+            ├── ApplicationTests.java
+            ├── ModularityTests.java
+            ├── SchemaComparisonTests.java
+            ├── auth/
+            └── user/
 
-```
-src/test/java/
-  com/example/usermanagement/
-  |-- ModularityTests.java                      # ApplicationModules.of(...).verify()
-  |-- DocumentationTests.java                   # Documenter for PlantUML diagrams
-  |-- auth/
-  |   +-- AuthModuleIntegrationTests.java       # @ApplicationModuleTest
-  |-- user/
-  |   +-- UserModuleIntegrationTests.java       # @ApplicationModuleTest
-  +-- shared/
-      +-- SharedModuleTests.java
+.github/
+└── workflows/
+    └── ci.yml                            # NEW — GitHub Actions CI
+
+pom.xml                                   # groupId: org.jbelt, version: 1.2.0-SNAPSHOT
 ```
 
 ### Structure Rationale
 
-- **Single Maven module:** Spring Modulith enforces module boundaries through its verification API (`ApplicationModules.of(App.class).verify()`) and package visibility (Java's `package-private` scope). A multi-module Maven build adds build complexity without adding enforcement power that Modulith does not already provide.
-- **`auth/` at the package root:** Auth module's public API (AuthService, JwtService) is accessible to other modules. Internal details (SecurityConfig, JwtAuthenticationFilter, token repositories) live in `auth.internal/` and are invisible to other modules.
-- **`auth.events/` as a NamedInterface:** Events are published types that other modules must consume. By placing them in a sub-package with `@NamedInterface`, they become an explicit public contract.
-- **`user/` at the package root:** Same pattern -- public service API in the root, internal entities and repositories hidden in `user.internal/`.
-- **`shared/` for DTOs and exceptions:** The Shared module contains only data-transfer objects (Java records), a base entity, and the global exception handler. It has no business logic. Other modules depend on Shared but Shared depends on nothing.
-- **Thymeleaf templates organized by module:** The `templates/` folder mirrors module boundaries (auth/, user/, admin/) for clarity.
+- **Directory path mirrors package:** Java convention — org.jbelt.module lives at src/main/java/org/jbelt/module/. The old com/example/usermanagement/ directory tree is deleted; a new org/jbelt/module/ tree is created. All 62 main + 15 test Java files move.
+- **Spring Modulith detection is automatic:** Modulith discovers modules by scanning subdirectories of the main application class's package. No YAML config is needed. After rename, org.jbelt.module.auth, org.jbelt.module.user, org.jbelt.module.shared are detected automatically from classpath structure.
+- **.github/workflows/** is the GitHub Actions standard location — no alternative path is valid.
 
-## Module Boundaries: What Belongs Where
-
-### Auth Module
-
-**Owns:**
-- Authentication and authorization configuration (SecurityFilterChain)
-- JWT token creation, validation, and refresh
-- Login/logout flows (REST and Thymeleaf)
-- Registration flow (accepts form data, creates user via User module event/API, sends verification email)
-- Email verification token lifecycle
-- Password reset token lifecycle
-- Email sending (verification and reset emails)
-
-**Exposes (public API):**
-- `AuthService` -- login, register, verifyEmail, requestPasswordReset, resetPassword
-- `JwtService` -- generateToken, validateToken, extractUsername
-- `auth.events.UserRegisteredEvent` -- published when a new user completes registration
-- `auth.events.PasswordResetRequestedEvent` -- published when a password reset is requested
-
-**Does NOT own:**
-- User entity persistence (delegates to User module)
-- User profile or admin CRUD operations
-- Role management
-
-### User Module
-
-**Owns:**
-- User entity and its persistence (User, Role, UserRepository, RoleRepository)
-- User profile operations (get profile, update profile, change password)
-- Admin CRUD operations on users (list, create, update, delete, assign roles)
-- User-related business rules (unique email constraint, password policy enforcement)
-
-**Exposes (public API):**
-- `UserService` -- getUserByEmail, getUserById, updateProfile, changePassword, createUser
-- `AdminService` -- listUsers, getUserDetails, createUser, updateUser, deleteUser, assignRole
-- `user.events.UserUpdatedEvent` -- published when user profile changes
-- `user.events.UserDeletedEvent` -- published when user is removed
-
-**Does NOT own:**
-- Authentication logic (no login, JWT handling)
-- Email sending
-- Security configuration
-
-### Shared Module
-
-**Owns:**
-- DTOs used across module boundaries (UserDto, AuthResponseDto, RegistrationRequest, PagedResponse)
-- Common exception types and the GlobalExceptionHandler
-- Base entity (BaseEntity with id, createdAt, updatedAt, @MappedSuperclass)
-- Application-level configuration properties (@ConfigurationProperties)
-
-**Does NOT own:**
-- Any business logic
-- Any repository or entity beyond BaseEntity
-- Any controller or service
-
-### The Critical Question: Where Does the User Entity Live?
-
-**Recommendation: User entity lives in User module (user.internal.User), NOT in Shared.**
-
-This is the most consequential boundary decision. The User entity is internal to the User module. The Auth module needs user data for authentication -- it gets this through one of two mechanisms:
-
-1. **Direct API call (recommended for this project):** Auth module depends on User module's public `UserService.getUserByEmail()` which returns a `UserDto` (from Shared). The Auth module's `CustomUserDetailsService` calls `UserService` to load user details for Spring Security.
-
-2. **Event-based (overkill for this project):** Auth module publishes a `UserRegistrationRequestedEvent`, User module creates the user and publishes `UserCreatedEvent`. This adds latency and complexity for a synchronous flow that should just be a method call.
-
-**Rationale for direct calls over events for user lookup:** Spring Modulith documentation explicitly supports direct bean dependencies between modules for synchronous operations. Events are recommended for decoupling fire-and-forget side effects, not for request-response patterns like "look up this user."
+---
 
 ## Architectural Patterns
 
-### Pattern 1: Module Communication via Direct API + Events Hybrid
+### Pattern 1: Exhaustive File-by-File Rename (Package Propagation)
 
-**What:** Use direct method calls for synchronous queries and commands. Use events for asynchronous side effects.
+**What:** When renaming the root Java package, every occurrence of the old package string must be updated. Spring Boot 4 + Spring Modulith have NO runtime component-scan YAML settings to update (auto-configuration handles it from classpath), but all Java source files must be touched.
 
-**When to use:** Always in this project. This is the Spring Modulith recommended approach.
+**When to use:** Any package rename that changes the root package path.
 
-**Trade-offs:** Simple, testable, type-safe for synchronous calls. Events provide decoupling for notifications.
+**Trade-offs:** IDE refactoring ("Rename Package" in IntelliJ/VS Code) handles 95% atomically. The remaining 5% risk is string-literal occurrences — none exist in this codebase (verified: no "com.example.usermanagement" string literals in non-comment source code).
 
-**Example:**
+**Complete list of files requiring change:**
 
+| Category | Count | What Changes |
+|----------|-------|-------------|
+| Main Java sources (src/main/java/) | 62 files | package com.example.usermanagement.* → package org.jbelt.module.*; all import com.example.usermanagement.* → import org.jbelt.module.* |
+| Test Java sources (src/test/java/) | 15 files | Same as above |
+| package-info.java (3 files) | 3 files | package declaration only — see note below |
+| pom.xml | 1 file | groupId com.example → org.jbelt; version 0.0.1-SNAPSHOT → 1.2.0-SNAPSHOT |
+| Directory tree | Entire com/example/usermanagement/ tree | Physical filesystem restructure — old path deleted, new org/jbelt/module/ path created |
+| banner.txt.template | 0 changes | Uses @PROJECT_NAME@ env var, not package name |
+| Dockerfile.template | 0 changes | No package reference — copies target/*.jar by glob |
+| application.yml.template and profile YAMLs | 0 changes | No component-scan YAML setting — Spring Boot 4 auto-configures from classpath |
+| Flyway SQL migrations | 0 changes | No Java package references in SQL |
+| .env, .env.example, .env.template | 0 changes for rename | Gmail update is separate task |
+| compose.yaml.template | 0 changes | No package references |
+| Shell scripts in bin/ | 0 changes | Verified: zero com.example references found |
+| doc/ markdown files | 0 changes | Verified: zero com.example references found |
+| README.md | 0 changes for rename | Repo URL update is separate task |
+| META-INF/spring | Not present | No Spring factories or AOT service files found in this project |
+
+**Key insight — @ApplicationModule args do NOT change:** The allowedDependencies values in package-info.java use relative module names ("user", "shared"), not fully-qualified package names. Spring Modulith resolves these relative to the root application package. They survive the rename unchanged:
+
+Before rename — in auth/package-info.java:
 ```java
-// Auth module calls User module directly for synchronous user lookup
-// File: auth/internal/CustomUserDetailsService.java
-@Service
-@RequiredArgsConstructor
-class CustomUserDetailsService implements UserDetailsService {
-
-    private final UserService userService; // Direct dependency on User module's public API
-
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        UserDto user = userService.getUserByEmail(email)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
-
-        return org.springframework.security.core.userdetails.User.builder()
-            .username(user.email())
-            .password(user.passwordHash())
-            .roles(user.roles().toArray(String[]::new))
-            .accountLocked(!user.enabled())
-            .build();
-    }
-}
-```
-
-```java
-// Auth module publishes event for asynchronous side effect
-// File: auth/AuthService.java
-@Service
-@RequiredArgsConstructor
-public class AuthService {
-
-    private final UserService userService;
-    private final JwtService jwtService;
-    private final ApplicationEventPublisher events;
-
-    @Transactional
-    public void register(RegistrationRequest request) {
-        // 1. Direct call: create the user synchronously
-        UserDto created = userService.createUser(request);
-
-        // 2. Event: trigger async side effects (send verification email)
-        events.publishEvent(new UserRegisteredEvent(created.id(), created.email()));
-    }
-}
-```
-
-```java
-// Auth module listens for its own event to send the email
-// File: auth/internal/VerificationEmailListener.java
-@Component
-class VerificationEmailListener {
-
-    @ApplicationModuleListener
-    void on(UserRegisteredEvent event) {
-        // Create verification token, send email
-        // Runs async + transactional (REQUIRES_NEW) automatically
-    }
-}
-```
-
-### Pattern 2: Self-Issued JWT with Spring Security Resource Server
-
-**What:** The application itself issues JWT tokens (no external authorization server). Spring Security's Resource Server support validates them.
-
-**When to use:** When you are your own identity provider, as in this project.
-
-**Trade-offs:** Simpler than OAuth2 authorization server. No token refresh endpoint needed for basic use. Must manage signing keys yourself.
-
-**Example:**
-
-```java
-// File: auth/JwtService.java (PUBLIC API of Auth module)
-@Service
-public class JwtService {
-
-    @Value("${app.jwt.secret}")
-    private String secretKey;
-
-    @Value("${app.jwt.expiration-ms}")
-    private long expirationMs;
-
-    public String generateToken(UserDetails userDetails) {
-        return Jwts.builder()
-            .subject(userDetails.getUsername())
-            .claim("roles", userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority).toList())
-            .issuedAt(new Date())
-            .expiration(new Date(System.currentTimeMillis() + expirationMs))
-            .signWith(getSigningKey())
-            .compact();
-    }
-
-    public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
-    }
-
-    public boolean isTokenValid(String token, UserDetails userDetails) {
-        return extractUsername(token).equals(userDetails.getUsername())
-            && !isTokenExpired(token);
-    }
-
-    private SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
-    }
-}
-```
-
-```java
-// File: auth/internal/JwtAuthenticationFilter.java
-@Component
-@RequiredArgsConstructor
-class JwtAuthenticationFilter extends OncePerRequestFilter {
-
-    private final JwtService jwtService;
-    private final UserDetailsService userDetailsService;
-
-    @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                     HttpServletResponse response,
-                                     FilterChain filterChain) throws ServletException, IOException {
-        String authHeader = request.getHeader("Authorization");
-
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        String jwt = authHeader.substring(7);
-        String username = jwtService.extractUsername(jwt);
-
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            if (jwtService.isTokenValid(jwt, userDetails)) {
-                var authToken = new UsernamePasswordAuthenticationToken(
-                    userDetails, null, userDetails.getAuthorities());
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-            }
-        }
-
-        filterChain.doFilter(request, response);
-    }
-}
-```
-
-### Pattern 3: Dual Endpoint Strategy (Thymeleaf + REST)
-
-**What:** Separate controllers for page rendering (@Controller) and API (@RestController). Both share the same service layer.
-
-**When to use:** Hybrid applications serving both server-rendered HTML and JSON API.
-
-**Trade-offs:** More controllers, but clear separation of concerns. Each controller has its own URL namespace. API consumers get clean JSON, browser users get full HTML pages.
-
-**Example:**
-
-```java
-// File: auth/AuthPageController.java -- Thymeleaf pages
-@Controller
-@RequiredArgsConstructor
-public class AuthPageController {
-
-    private final AuthService authService;
-
-    @GetMapping("/login")
-    public String loginPage() {
-        return "auth/login";  // templates/auth/login.html
-    }
-
-    @GetMapping("/register")
-    public String registerPage(Model model) {
-        model.addAttribute("registration", new RegistrationRequest("", "", "", ""));
-        return "auth/register";
-    }
-
-    @PostMapping("/register")
-    public String processRegistration(@Valid @ModelAttribute RegistrationRequest request,
-                                       BindingResult result, Model model) {
-        if (result.hasErrors()) {
-            return "auth/register";
-        }
-        authService.register(request);
-        return "redirect:/login?registered";
-    }
-}
-```
-
-```java
-// File: auth/AuthController.java -- REST API
-@RestController
-@RequestMapping("/api/auth")
-@RequiredArgsConstructor
-public class AuthController {
-
-    private final AuthService authService;
-
-    @PostMapping("/register")
-    public ResponseEntity<Void> register(@Valid @RequestBody RegistrationRequest request) {
-        authService.register(request);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<AuthResponseDto> login(@Valid @RequestBody LoginRequest request) {
-        AuthResponseDto response = authService.login(request);
-        return ResponseEntity.ok(response);
-    }
-}
-```
-
-### Pattern 4: Spring Modulith Verification as Architecture Test
-
-**What:** A test that runs `ApplicationModules.of(Application.class).verify()` to enforce module boundaries at build time.
-
-**When to use:** Always. This is the primary enforcement mechanism for module boundaries.
-
-**Trade-offs:** None -- this is free architecture enforcement.
-
-**Example:**
-
-```java
-// File: src/test/java/.../ModularityTests.java
-class ModularityTests {
-
-    ApplicationModules modules = ApplicationModules.of(Application.class);
-
-    @Test
-    void verifiesModularStructure() {
-        modules.verify();
-    }
-
-    @Test
-    void printsModuleArrangement() {
-        modules.forEach(System.out::println);
-    }
-
-    @Test
-    void generatesDocumentation() {
-        new Documenter(modules)
-            .writeModulesAsPlantUml()
-            .writeIndividualModulesAsPlantUml()
-            .writeModuleCanvases();
-    }
-}
-```
-
-### Pattern 5: Shared Module as @ApplicationModule with No Dependencies
-
-**What:** The Shared module is annotated as an `@ApplicationModule` but declares no `allowedDependencies`. It is a leaf module that all others may depend on.
-
-**When to use:** When you have genuine cross-cutting types (DTOs, exceptions, base entities) that multiple modules need.
-
-**Trade-offs:** Shared modules can become dumping grounds. Keep it strictly limited to data types and infrastructure concerns. If you find business logic creeping in, it belongs in Auth or User.
-
-**Example (package-info.java):**
-
-```java
-// File: shared/package-info.java
-@org.springframework.modulith.ApplicationModule(
-    allowedDependencies = {} // Shared depends on NOTHING
-)
-package com.example.usermanagement.shared;
-```
-
-```java
-// File: auth/package-info.java
 @org.springframework.modulith.ApplicationModule(
     allowedDependencies = { "user", "shared" }
 )
 package com.example.usermanagement.auth;
 ```
 
+After rename — only the package declaration changes:
 ```java
-// File: user/package-info.java
 @org.springframework.modulith.ApplicationModule(
-    allowedDependencies = { "shared" }
+    allowedDependencies = { "user", "shared" }   // UNCHANGED
 )
-package com.example.usermanagement.user;
+package org.jbelt.module.auth;
 ```
+
+### Pattern 2: Gmail SMTP Integration (Config-Only Change)
+
+**What:** Gmail App Password flow requires specific SMTP settings. The core application.yml.template already has all correct STARTTLS properties. The only change is updating .env.example and .env.template with Gmail-specific defaults and setup documentation.
+
+**Current application.yml.template SMTP block — NO CHANGE NEEDED:**
+
+```yaml
+spring:
+  mail:
+    host: @MAIL_HOST@         # → smtp.gmail.com
+    port: @MAIL_PORT@         # → 587
+    username: @MAIL_USERNAME@ # → Gmail address
+    password: @MAIL_PASSWORD@ # → App Password (16-char, no spaces)
+    properties:
+      "[mail.smtp.auth]": true
+      "[mail.smtp.starttls.enable]": true
+      "[mail.smtp.connectiontimeout]": 5000
+      "[mail.smtp.timeout]": 3000
+      "[mail.smtp.writetimeout]": 5000
+```
+
+**Updated .env.example Gmail section (target state):**
+
+```bash
+# ===========================================
+# Mail Configuration — Gmail SMTP
+# ===========================================
+# Gmail requires an App Password (NOT your Google account password).
+# Steps to set up:
+#   1. Enable 2-Step Verification: https://myaccount.google.com/security
+#   2. Generate App Password: https://myaccount.google.com/apppasswords
+#      Select app: "Mail", device: "Other (custom name)" → copy 16-char password
+#   3. Set MAIL_USERNAME to your full Gmail address
+#   4. Set MAIL_PASSWORD to the 16-char App Password (no spaces)
+#   5. MAIL_FROM can be the same Gmail address or an alias
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=your.address@gmail.com
+MAIL_PASSWORD=       # WARNING: App Password, not your Google account password
+MAIL_FROM=your.address@gmail.com
+```
+
+**Files to modify:** Only .env.example and .env.template. The application.yml.template SMTP block is already correct for Gmail — no change.
+
+**Files NOT modified:** EmailService.java, AppProperties.java, application.yml.template SMTP block — all work as-is with Gmail credentials.
+
+### Pattern 3: GitHub Actions CI Workflow (H2-Only, No External Services)
+
+**What:** mvn verify in CI must run the full test suite. All 15 existing test files use @ActiveProfiles("dev") which activates application-dev.yml with H2 in-memory database. CI needs no PostgreSQL service container, no Docker, no real SMTP.
+
+**How tests handle email in CI:** Tests that involve email use @MockitoBean EmailService emailService (mocking the service layer, not JavaMailSender itself). This:
+- Prevents actual SMTP calls during tests
+- Keeps JavaMailSender bean live (required by Spring Boot MailHealthContributorAutoConfiguration for actuator health endpoint)
+- Means CI does NOT need real MAIL_* credentials — placeholder values suffice
+
+**Why MAIL_* env vars are still required in CI:** Spring Boot's MailSenderAutoConfiguration creates a JavaMailSender bean eagerly from spring.mail.host. If MAIL_HOST resolves to blank/empty, bean creation fails and the application context crashes before any test runs — even though EmailService would have been mocked. Setting placeholder strings prevents this failure without enabling real SMTP.
+
+**CI workflow file location:** .github/workflows/ci.yml
+
+**Minimal working workflow content:**
+
+```yaml
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build and verify
+        run: ./mvnw verify -B
+        env:
+          SPRING_PROFILES_ACTIVE: dev
+          # Mail placeholders — JavaMailSender bean requires host at context load.
+          # EmailService is mocked in tests; no real SMTP connection is made.
+          MAIL_HOST: smtp.gmail.com
+          MAIL_PORT: "587"
+          MAIL_USERNAME: ci@example.com
+          MAIL_PASSWORD: ci-placeholder
+          MAIL_FROM: ci@example.com
+          # JWT required by AppProperties binding
+          JWT_SECRET: dGVzdC1jaS1zZWNyZXQta2V5LWZvci1jaS10ZXN0aW5nLW9ubHk=
+          JWT_EXPIRATION_MS: "3600000"
+          JWT_REMEMBER_ME_EXPIRATION_MS: "604800000"
+          # App config required by AppProperties binding
+          APP_BASE_URL: http://localhost:8080
+          VERIFICATION_EXPIRATION_HOURS: "24"
+          APP_PORT: "8080"
+          # Banner vars
+          PROJECT_NAME: org.jbelt.module
+          PROJECT_VERSION: 1.2.0-SNAPSHOT
+```
+
+**Why no PostgreSQL service container:** All test classes use @ActiveProfiles("dev") with H2. There is no test that connects to PostgreSQL. SchemaComparisonTests reads SQL migration files as classpath resources — it does not execute SQL against any database server. Adding PostgreSQL to CI adds 30-60 seconds of container startup time with zero benefit.
+
+**Why no real credentials in GitHub Secrets for CI:** No real email is sent during mvn verify. Do NOT store Gmail App Passwords as GitHub Secrets for CI — they are not needed and create unnecessary attack surface.
+
+### Pattern 4: GitHub Repository Setup (gitignore and pom.xml)
+
+**What:** Publishing to GitHub requires auditing what gets committed. The .gitignore currently excludes pom.xml as a "generated file," but pom.xml is not actually generated in this project (no pom.xml.template exists, no @VARIABLE@ placeholders in the file, not listed in bin/env-templates.list). This is a historical artifact that must be corrected before push.
+
+**Critical finding — pom.xml in .gitignore:**
+
+Current .gitignore entry:
+```
+# Generated config files (from .template processing)
+pom.xml
+compose.yaml
+Dockerfile
+src/main/resources/application.yml
+...
+```
+
+pom.xml appears here but is NOT generated. If left in .gitignore, GitHub push will silently exclude pom.xml. GitHub Actions mvn verify will then fail immediately: "The specified POM file doesn't exist."
+
+**Required fix:** Remove the pom.xml line from .gitignore. Stage pom.xml explicitly with git add pom.xml.
+
+**.env.example status:** Already tracked by git (not in .gitignore). No gitignore change needed for it. It correctly shows placeholder values, not real secrets.
+
+**No other .gitignore changes needed** beyond removing the pom.xml line.
+
+---
 
 ## Data Flow
 
-### Registration Flow
+### Package Rename Data Flow
 
 ```
-Browser/Client
-    |
-    | POST /register (form) or POST /api/auth/register (JSON)
+Source file: src/main/java/com/example/usermanagement/auth/JwtService.java
+    | IDE "Rename Package" or sed/find+mv
     v
-AuthPageController / AuthController
-    |
-    | calls
+Target file: src/main/java/org/jbelt/module/auth/JwtService.java
+    | file content updated:
+    | package org.jbelt.module.auth;
+    | import org.jbelt.module.shared.config.AppProperties;
     v
-AuthService.register(RegistrationRequest)
-    |
-    | 1. Validate input (email not taken, passwords match)
-    | 2. Encode password with PasswordEncoder
-    | 3. Direct call: UserService.createUser(request) --> returns UserDto
-    | 4. Publish event: UserRegisteredEvent(userId, email)
+./mvnw compile  →  target/classes/org/jbelt/module/auth/JwtService.class
     v
-[Transaction commits]
-    |
-    | @ApplicationModuleListener (async, new transaction)
+./mvnw verify   →  all 15 test classes pass with new package root
     v
-VerificationEmailListener.on(UserRegisteredEvent)
-    |
-    | 1. Create VerificationToken (UUID, expiry)
-    | 2. Save token to VerificationTokenRepository
-    | 3. Send verification email via EmailService
-    v
-[Email sent with link: /verify-email?token=UUID]
-    |
-    | User clicks link
-    v
-GET /verify-email?token=UUID
-    |
-    v
-AuthService.verifyEmail(token)
-    |
-    | 1. Look up VerificationToken
-    | 2. Check not expired
-    | 3. Direct call: UserService.enableUser(userId)
-    | 4. Delete token
-    v
-[User account is now enabled]
+Verification: grep -r "com.example.usermanagement" src/  →  zero results
 ```
 
-### Login Flow (JWT)
+### Gmail SMTP Config Data Flow
 
 ```
-Browser/Client
-    |
-    | POST /api/auth/login { email, password }
+.env.example (updated with Gmail defaults + setup instructions)
+    | developer copies to .env, fills real App Password
     v
-AuthController.login(LoginRequest)
-    |
+.env (MAIL_HOST=smtp.gmail.com, MAIL_PORT=587, MAIL_PASSWORD=<16-char>)
+    | bin/env.sh substitute-all
     v
-AuthService.login(LoginRequest)
-    |
-    | 1. AuthenticationManager.authenticate(
-    |      UsernamePasswordAuthenticationToken(email, password))
-    |    --> triggers CustomUserDetailsService.loadUserByUsername(email)
-    |    --> calls UserService.getUserByEmail(email) (direct, synchronous)
-    |    --> PasswordEncoder.matches(raw, encoded)
-    |
-    | 2. If authenticated: JwtService.generateToken(userDetails)
-    | 3. Return AuthResponseDto(token, expiresIn, roles)
+application.yml (spring.mail.host=smtp.gmail.com, port=587, ...)
+    | Spring Boot MailSenderAutoConfiguration
     v
-{ "token": "eyJ...", "expiresIn": 3600000, "roles": ["USER"] }
-
---- Subsequent requests with JWT ---
-
-HTTP Request with "Authorization: Bearer eyJ..."
-    |
+JavaMailSender bean (SMTP session configured for Gmail STARTTLS)
+    | EmailService.sendVerificationEmail / sendPasswordResetEmail / sendInviteEmail
     v
-JwtAuthenticationFilter.doFilterInternal()
-    |
-    | 1. Extract JWT from Authorization header
-    | 2. JwtService.extractUsername(jwt) --> email
-    | 3. UserDetailsService.loadUserByUsername(email)
-    | 4. JwtService.isTokenValid(jwt, userDetails)
-    | 5. Set SecurityContext authentication
-    v
-SecurityFilterChain proceeds --> Controller --> Response
+Gmail SMTP (smtp.gmail.com:587) → recipient inbox
 ```
 
-### Password Reset Flow
+### CI Verification Data Flow
 
 ```
-Browser/Client
-    |
-    | POST /api/auth/forgot-password { email }
+git push → GitHub (main or PR branch)
+    | triggers .github/workflows/ci.yml
     v
-AuthService.requestPasswordReset(email)
-    |
-    | 1. Verify user exists: UserService.getUserByEmail(email)
-    | 2. Create PasswordResetToken (UUID, expiry)
-    | 3. Save token to PasswordResetTokenRepository
-    | 4. Publish PasswordResetRequestedEvent(userId, email)
+ubuntu-latest runner
+    | actions/setup-java — Java 21 Temurin, Maven dependency cache
     v
-[Transaction commits]
-    |
-    | @ApplicationModuleListener (async)
+./mvnw verify -B (env: SPRING_PROFILES_ACTIVE=dev, MAIL_HOST=placeholder, ...)
+    | application-dev.yml: H2 in-memory, Flyway h2/ migrations
     v
-PasswordResetEmailListener.on(PasswordResetRequestedEvent)
-    |
-    | Send reset email with link: /reset-password?token=UUID
+Spring context loads (H2 + JavaMailSender with placeholder host)
+    | @MockitoBean EmailService in email-related tests
     v
-[Email sent]
-    |
-    | User clicks link
+77 Java source files compiled + 15 test files compiled
+    | surefire runs all test classes
     v
-GET /reset-password?token=UUID --> shows form
-    |
-    | POST /reset-password { token, newPassword, confirmPassword }
-    v
-AuthService.resetPassword(token, newPassword)
-    |
-    | 1. Look up PasswordResetToken
-    | 2. Check not expired
-    | 3. Direct call: UserService.updatePassword(userId, encodedPassword)
-    | 4. Delete token
-    v
-[Password updated, redirect to login]
+BUILD SUCCESS → green check on GitHub commit / PR
 ```
 
-### Change Password Flow (Authenticated)
-
-```
-Authenticated User
-    |
-    | POST /api/users/change-password { currentPassword, newPassword }
-    v
-UserController.changePassword(request, @AuthenticationPrincipal)
-    |
-    v
-UserService.changePassword(userId, currentPassword, newPassword)
-    |
-    | 1. Load user from UserRepository
-    | 2. Verify current password matches (PasswordEncoder.matches)
-    | 3. Encode new password
-    | 4. Save updated user
-    v
-[Password changed]
-```
-
-### Admin CRUD Flow
-
-```
-Admin User (ROLE_ADMIN)
-    |
-    | GET /api/admin/users?page=0&size=20
-    v
-AdminController.listUsers(pageable) --> AdminService.listUsers(pageable)
-    |
-    | Returns PagedResponse<UserDto>
-    v
-[User list with pagination]
-
-    | POST /api/admin/users { email, password, role }
-    v
-AdminController.createUser(request) --> AdminService.createUser(request)
-    |
-    | 1. Validate email uniqueness
-    | 2. Encode password
-    | 3. Assign role
-    | 4. Save user
-    v
-[User created]
-
-    | DELETE /api/admin/users/{id}
-    v
-AdminController.deleteUser(id) --> AdminService.deleteUser(id)
-    |
-    | 1. Verify not deleting self
-    | 2. Delete user
-    | 3. Publish UserDeletedEvent(userId)
-    v
-[User deleted]
-```
-
-## Module Dependency Graph
-
-```
-              +---------+
-              | shared  |   <-- depends on nothing
-              +---------+
-               ^       ^
-              /         \
-             /           \
-      +------+         +------+
-      | auth |-------->| user |
-      +------+         +------+
-
-Auth depends on: User (direct API calls), Shared (DTOs, exceptions)
-User depends on: Shared (DTOs, exceptions, BaseEntity)
-Shared depends on: (nothing)
-```
-
-**Dependency direction matters.** Auth --> User is a one-way dependency. The User module does NOT depend on Auth. If User needs to react to an Auth event (e.g., user registered), it listens to the event -- it does not import Auth classes.
-
-### Enforced Boundaries via package-info.java
-
-```java
-// shared/package-info.java
-@ApplicationModule(allowedDependencies = {})
-package com.example.usermanagement.shared;
-
-// user/package-info.java
-@ApplicationModule(allowedDependencies = { "shared" })
-package com.example.usermanagement.user;
-
-// auth/package-info.java
-@ApplicationModule(allowedDependencies = { "user", "shared" })
-package com.example.usermanagement.auth;
-```
-
-This means:
-- Auth can call User's public API and Shared's types. **Verified at test time.**
-- User can use Shared's types but cannot import anything from Auth. **Verified at test time.**
-- Shared cannot import anything from Auth or User. **Verified at test time.**
-
-## Scaling Considerations
-
-| Scale | Architecture Adjustments |
-|-------|--------------------------|
-| 0-1k users | Current architecture is ideal. Single Spring Boot app, H2 or PostgreSQL, no caching needed. |
-| 1k-10k users | Add Redis/Caffeine cache for JWT validation (avoid DB hit per request). Add connection pooling (HikariCP is default). Consider rate limiting on auth endpoints. |
-| 10k-100k users | Extract Auth module to its own service if needed. Add Redis for session/token blacklisting. Database read replicas. CDN for static resources. |
-| 100k+ users | Full microservices extraction (each Modulith module becomes a service). Dedicated auth service (consider Keycloak/Auth0). Message broker for events. |
-
-### Scaling Priorities
-
-1. **First bottleneck: Database queries per JWT validation.** Every request currently loads UserDetails from database. Fix: cache user details in memory (Caffeine) with short TTL (5 min), invalidate on password change.
-2. **Second bottleneck: Email sending blocks registration.** Already mitigated by `@ApplicationModuleListener` which runs async. If email provider is slow, consider a queue.
-3. **Third bottleneck: Admin user list pagination.** Standard Spring Data pagination handles this out of the box up to ~100k users.
-
-## Anti-Patterns
-
-### Anti-Pattern 1: Putting User Entity in Shared Module
-
-**What people do:** Place `User.java` entity in the Shared module so both Auth and User can access it directly.
-**Why it is wrong:** This violates the principle that the Shared module should contain only data types, not business entities. It makes Shared a God module that everything depends on for persistence. The User entity has business rules, lifecycle, and repository -- these belong in the User module.
-**Do this instead:** User entity lives in `user.internal`. Auth module accesses user data via `UserService` public API which returns `UserDto` (a record in Shared).
-
-### Anti-Pattern 2: Circular Module Dependencies
-
-**What people do:** Auth depends on User (to load users), and User depends on Auth (to check JWT or get current user).
-**Why it is wrong:** Spring Modulith verification rejects cycles. More importantly, it signals confused boundaries.
-**Do this instead:** User module accesses the current authenticated user via `SecurityContextHolder.getContext().getAuthentication()` (Spring Security API), NOT by importing Auth module classes. The `@AuthenticationPrincipal` annotation in controller methods provides the current user without any Auth module dependency.
-
-### Anti-Pattern 3: Events for Synchronous Queries
-
-**What people do:** Auth module publishes `LoadUserRequestEvent` and listens for `LoadUserResponseEvent` to get user data.
-**Why it is wrong:** Events are for fire-and-forget side effects, not request-response. This adds latency, complexity, and makes error handling painful.
-**Do this instead:** Direct method call: `userService.getUserByEmail(email)`. Spring Modulith fully supports direct bean dependencies between modules for synchronous operations.
-
-### Anti-Pattern 4: Exposing Internal Types as Public API
-
-**What people do:** Make `User.java` entity public and let other modules use it directly.
-**Why it is wrong:** Couples other modules to internal persistence representation. Any schema change breaks all consumers.
-**Do this instead:** Expose `UserDto` (a record in Shared) from public service methods. Map entities to DTOs at the service boundary.
-
-### Anti-Pattern 5: Single SecurityFilterChain for Both Thymeleaf and REST
-
-**What people do:** Write one `SecurityFilterChain` that tries to handle both form login and JWT for all endpoints.
-**Why it is wrong:** Form login returns redirects (302), JWT expects JSON errors (401). Mixing them creates confusing behavior.
-**Do this instead:** Define two `SecurityFilterChain` beans with `@Order` and different `securityMatchers`:
-
-```java
-@Bean
-@Order(1)
-public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
-    http
-        .securityMatcher("/api/**")
-        .csrf(csrf -> csrf.disable())
-        .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/api/auth/**").permitAll()
-            .requestMatchers("/api/admin/**").hasRole("ADMIN")
-            .anyRequest().authenticated()
-        )
-        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-    return http.build();
-}
-
-@Bean
-@Order(2)
-public SecurityFilterChain webFilterChain(HttpSecurity http) throws Exception {
-    http
-        .securityMatcher("/**")
-        .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/", "/login", "/register", "/forgot-password",
-                             "/reset-password", "/verify-email", "/css/**", "/js/**").permitAll()
-            .requestMatchers("/admin/**").hasRole("ADMIN")
-            .anyRequest().authenticated()
-        )
-        .formLogin(form -> form
-            .loginPage("/login")
-            .defaultSuccessUrl("/")
-        )
-        .logout(logout -> logout
-            .logoutSuccessUrl("/login?logout")
-        );
-    return http.build();
-}
-```
+---
 
 ## Integration Points
 
+### New vs Modified File Matrix
+
+| File | Status | Change Description |
+|------|--------|--------------------|
+| src/main/java/com/example/usermanagement/**/*.java (62 files) | MODIFIED | Package declarations + imports; physical path moves to org/jbelt/module/ |
+| src/test/java/com/example/usermanagement/**/*.java (15 files) | MODIFIED | Package declarations + imports; physical path moves |
+| pom.xml | MODIFIED | groupId → org.jbelt; version → 1.2.0-SNAPSHOT |
+| .gitignore | MODIFIED | Remove pom.xml line — pom.xml must be committed for CI |
+| .env.example | MODIFIED | Gmail SMTP section: update host/port defaults, add App Password setup instructions |
+| .env.template | MODIFIED | Same Gmail SMTP documentation as .env.example |
+| .github/workflows/ci.yml | NEW | GitHub Actions CI workflow (mvn verify with H2 profile) |
+| README.md | MODIFIED | Add GitHub repository URL (https://github.com/tbellin/...) |
+| banner.txt.template | MAY UPDATE | @PROJECT_VERSION@ will reflect 1.2.0-SNAPSHOT if PROJECT_VERSION var updated in .env |
+| application.yml.template | NOT MODIFIED | SMTP properties already correct for Gmail |
+| application-dev.yml.template | NOT MODIFIED | H2 config unchanged |
+| application-prod.yml.template | NOT MODIFIED | PostgreSQL config unchanged |
+| Dockerfile.template | NOT MODIFIED | No package references; target/*.jar glob is version-agnostic |
+| compose.yaml.template | NOT MODIFIED | No package references |
+| src/main/resources/db/migration/**/*.sql | NOT MODIFIED | No Java package references in SQL |
+| bin/env-templates.list | NOT MODIFIED | No new template files added for v1.2 |
+| bin/*.sh | NOT MODIFIED | Zero com.example references — verified by grep |
+| doc/*.md | NOT MODIFIED | Zero com.example references — verified by grep |
+| META-INF/spring | NOT PRESENT | No service loader files in this project |
+
+### Internal Module Boundaries After Rename
+
+| Boundary | Communication | v1.2 Impact |
+|----------|---------------|-------------|
+| auth → user | Direct import of user.internal classes (AppUser, UserRepository, UpdateUserRequest) | Package path changes in import statements; boundary rules and allowedDependencies unchanged |
+| auth → shared | Direct import of shared.* classes (EmailService, AppProperties, JwtService) | Package path changes in import statements |
+| user → shared | Direct import of shared.* classes (UserDto, exceptions) | Package path changes in import statements |
+| shared → (none) | No outgoing module dependencies | Unchanged |
+| @ApplicationModule.allowedDependencies args | Relative names: "user", "shared" (not FQN) | NOT updated — relative names survive rename |
+
 ### External Services
 
-| Service | Integration Pattern | Notes |
-|---------|---------------------|-------|
-| SMTP Server | JavaMailSender (Spring Boot auto-configured) | Configure via `spring.mail.*` properties. Use `.env` for credentials. Real SMTP in all environments per project constraint. |
-| PostgreSQL (prod) | Spring Data JPA + HikariCP | Docker Compose service. Configure via `spring.datasource.*` in `application-prod.yml`. |
-| H2 (dev) | Spring Data JPA in-memory | Auto-configured with `spring.datasource.url=jdbc:h2:mem:testdb`. Console at `/h2-console`. |
-| PgAdmin (prod) | Docker Compose sidecar | No application integration needed. Connects to PostgreSQL container. |
+| Service | Integration Pattern | v1.2 Change |
+|---------|---------------------|-------------|
+| Gmail SMTP | JavaMailSender via spring.mail.* config | .env.example gains Gmail defaults + App Password documentation |
+| GitHub | git remote add origin + git push | New remote; .github/workflows/ci.yml added |
+| GitHub Actions | .github/workflows/ci.yml on push/PR | New workflow file; H2 profile; placeholder MAIL_* vars |
+| H2 (CI + dev) | In-memory, no container needed | No change — already the test database |
+| PostgreSQL (prod) | Docker Compose service | No change |
 
-### Internal Module Boundaries
+---
 
-| Boundary | Communication | Notes |
-|----------|---------------|-------|
-| Auth --> User | Direct method call via UserService bean | Synchronous. Auth depends on User's public API. Used for: user lookup, user creation, enable user, update password. |
-| Auth --> Shared | Import DTOs and exceptions | Compile-time dependency on data types only. |
-| User --> Shared | Import DTOs, exceptions, BaseEntity | Compile-time dependency. User entities extend BaseEntity. |
-| Auth internal events | @ApplicationModuleListener | UserRegisteredEvent triggers verification email. PasswordResetRequestedEvent triggers reset email. Both async with REQUIRES_NEW transaction. |
-| User internal events | @ApplicationModuleListener | UserDeletedEvent can trigger cleanup (e.g., revoke tokens). Async. |
+## Anti-Patterns
 
-## Build Order Implications
+### Anti-Pattern 1: Partial Package Rename
 
-The module dependency graph dictates the natural build order for incremental development:
+**What people do:** Rename the directory tree but miss import statements in some files, or forget package-info.java files.
 
-### Phase 1: Shared Module (foundation)
-Build first because everything depends on it. Contains:
-- BaseEntity (id, createdAt, updatedAt)
-- DTOs (UserDto, RegistrationRequest, AuthResponseDto, PagedResponse, LoginRequest)
-- Exception hierarchy (ResourceNotFoundException, DuplicateResourceException, TokenExpiredException)
-- GlobalExceptionHandler (@ControllerAdvice)
-- AppProperties (@ConfigurationProperties)
+**Why it is wrong:** Spring Modulith's ApplicationModules.of(Application.class) scans from the application class's package root. If any .java file still declares package com.example.usermanagement.*, Spring component-scan will not discover it (wrong package root), causing NoSuchBeanDefinitionException at runtime. Tests that use @SpringBootTest will fail during context load.
 
-**Rationale:** No dependencies. Pure data types. Quick to build. Unblocks all other work.
+**Detection:** Run grep -r "com.example.usermanagement" src/ after rename. Must return zero results.
 
-### Phase 2: User Module (data layer)
-Build second because Auth needs UserService:
-- User entity, Role entity (extending BaseEntity)
-- UserRepository, RoleRepository
-- UserService (CRUD, profile, password change)
-- AdminService (admin CRUD, role management)
-- UserController, UserPageController, AdminController, AdminPageController
+**Do this instead:** Use IDE "Rename Package" refactoring which updates all usages atomically. After rename, run the grep verification. Fix any remaining occurrences manually.
 
-**Rationale:** Provides the UserService API that Auth module needs. Can be tested independently with `@ApplicationModuleTest`.
+### Anti-Pattern 2: Leaving pom.xml in .gitignore
 
-### Phase 3: Auth Module (security layer)
-Build third because it depends on both Shared and User:
-- SecurityConfig (dual SecurityFilterChain)
-- JwtService (token generation/validation)
-- JwtAuthenticationFilter
-- CustomUserDetailsService (calls UserService)
-- AuthService (login, register, verify, reset)
-- EmailService
-- Token entities and repositories (VerificationToken, PasswordResetToken)
-- AuthController, AuthPageController
+**What people do:** Push to GitHub without removing pom.xml from .gitignore because it was already listed there.
 
-**Rationale:** Requires UserService to be available. Most complex module with security, JWT, email, and token lifecycle.
+**Why it is wrong:** pom.xml is listed in .gitignore as a "generated file" but it is NOT generated from a template in this project — it has no @VARIABLE@ placeholders and is not in bin/env-templates.list. If left in .gitignore, the file is silently excluded from the pushed repository. GitHub Actions mvn verify immediately fails: "Could not open POM file" or "The specified POM file doesn't exist."
 
-### Phase 4: Integration and verification
-- ModularityTests (ApplicationModules.verify())
-- DocumentationTests (Documenter)
-- Integration tests per module (@ApplicationModuleTest)
-- Docker Compose setup
-- Shell scripts in ./bin/
+**Do this instead:** Remove the pom.xml line from .gitignore before the first push. Stage it explicitly: git add pom.xml.
 
-## Spring Modulith Conventions Summary
+### Anti-Pattern 3: Using Real SMTP Credentials in CI
 
-| Convention | Our Application |
-|------------|-----------------|
-| Module = direct sub-package of main package | `auth/`, `user/`, `shared/` under `com.example.usermanagement` |
-| Public types in module root = module API | `AuthService`, `UserService`, DTOs in Shared root |
-| Sub-packages = internal by default | `auth.internal/`, `user.internal/` hidden from other modules |
-| `@ApplicationModule` on package-info.java | Yes, with `allowedDependencies` for each module |
-| `@NamedInterface` for additional public sub-packages | `auth.events/`, `user.events/` expose event types |
-| `@ApplicationModuleListener` for async event handling | Used for email sending after registration and password reset |
-| `ApplicationModules.verify()` in tests | Yes, in `ModularityTests.java` |
-| `@ApplicationModuleTest` for isolated module testing | Yes, one per module |
-| `@Modulithic` on main application class | Yes, on `Application.java` |
-| Single Maven module, not multi-module | Yes -- package conventions enforce boundaries, not Maven modules |
+**What people do:** Add MAIL_USERNAME and MAIL_PASSWORD as GitHub Secrets with a real Gmail App Password so "CI matches production configuration."
 
-## Spring Modulith Starters Needed
+**Why it is wrong:** Tests mock EmailService at the service level — no real SMTP connection is ever attempted. Real credentials in CI secrets create unnecessary attack surface and rotation overhead, providing zero benefit since the mock prevents any SMTP call.
 
-| Starter | Purpose | Scope |
-|---------|---------|-------|
-| `spring-modulith-starter-core` | Core Modulith support (API, runtime) | compile |
-| `spring-modulith-starter-jpa` | Event publication registry with JPA persistence | compile |
-| `spring-modulith-starter-test` | Testing and documentation support | test |
+**Do this instead:** Use hardcoded placeholder strings for all MAIL_* env vars directly in the CI workflow YAML. They only exist to satisfy Spring Boot's MailSenderAutoConfiguration bean creation at context load — no authentication to Gmail ever occurs.
 
-Maven BOM:
-```xml
-<dependencyManagement>
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.modulith</groupId>
-            <artifactId>spring-modulith-bom</artifactId>
-            <version>2.0.2</version>
-            <scope>import</scope>
-            <type>pom</type>
-        </dependency>
-    </dependencies>
-</dependencyManagement>
+### Anti-Pattern 4: Adding PostgreSQL Service Container to CI
+
+**What people do:** Add a services: postgres: block to the GitHub Actions workflow because production uses PostgreSQL.
+
+**Why it is wrong:** All 15 test files use @ActiveProfiles("dev") which loads the H2 in-memory database. There is no test that connects to PostgreSQL. SchemaComparisonTests reads SQL migration files as classpath resources — it does not execute SQL against any database server. Adding PostgreSQL to CI adds 30-60 seconds of container startup time with zero benefit.
+
+**Do this instead:** CI runs with SPRING_PROFILES_ACTIVE=dev only. The H2 MODE=PostgreSQL setting provides sufficient parity for test execution. The existing SchemaComparisonTests validates that H2 and PostgreSQL migration files create the same tables.
+
+### Anti-Pattern 5: Updating @ApplicationModule allowedDependencies After Rename
+
+**What people do:** See allowedDependencies = { "user", "shared" } in package-info.java and think these need to become "org.jbelt.module.user" after the rename.
+
+**Why it is wrong:** Spring Modulith resolves module names from the simple subdirectory name relative to the root application package, not from the full package name. The value "user" means <root-package>.user regardless of what the root package is. Changing them to FQNs would break module detection.
+
+**Do this instead:** Leave allowedDependencies values unchanged. Only update the package declaration line in each package-info.java.
+
+---
+
+## Build Order
+
+The 4 features have the following dependency ordering:
+
+```
+Step 1+2: Package Rename + Version Bump
+  (atomic — both modify pom.xml; rename must compile before CI can verify)
+
+Step 3: Gmail SMTP documentation
+  (independent — can be done before or after rename)
+
+Step 4: .gitignore fix (remove pom.xml line)
+  (must happen before any git commit involving pom.xml)
+
+Step 5: .github/workflows/ci.yml creation
+  (needs rename complete so CI tests the right package)
+
+Step 6: README + repo URL
+  (needs GitHub repo URL available)
+
+Step 7: git commit + push
+  (triggers CI)
 ```
 
-**Note on Spring Boot 4 compatibility:** Spring Modulith 2.0 is the version compatible with Spring Boot 4.0. The current stable is 2.0.2. The snapshot versions track Spring Boot 4.0 SNAPSHOT. Verify the exact compatible release version at build time, as Spring Boot 4 may still be in milestone/RC at time of implementation.
+**Recommended build order:**
+
+| Step | Action | Verification Gate |
+|------|--------|-------------------|
+| 1 | Package rename: update all 77 Java files, move directory tree from com/example/usermanagement/ to org/jbelt/module/ | ./mvnw compile exits 0 |
+| 2 | Version bump + groupId: edit pom.xml (groupId: org.jbelt, version: 1.2.0-SNAPSHOT) | ./mvnw verify exits 0 (all tests pass) |
+| 3 | Gmail SMTP docs: update .env.example and .env.template Mail section | Manual review |
+| 4 | Fix .gitignore: remove pom.xml line | git status shows pom.xml as untracked/modified (not ignored) |
+| 5 | Create .github/workflows/ci.yml | Valid YAML syntax |
+| 6 | Update README.md with GitHub repository URL | — |
+| 7 | git add pom.xml .github/ .gitignore .env.example .env.template README.md src/ | git status clean |
+| 8 | git commit | Commit created |
+| 9 | git remote add origin https://github.com/tbellin/<repo>.git | Remote configured |
+| 10 | git push -u origin main | Push succeeds; CI triggers |
+| 11 | Verify GitHub Actions CI run passes | Green check on commit |
+
+**Critical path:** Steps 1 → 2 → 4 → 7 → 8 → 9 → 10 → 11. Steps 3, 5, and 6 are independent and can be done in any order before step 7.
+
+---
+
+## Scaling Considerations
+
+Not applicable to v1.2 — this milestone makes no runtime behavior changes. Package rename, version bump, SMTP documentation, and CI setup do not affect scalability characteristics.
+
+---
 
 ## Sources
 
-- Spring Modulith Reference: Fundamentals -- https://docs.spring.io/spring-modulith/reference/fundamentals.html [HIGH confidence, official docs]
-- Spring Modulith Reference: Events -- https://docs.spring.io/spring-modulith/reference/events.html [HIGH confidence, official docs]
-- Spring Modulith Reference: Verification -- https://docs.spring.io/spring-modulith/reference/verification.html [HIGH confidence, official docs]
-- Spring Modulith Reference: Testing -- https://docs.spring.io/spring-modulith/reference/testing.html [HIGH confidence, official docs]
-- Spring Modulith Reference: Documentation -- https://docs.spring.io/spring-modulith/reference/documentation.html [HIGH confidence, official docs]
-- Spring Modulith Reference: Appendix (compatibility matrix) -- https://docs.spring.io/spring-modulith/reference/appendix.html [HIGH confidence, official docs]
-- Spring Security Reference: Authentication Architecture -- https://docs.spring.io/spring-security/reference/servlet/authentication/architecture.html [HIGH confidence, official docs]
-- Spring Security Reference: JWT Resource Server -- https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/jwt.html [HIGH confidence, official docs]
-- Spring Security Reference: Authorize HTTP Requests -- https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html [HIGH confidence, official docs]
-- Spring Boot Reference: Web Security -- https://docs.spring.io/spring-boot/reference/web/spring-security.html [HIGH confidence, official docs]
-- Spring Boot Reference: Web Servlet -- https://docs.spring.io/spring-boot/reference/web/servlet.html [HIGH confidence, official docs]
-- Self-issued JWT pattern (JwtService + JwtAuthenticationFilter): Based on standard Spring Security patterns. Spring Security does not provide built-in JWT generation for self-issued tokens -- manual implementation with io.jsonwebtoken (JJWT) library is the community standard. [MEDIUM confidence -- community pattern, not official Spring feature]
+- Direct codebase inspection (HIGH confidence): all 77 Java files, pom.xml, application.yml.template, .env.example, .env.template, .gitignore, bin/env-templates.list, bin/env.sh, Dockerfile.template, compose.yaml.template, banner.txt.template, all SQL migrations, all 15 test files — zero com.example references found outside Java sources and pom.xml
+- Spring Modulith @ApplicationModule documentation: module names in allowedDependencies are relative simple names, not fully-qualified package names — confirmed by package-info.java inspection showing { "user", "shared" } as values
+- Spring Boot MailSenderAutoConfiguration behavior: requires spring.mail.host non-null at context load even when EmailService is @MockitoBean — confirmed by comment in EmailVerificationIntegrationTest.java explaining the design decision
+- GitHub Actions: .github/workflows/ is the only valid workflow directory path — documented in GitHub Actions documentation
+- Gmail SMTP: smtp.gmail.com:587 + STARTTLS + App Password is the standard Gmail SMTP configuration — all required properties already present in application.yml.template
 
 ---
-*Architecture research for: Spring Boot 4 + Spring Modulith User Management Server*
-*Researched: 2026-01-28*
+
+*Architecture research for: Spring Boot 4 + Spring Modulith — v1.2 Foundation Upgrade integration*
+*Researched: 2026-02-23*
