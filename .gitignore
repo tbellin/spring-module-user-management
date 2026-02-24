@@ -29,7 +29,6 @@ Thumbs.db
 # Generated config files (from .template processing)
 # Run: ./bin/env.sh substitute-all
 # These contain resolved secrets -- never commit.
-pom.xml
 compose.yaml
 Dockerfile
 src/main/resources/application.yml
