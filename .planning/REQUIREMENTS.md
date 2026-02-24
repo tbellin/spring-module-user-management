@@ -26,7 +26,7 @@ Requirements for milestone v1.2 Foundation Upgrade. Each maps to roadmap phases.
 - [x] **GH-02**: Security pre-flight confirms no real credentials in tracked files before push
 - [x] **GH-03**: `.github/workflows/ci.yml` created with Java 21 Temurin, Maven cache, `mvn --batch-mode verify`
 - [ ] **GH-04**: Repository pushed to `tbellin` GitHub account
-- [ ] **GH-05**: `README.md` updated with GitHub repository URL and CI badge
+- [x] **GH-05**: `README.md` updated with GitHub repository URL and CI badge
 
 ## Future Requirements
 
@@ -75,7 +75,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | GH-02 | Phase 11 | Complete |
 | GH-03 | Phase 11 | Complete |
 | GH-04 | Phase 11 | Pending |
-| GH-05 | Phase 11 | Pending |
+| GH-05 | Phase 11 | Complete |
 
 **Coverage:**
 - v1.2 requirements: 12 total

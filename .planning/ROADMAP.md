@@ -27,7 +27,7 @@
 
 - [x] **Phase 9: Package Rename + Version Bump** — Rename all Java sources from `com.example.usermanagement` to `org.jbelt.module`, update `pom.xml` groupId and version, verify `mvn verify` passes clean
 - [x] **Phase 10: Gmail SMTP Documentation + .gitignore Fix** — Update `.env.example` and `.env.template` with Gmail SMTP defaults and App Password instructions, add `doc/` guide, remove `pom.xml` from `.gitignore` (completed 2026-02-24)
-- [ ] **Phase 11: GitHub Repository Setup + CI + README** — Security pre-flight, create `.github/workflows/ci.yml`, push to `tbellin` account, update `README.md` with repo URL and CI badge
+- [x] **Phase 11: GitHub Repository Setup + CI + README** — Security pre-flight, create `.github/workflows/ci.yml`, push to `tbellin` account, update `README.md` with repo URL and CI badge (completed 2026-02-24)
 
 ## Phase Details
 
@@ -68,7 +68,7 @@ Plans:
   3. Repository is accessible at `github.com/tbellin/<repo>` with full commit history
   4. CI badge in `README.md` shows green (passing) after the first push triggers the workflow
   5. `README.md` clone URL points to the live `github.com/tbellin/<repo>` address
-**Plans:** 1/3 plans executed
+**Plans:** 3/3 plans complete
 Plans:
 - [ ] 11-01-PLAN.md — Disable pre-existing failing tests with @Disabled, create .github/workflows/ci.yml
 - [ ] 11-02-PLAN.md — Security pre-flight audit, confirm repo name, push to github.com/tbellin
@@ -88,7 +88,7 @@ Plans:
 | 8. Tooling & Project Documentation | v1.0 | 4/4 | Complete | 2026-02-22 |
 | 9. Package Rename + Version Bump | v1.2 | 1/1 | Complete | 2026-02-24 |
 | 10. Gmail SMTP Documentation + .gitignore Fix | v1.2 | 2/2 | Complete | 2026-02-24 |
-| 11. GitHub Repository Setup + CI + README | 1/3 | In Progress|  | - |
+| 11. GitHub Repository Setup + CI + README | 3/3 | Complete   | 2026-02-24 | - |
 
 Full v1.0 phase details: `.planning/milestones/v1.0-ROADMAP.md`
 
