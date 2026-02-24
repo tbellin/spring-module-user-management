@@ -40,7 +40,9 @@
   2. `pom.xml` declares `<groupId>org.jbelt</groupId>` and `<version>1.2.0-SNAPSHOT</version>`
   3. `mvn verify` completes without compilation errors or test failures
   4. `ModularityTests` produces no new failures beyond the pre-existing cosmetic false-positive
-**Plans**: TBD
+**Plans:** 1 plan
+Plans:
+- [ ] 09-01-PLAN.md — Rename all 77 Java files, move directory trees, update pom.xml, verify with mvn verify
 
 ### Phase 10: Gmail SMTP Documentation + .gitignore Fix
 **Goal**: Developers can configure Gmail SMTP by following documented instructions in `.env.example`, and `pom.xml` is no longer excluded from version control
@@ -77,7 +79,7 @@
 | 6. User Profile & Admin Operations | v1.0 | 4/4 | Complete | 2026-02-13 |
 | 7. API Documentation & Swagger | v1.0 | 3/3 | Complete | 2026-02-22 |
 | 8. Tooling & Project Documentation | v1.0 | 4/4 | Complete | 2026-02-22 |
-| 9. Package Rename + Version Bump | v1.2 | 0/TBD | Not started | - |
+| 9. Package Rename + Version Bump | v1.2 | 0/1 | Planned | - |
 | 10. Gmail SMTP Documentation + .gitignore Fix | v1.2 | 0/TBD | Not started | - |
 | 11. GitHub Repository Setup + CI + README | v1.2 | 0/TBD | Not started | - |
 
