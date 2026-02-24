@@ -1,0 +1,28 @@
+Security Pre-flight Audit — 2026-02-24T08:08Z
+================================================
+
+Check 1: .env not tracked
+  Command: git ls-files | grep '\.env$'
+  Result: PASS (no output)
+
+Check 2: Generated config files not tracked
+  Command: git ls-files | grep -E 'application\.(yml|yaml)$|compose\.yaml$|^Dockerfile$|servers\.json$'
+  Result: PASS (no output)
+
+Check 3: No secret-like literal values in tracked files
+  Command: git ls-files -z | xargs -0 grep -l -E '(password|secret|key|token)\s*=\s*[^$@<\{]{8,}' | grep -v -E '\.template$|\.example$|test|spec|Test|Spec|\.md$|\.sql$'
+  Result: 10 files matched regex — ALL false positives (code references, not credentials)
+
+  False positives reviewed:
+  - AdminInviteService.java: token variable assignment, URL concatenation
+  - AuthController.java: generateToken() method call
+  - AuthService.java: createToken() method call
+  - RegistrationForm.java: this.password = password (constructor assignment)
+  - PasswordResetToken.java: toString() truncation
+  - PasswordResetTokenRepository.java: JPA @Query annotation
+  - PasswordService.java: token creation, URL concatenation
+  - VerificationService.java: token creation
+  - VerificationToken.java: toString() truncation
+  - VerificationTokenRepository.java: JPA @Query annotation
+
+VERDICT: PASSED — no real credentials in tracked files. Safe to push.
