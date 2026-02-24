@@ -1,5 +1,7 @@
 # Spring Boot User Management Server
 
+[![CI](https://github.com/tbellin/spring-module-user-management/actions/workflows/ci.yml/badge.svg)](https://github.com/tbellin/spring-module-user-management/actions/workflows/ci.yml)
+
 A Spring Boot 4 user management server with Spring Modulith architecture, JWT authentication, and dual-database support (H2 for development, PostgreSQL for production).
 
 ## Features
@@ -33,8 +35,8 @@ A Spring Boot 4 user management server with Spring Modulith architecture, JWT au
 
 ```bash
 # Clone and setup
-git clone <repo-url>
-cd <project-dir>
+git clone https://github.com/tbellin/spring-module-user-management.git
+cd spring-module-user-management
 ./bin/setup.sh          # Generate .env from template
 # Edit .env with your SMTP credentials
 
