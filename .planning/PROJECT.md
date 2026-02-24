@@ -10,13 +10,13 @@ Secure, modular user authentication and management that works identically in dev
 
 ## Current Milestone: v1.2 Foundation Upgrade
 
-**Goal:** Modernize the project's foundations (package rename, version, SMTP config) and add GitHub OAuth as a second login path.
+**Goal:** Modernize the project foundations, publish to GitHub, and improve configuration ergonomics.
 
 **Target features:**
-- GitHub OAuth login (alongside email/password — auto-creates USER account from GitHub profile)
 - Package rename: `com.example.usermanagement` → `org.jbelt.module`
 - App version: `1.2.0-SNAPSHOT` (dev) / `1.2.0` (release)
 - Gmail SMTP configuration support (well-documented `.env` template for Gmail App Password flow)
+- Publish to GitHub under tbellin account with CI workflow and README repo link
 
 ## Requirements
 
@@ -44,14 +44,16 @@ Secure, modular user authentication and management that works identically in dev
 
 ### Active
 
-- [ ] GitHub OAuth login alongside email/password — v1.2
-- [ ] Package rename: `com.example.usermanagement` → `org.jbelt.module` — v1.2
-- [ ] App version 1.2.0-SNAPSHOT / 1.2.0 release — v1.2
-- [ ] Gmail SMTP configuration support in `.env` template — v1.2
+- [ ] Package rename: `com.example.usermanagement` → `org.jbelt.module` across all Java sources — v1.2
+- [ ] App version bump: `1.2.0-SNAPSHOT` (dev) / `1.2.0` (release) in pom.xml — v1.2
+- [ ] Gmail SMTP configuration support: updated `.env.example` template with Gmail App Password setup — v1.2
+- [ ] GitHub repository published under tbellin account with remote origin configured — v1.2
+- [ ] GitHub Actions CI workflow: build and test on push (`mvn verify`) — v1.2
+- [ ] README updated with GitHub repository URL — v1.2
 
 ### Out of Scope
 
-- OAuth / social login beyond GitHub — GitHub added in v1.2; other providers (Google, Apple) deferred
+- OAuth / social login — JWT with email/password sufficient for v1; revisit in future milestone
 - Mobile app or SPA frontend — Thymeleaf server-side rendering for v1
 - Multi-tenancy — single-tenant server
 - Two-factor authentication (2FA) — defer to v2

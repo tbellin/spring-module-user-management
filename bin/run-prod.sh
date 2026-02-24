@@ -76,8 +76,9 @@ check_prerequisites() {
 # Environment loading and template substitution
 # ---------------------------------------------------------------------------
 load_environment() {
-    source ./bin/env.sh load
-    ./bin/env.sh substitute-all
+    echo "..."
+##     source ./bin/env.sh load
+##     ./bin/env.sh substitute-all
 }
 
 # ---------------------------------------------------------------------------

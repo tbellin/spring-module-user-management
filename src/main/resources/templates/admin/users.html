@@ -73,6 +73,16 @@
                             </a>
                         </th>
                         <th>
+                            <a th:href="@{/admin/users(sort='username',
+                                direction=${currentSort == 'username' && currentDirection == 'asc' ? 'desc' : 'asc'},
+                                search=${search}, role=${role}, status=${status})}"
+                               class="text-decoration-none text-dark">
+                                Username
+                                <span th:if="${currentSort == 'username'}"
+                                      th:text="${currentDirection == 'asc' ? '&#9650;' : '&#9660;'}"></span>
+                            </a>
+                        </th>
+                        <th>
                             <a th:href="@{/admin/users(sort='firstName',
                                 direction=${currentSort == 'firstName' && currentDirection == 'asc' ? 'desc' : 'asc'},
                                 search=${search}, role=${role}, status=${status})}"
@@ -110,6 +120,14 @@
                     <tr th:each="user : ${users.content}" th:attr="data-user-id=${user.id()}">
                         <!-- Email -->
                         <td th:text="${user.email()}">user@example.com</td>
+                        <!-- Username -->
+                        <td>
+                            <span class="display-mode" th:text="${user.username()}">username</span>
+                            <div class="edit-mode d-none">
+                                <input type="text" class="form-control form-control-sm edit-username"
+                                       th:value="${user.username()}" placeholder="Username" maxlength="100">
+                            </div>
+                        </td>
                         <!-- Name -->
                         <td>
                             <span class="display-mode"
@@ -164,7 +182,7 @@
                         </td>
                     </tr>
                     <tr th:if="${users.content.isEmpty()}">
-                        <td colspan="6" class="text-center text-muted py-4">No users found.</td>
+                        <td colspan="7" class="text-center text-muted py-4">No users found.</td>
                     </tr>
                 </tbody>
             </table>
@@ -271,6 +289,7 @@
                 var row = document.querySelector('tr[data-user-id="' + userId + '"]');
                 if (!row) return;
 
+                var username = row.querySelector('.edit-username').value;
                 var firstName = row.querySelector('.edit-firstName').value;
                 var lastName = row.querySelector('.edit-lastName').value;
                 var roles = [];
@@ -292,11 +311,7 @@
                 fetch('/admin/users/' + userId, {
                     method: 'PUT',
                     headers: headers,
-                    body: JSON.stringify({
-                        firstName: firstName,
-                        lastName: lastName,
-                        roles: roles
-                    })
+                    body: JSON.stringify({ username, firstName, lastName, roles })
                 })
                 .then(function(response) {
                     if (!response.ok) {
@@ -308,13 +323,14 @@
                 })
                 .then(function(data) {
                     // Update display elements with new values
-                    // Name: find the display-mode span in the Name td (2nd td)
+                    // tds[0]=Email, tds[1]=Username, tds[2]=Name, tds[3]=Role
                     var tds = row.querySelectorAll('td');
-                    var nameSpan = tds[1].querySelector('span.display-mode');
-                    var nameText = (data.firstName || '') + ' ' + (data.lastName || '');
-                    nameSpan.textContent = nameText.trim();
-                    // Role badges: find display-mode badges in Role td (3rd td)
-                    var roleTd = tds[2];
+                    var usernameSpan = tds[1].querySelector('span.display-mode');
+                    usernameSpan.textContent = data.username || '';
+                    var nameSpan = tds[2].querySelector('span.display-mode');
+                    nameSpan.textContent = ((data.firstName || '') + ' ' + (data.lastName || '')).trim();
+                    // Role badges: find display-mode badges in Role td (4th td)
+                    var roleTd = tds[3];
                     roleTd.querySelectorAll('.badge.display-mode').forEach(function(el) { el.remove(); });
                     var editDiv = roleTd.querySelector('.edit-mode');
                     data.roles.forEach(function(r) {
