@@ -25,7 +25,7 @@
 
 **Milestone Goal:** Modernize the project foundations — rename the root package, bump the version, document Gmail SMTP configuration, and publish to GitHub with CI.
 
-- [ ] **Phase 9: Package Rename + Version Bump** — Rename all Java sources from `com.example.usermanagement` to `org.jbelt.module`, update `pom.xml` groupId and version, verify `mvn verify` passes clean
+- [x] **Phase 9: Package Rename + Version Bump** — Rename all Java sources from `com.example.usermanagement` to `org.jbelt.module`, update `pom.xml` groupId and version, verify `mvn verify` passes clean
 - [ ] **Phase 10: Gmail SMTP Documentation + .gitignore Fix** — Update `.env.example` and `.env.template` with Gmail SMTP defaults and App Password instructions, add `doc/` guide, remove `pom.xml` from `.gitignore`
 - [ ] **Phase 11: GitHub Repository Setup + CI + README** — Security pre-flight, create `.github/workflows/ci.yml`, push to `tbellin` account, update `README.md` with repo URL and CI badge
 
@@ -79,7 +79,7 @@ Plans:
 | 6. User Profile & Admin Operations | v1.0 | 4/4 | Complete | 2026-02-13 |
 | 7. API Documentation & Swagger | v1.0 | 3/3 | Complete | 2026-02-22 |
 | 8. Tooling & Project Documentation | v1.0 | 4/4 | Complete | 2026-02-22 |
-| 9. Package Rename + Version Bump | v1.2 | 0/1 | Planned | - |
+| 9. Package Rename + Version Bump | v1.2 | 1/1 | Complete | 2026-02-24 |
 | 10. Gmail SMTP Documentation + .gitignore Fix | v1.2 | 0/TBD | Not started | - |
 | 11. GitHub Repository Setup + CI + README | v1.2 | 0/TBD | Not started | - |
 
