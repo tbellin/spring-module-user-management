@@ -1,5 +1,6 @@
 package org.jbelt.module.auth;
 
+import org.jbelt.module.shared.email.EmailService;
 import org.jbelt.module.user.internal.AppUser;
 import org.jbelt.module.user.internal.UserRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -9,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import tools.jackson.databind.json.JsonMapper;
@@ -36,6 +38,10 @@ class AuthControllerTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    // Mocked to prevent actual SMTP calls in tests (same pattern as EmailVerificationIntegrationTest)
+    @MockitoBean
+    private EmailService emailService;
 
     private final JsonMapper jsonMapper = JsonMapper.builder().build();
 

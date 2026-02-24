@@ -1,0 +1,58 @@
+spring:
+  application:
+    name: user-management
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+    locations: classpath:db/migration/h2
+  mail:
+    host: localhost
+    port: 25
+    username: test@example.com
+    password: test-password
+    properties:
+      "[mail.smtp.auth]": false
+      "[mail.smtp.starttls.enable]": false
+      "[mail.smtp.connectiontimeout]": 1000
+      "[mail.smtp.timeout]": 1000
+      "[mail.smtp.writetimeout]": 1000
+  mvc:
+    problemdetails:
+      enabled: true
+
+app:
+  jwt:
+    secret: VGVzdEp3dFNlY3JldEtleUZvckNJRW52aXJvbm1lbnRNdXN0QmU2NEJ5dGVzTG9uZ0ZvckhTNTEyQWxnb3JpdGht
+    expiration-ms: 900000
+    remember-me-expiration-ms: 604800000
+  mail:
+    from: test@example.com
+  verification:
+    expiration-hours: 24
+    base-url: http://localhost:8080
+
+springdoc:
+  pathsToMatch: /api/v1/**
+  swagger-ui:
+    path: /swagger-ui.html
+    display-request-duration: true
+    operationsSorter: method
+    tagsSorter: alpha
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized
+  health:
+    mail:
+      enabled: false
