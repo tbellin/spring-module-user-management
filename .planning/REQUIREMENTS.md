@@ -16,13 +16,13 @@ Requirements for milestone v1.2 Foundation Upgrade. Each maps to roadmap phases.
 
 ### SMTP Configuration
 
-- [ ] **SMTP-01**: `.env.example` and `.env.template` updated with Gmail SMTP defaults (`smtp.gmail.com:587`)
-- [ ] **SMTP-02**: `.env.example` includes step-by-step Gmail App Password setup instructions as inline comments
+- [x] **SMTP-01**: `.env.example` and `.env.template` updated with Gmail SMTP defaults (`smtp.gmail.com:587`)
+- [x] **SMTP-02**: `.env.example` includes step-by-step Gmail App Password setup instructions as inline comments
 - [ ] **SMTP-03**: Documentation (`doc/`) updated with Gmail SMTP configuration guide
 
 ### GitHub
 
-- [ ] **GH-01**: `pom.xml` removed from `.gitignore` (currently listed as generated — no template exists)
+- [x] **GH-01**: `pom.xml` removed from `.gitignore` (currently listed as generated — no template exists)
 - [ ] **GH-02**: Security pre-flight confirms no real credentials in tracked files before push
 - [ ] **GH-03**: `.github/workflows/ci.yml` created with Java 21 Temurin, Maven cache, `mvn --batch-mode verify`
 - [ ] **GH-04**: Repository pushed to `tbellin` GitHub account
@@ -68,10 +68,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PKG-02 | Phase 9 | Pending |
 | PKG-03 | Phase 9 | Pending |
 | PKG-04 | Phase 9 | Pending |
-| SMTP-01 | Phase 10 | Pending |
-| SMTP-02 | Phase 10 | Pending |
+| SMTP-01 | Phase 10 | Complete |
+| SMTP-02 | Phase 10 | Complete |
 | SMTP-03 | Phase 10 | Pending |
-| GH-01 | Phase 10 | Pending |
+| GH-01 | Phase 10 | Complete |
 | GH-02 | Phase 11 | Pending |
 | GH-03 | Phase 11 | Pending |
 | GH-04 | Phase 11 | Pending |
