@@ -23,8 +23,8 @@ Requirements for milestone v1.2 Foundation Upgrade. Each maps to roadmap phases.
 ### GitHub
 
 - [x] **GH-01**: `pom.xml` removed from `.gitignore` (currently listed as generated — no template exists)
-- [ ] **GH-02**: Security pre-flight confirms no real credentials in tracked files before push
-- [ ] **GH-03**: `.github/workflows/ci.yml` created with Java 21 Temurin, Maven cache, `mvn --batch-mode verify`
+- [x] **GH-02**: Security pre-flight confirms no real credentials in tracked files before push
+- [x] **GH-03**: `.github/workflows/ci.yml` created with Java 21 Temurin, Maven cache, `mvn --batch-mode verify`
 - [ ] **GH-04**: Repository pushed to `tbellin` GitHub account
 - [ ] **GH-05**: `README.md` updated with GitHub repository URL and CI badge
 
@@ -72,8 +72,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SMTP-02 | Phase 10 | Complete |
 | SMTP-03 | Phase 10 | Complete |
 | GH-01 | Phase 10 | Complete |
-| GH-02 | Phase 11 | Pending |
-| GH-03 | Phase 11 | Pending |
+| GH-02 | Phase 11 | Complete |
+| GH-03 | Phase 11 | Complete |
 | GH-04 | Phase 11 | Pending |
 | GH-05 | Phase 11 | Pending |
 

@@ -68,7 +68,7 @@ Plans:
   3. Repository is accessible at `github.com/tbellin/<repo>` with full commit history
   4. CI badge in `README.md` shows green (passing) after the first push triggers the workflow
   5. `README.md` clone URL points to the live `github.com/tbellin/<repo>` address
-**Plans:** 3 plans
+**Plans:** 1/3 plans executed
 Plans:
 - [ ] 11-01-PLAN.md — Disable pre-existing failing tests with @Disabled, create .github/workflows/ci.yml
 - [ ] 11-02-PLAN.md — Security pre-flight audit, confirm repo name, push to github.com/tbellin
@@ -88,7 +88,7 @@ Plans:
 | 8. Tooling & Project Documentation | v1.0 | 4/4 | Complete | 2026-02-22 |
 | 9. Package Rename + Version Bump | v1.2 | 1/1 | Complete | 2026-02-24 |
 | 10. Gmail SMTP Documentation + .gitignore Fix | v1.2 | 2/2 | Complete | 2026-02-24 |
-| 11. GitHub Repository Setup + CI + README | v1.2 | 0/3 | Not started | - |
+| 11. GitHub Repository Setup + CI + README | 1/3 | In Progress|  | - |
 
 Full v1.0 phase details: `.planning/milestones/v1.0-ROADMAP.md`
 
