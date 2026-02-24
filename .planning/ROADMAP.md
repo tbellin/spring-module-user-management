@@ -26,7 +26,7 @@
 **Milestone Goal:** Modernize the project foundations — rename the root package, bump the version, document Gmail SMTP configuration, and publish to GitHub with CI.
 
 - [x] **Phase 9: Package Rename + Version Bump** — Rename all Java sources from `com.example.usermanagement` to `org.jbelt.module`, update `pom.xml` groupId and version, verify `mvn verify` passes clean
-- [ ] **Phase 10: Gmail SMTP Documentation + .gitignore Fix** — Update `.env.example` and `.env.template` with Gmail SMTP defaults and App Password instructions, add `doc/` guide, remove `pom.xml` from `.gitignore`
+- [x] **Phase 10: Gmail SMTP Documentation + .gitignore Fix** — Update `.env.example` and `.env.template` with Gmail SMTP defaults and App Password instructions, add `doc/` guide, remove `pom.xml` from `.gitignore` (completed 2026-02-24)
 - [ ] **Phase 11: GitHub Repository Setup + CI + README** — Security pre-flight, create `.github/workflows/ci.yml`, push to `tbellin` account, update `README.md` with repo URL and CI badge
 
 ## Phase Details
@@ -53,7 +53,7 @@ Plans:
   2. `.env.example` includes step-by-step inline comments covering 2FA enablement, App Password generation, and the 16-character format
   3. `doc/` contains a Gmail SMTP configuration guide (standalone or integrated into existing SMTP doc)
   4. `pom.xml` is no longer listed in `.gitignore` and `git status` shows it as a tracked file
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 Plans:
 - [ ] 10-01-PLAN.md — Update .env.example/.env.template with Gmail SMTP defaults and inline instructions, fix .gitignore
 - [ ] 10-02-PLAN.md — Create doc/gmail-smtp-setup.md with full Gmail SMTP configuration guide
@@ -83,7 +83,7 @@ Plans:
 | 7. API Documentation & Swagger | v1.0 | 3/3 | Complete | 2026-02-22 |
 | 8. Tooling & Project Documentation | v1.0 | 4/4 | Complete | 2026-02-22 |
 | 9. Package Rename + Version Bump | v1.2 | 1/1 | Complete | 2026-02-24 |
-| 10. Gmail SMTP Documentation + .gitignore Fix | 1/2 | In Progress|  | - |
+| 10. Gmail SMTP Documentation + .gitignore Fix | 2/2 | Complete   | 2026-02-24 | - |
 | 11. GitHub Repository Setup + CI + README | v1.2 | 0/TBD | Not started | - |
 
 Full v1.0 phase details: `.planning/milestones/v1.0-ROADMAP.md`
