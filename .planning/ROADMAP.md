@@ -53,7 +53,10 @@ Plans:
   2. `.env.example` includes step-by-step inline comments covering 2FA enablement, App Password generation, and the 16-character format
   3. `doc/` contains a Gmail SMTP configuration guide (standalone or integrated into existing SMTP doc)
   4. `pom.xml` is no longer listed in `.gitignore` and `git status` shows it as a tracked file
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 10-01-PLAN.md — Update .env.example/.env.template with Gmail SMTP defaults and inline instructions, fix .gitignore
+- [ ] 10-02-PLAN.md — Create doc/gmail-smtp-setup.md with full Gmail SMTP configuration guide
 
 ### Phase 11: GitHub Repository Setup + CI + README
 **Goal**: The project is publicly accessible on GitHub under `tbellin`, CI runs `mvn verify` on every push, and the README reflects the live repository URL and CI build status
