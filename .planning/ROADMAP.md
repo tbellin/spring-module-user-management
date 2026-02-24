@@ -55,8 +55,8 @@ Plans:
   4. `pom.xml` is no longer listed in `.gitignore` and `git status` shows it as a tracked file
 **Plans:** 2/2 plans complete
 Plans:
-- [ ] 10-01-PLAN.md — Update .env.example/.env.template with Gmail SMTP defaults and inline instructions, fix .gitignore
-- [ ] 10-02-PLAN.md — Create doc/gmail-smtp-setup.md with full Gmail SMTP configuration guide
+- [x] 10-01-PLAN.md — Update .env.example/.env.template with Gmail SMTP defaults and inline instructions, fix .gitignore
+- [x] 10-02-PLAN.md — Create doc/gmail-smtp-setup.md with full Gmail SMTP configuration guide
 
 ### Phase 11: GitHub Repository Setup + CI + README
 **Goal**: The project is publicly accessible on GitHub under `tbellin`, CI runs `mvn verify` on every push, and the README reflects the live repository URL and CI build status
@@ -83,7 +83,7 @@ Plans:
 | 7. API Documentation & Swagger | v1.0 | 3/3 | Complete | 2026-02-22 |
 | 8. Tooling & Project Documentation | v1.0 | 4/4 | Complete | 2026-02-22 |
 | 9. Package Rename + Version Bump | v1.2 | 1/1 | Complete | 2026-02-24 |
-| 10. Gmail SMTP Documentation + .gitignore Fix | 2/2 | Complete   | 2026-02-24 | - |
+| 10. Gmail SMTP Documentation + .gitignore Fix | v1.2 | 2/2 | Complete | 2026-02-24 |
 | 11. GitHub Repository Setup + CI + README | v1.2 | 0/TBD | Not started | - |
 
 Full v1.0 phase details: `.planning/milestones/v1.0-ROADMAP.md`

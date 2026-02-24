@@ -5,7 +5,7 @@
 See: .planning/PROJECT.md (updated 2026-02-23)
 
 **Core value:** Secure, modular user authentication and management that works identically in dev (H2, local) and prod (PostgreSQL, Docker) with zero code changes between environments.
-**Current focus:** v1.2 Foundation Upgrade — Phase 10: Gmail SMTP Documentation + .gitignore Fix
+**Current focus:** v1.2 Foundation Upgrade — Phase 11: GitHub Repository Setup + CI + README
 
 ## Current Position
 
