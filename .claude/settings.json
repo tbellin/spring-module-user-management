@@ -1,0 +1,61 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/hooks/gsd-check-update.js"
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "node .claude/hooks/gsd-statusline.js"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(date:*)",
+      "Bash(echo:*)",
+      "Bash(cat:*)",
+      "Bash(ls:*)",
+      "Bash(mkdir:*)",
+      "Bash(wc:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(sort:*)",
+      "Bash(grep:*)",
+      "Bash(tr:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(git tag:*)"
+    ],
+    "docker": {
+      "enabled": true,
+      "security": {
+        "allowPrivileged": false,
+        "readOnlyRootFilesystem": true,
+        "dropCapabilities": [
+          "ALL"
+        ],
+        "addCapabilities": [],
+        "seccomp": "default",
+        "apparmor": "default"
+      },
+      "resources": {
+        "cpus": "2",
+        "memory": "2g",
+        "memorySwap": "2g"
+      },
+      "network": {
+        "mode": "bridge",
+        "allowHostNetwork": false
+      }
+    }
+  }
+}
