@@ -1,8 +1,9 @@
-#!/bin/bash
-## #!/usr/bin/env bash
+#!/usr/bin/env zsh
 # bin/env.sh -- Environment management CLI
 # Subcommands: load, show, substitute-all, check, clean, help
-set -euo pipefail
+# Apply strict mode only when executed directly.
+# Sourcing (source ./bin/env.sh load) must not modify the parent shell's options.
+[[ "${ZSH_EVAL_CONTEXT}" != *:file* ]] && set -euo pipefail
 
 # ---------------------------------------------------------------------------
 # Color helpers (disabled if stdout is not a terminal)
@@ -47,7 +48,7 @@ check_project_root() {
     if [ ! -f "bin/env-templates.list" ]; then
         red "Error: Must run from project root directory"
         red "Expected to find bin/env-templates.list"
-        exit 1
+        return 1 2>/dev/null || exit 1
     fi
 }
 
@@ -108,7 +109,8 @@ cmd_load() {
     # Validate required variables from .env.example
     local var_names missing=0
     var_names=$(get_variable_names)
-    for var in $var_names; do
+    for var in "${(f)var_names}"; do
+        [[ -z "$var" ]] && continue
         # Use printenv for zsh/bash compatibility
         if ! printenv "$var" >/dev/null 2>&1; then
             yellow "Warning: $var is not set (required by .env.example)"
@@ -127,6 +129,20 @@ cmd_load() {
 # Subcommand: show
 # ---------------------------------------------------------------------------
 cmd_show() {
+    # Source env files directly so show works standalone (without prior load).
+    if [ -f ".env" ]; then
+        set -a
+        # shellcheck disable=SC1091
+        source .env
+        set +a
+    fi
+    if [ -f ".env.local" ]; then
+        set -a
+        # shellcheck disable=SC1091
+        source .env.local
+        set +a
+    fi
+
     local var_names
     var_names=$(get_variable_names)
 
@@ -135,7 +151,8 @@ cmd_show() {
         return
     fi
 
-    for var in $var_names; do
+    for var in "${(f)var_names}"; do
+        [[ -z "$var" ]] && continue
         eval "local value=\"\${$var:-}\""
         if [ -n "$value" ]; then
             echo "$var=$value"
@@ -177,7 +194,8 @@ cmd_substitute_all() {
         local placeholders
         placeholders=$(grep -oE '@[A-Za-z_][A-Za-z0-9_]*@' "$template_path" 2>/dev/null | sort -u || true)
 
-        for placeholder in $placeholders; do
+        for placeholder in "${(f)placeholders}"; do
+            [[ -z "$placeholder" ]] && continue
             # Strip @ delimiters to get variable name
             local var_name="${placeholder#@}"
             var_name="${var_name%@}"
@@ -270,7 +288,7 @@ if [ "$COMMAND" = "help" ]; then
     exit 0
 fi
 
-check_project_root
+check_project_root || { return 1 2>/dev/null || exit 1; }
 
 case "$COMMAND" in
     load)
