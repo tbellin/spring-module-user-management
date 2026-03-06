@@ -3,7 +3,7 @@
 ## Milestones
 
 - ✅ **v1.0 MVP** — Phases 1-8 (shipped 2026-02-23)
-- 🚧 **v1.2 Foundation Upgrade** — Phases 9-11 (in progress)
+- ✅ **v1.2.0 Foundation Upgrade** — Phases 9-11 (shipped 2026-02-24)
 
 ## Phases
 
@@ -21,58 +21,14 @@
 
 </details>
 
-### 🚧 v1.2 Foundation Upgrade (In Progress)
+<details>
+<summary>✅ v1.2.0 Foundation Upgrade (Phases 9-11) — SHIPPED 2026-02-24</summary>
 
-**Milestone Goal:** Modernize the project foundations — rename the root package, bump the version, document Gmail SMTP configuration, and publish to GitHub with CI.
+- [x] Phase 9: Package Rename + Version Bump (1/1 plans) — completed 2026-02-24
+- [x] Phase 10: Gmail SMTP Documentation + .gitignore Fix (2/2 plans) — completed 2026-02-24
+- [x] Phase 11: GitHub Repository Setup + CI + README (3/3 plans) — completed 2026-02-24
 
-- [x] **Phase 9: Package Rename + Version Bump** — Rename all Java sources from `com.example.usermanagement` to `org.jbelt.module`, update `pom.xml` groupId and version, verify `mvn verify` passes clean
-- [x] **Phase 10: Gmail SMTP Documentation + .gitignore Fix** — Update `.env.example` and `.env.template` with Gmail SMTP defaults and App Password instructions, add `doc/` guide, remove `pom.xml` from `.gitignore` (completed 2026-02-24)
-- [x] **Phase 11: GitHub Repository Setup + CI + README** — Security pre-flight, create `.github/workflows/ci.yml`, push to `tbellin` account, update `README.md` with repo URL and CI badge (completed 2026-02-24)
-
-## Phase Details
-
-### Phase 9: Package Rename + Version Bump
-**Goal**: The project compiles, tests pass, and all Java sources carry the new `org.jbelt.module` namespace with version `1.2.0-SNAPSHOT`
-**Depends on**: Nothing (first v1.2 phase)
-**Requirements**: PKG-01, PKG-02, PKG-03, PKG-04
-**Success Criteria** (what must be TRUE):
-  1. `grep -r "com.example.usermanagement" src/` returns zero results
-  2. `pom.xml` declares `<groupId>org.jbelt</groupId>` and `<version>1.2.0-SNAPSHOT</version>`
-  3. `mvn verify` completes without compilation errors or test failures
-  4. `ModularityTests` produces no new failures beyond the pre-existing cosmetic false-positive
-**Plans:** 1 plan
-Plans:
-- [ ] 09-01-PLAN.md — Rename all 77 Java files, move directory trees, update pom.xml, verify with mvn verify
-
-### Phase 10: Gmail SMTP Documentation + .gitignore Fix
-**Goal**: Developers can configure Gmail SMTP by following documented instructions in `.env.example`, and `pom.xml` is no longer excluded from version control
-**Depends on**: Phase 9
-**Requirements**: SMTP-01, SMTP-02, SMTP-03, GH-01
-**Success Criteria** (what must be TRUE):
-  1. `.env.example` and `.env.template` show `smtp.gmail.com:587` as the default SMTP host/port
-  2. `.env.example` includes step-by-step inline comments covering 2FA enablement, App Password generation, and the 16-character format
-  3. `doc/` contains a Gmail SMTP configuration guide (standalone or integrated into existing SMTP doc)
-  4. `pom.xml` is no longer listed in `.gitignore` and `git status` shows it as a tracked file
-**Plans:** 2/2 plans complete
-Plans:
-- [x] 10-01-PLAN.md — Update .env.example/.env.template with Gmail SMTP defaults and inline instructions, fix .gitignore
-- [x] 10-02-PLAN.md — Create doc/gmail-smtp-setup.md with full Gmail SMTP configuration guide
-
-### Phase 11: GitHub Repository Setup + CI + README
-**Goal**: The project is publicly accessible on GitHub under `tbellin`, CI runs `mvn verify` on every push, and the README reflects the live repository URL and CI build status
-**Depends on**: Phase 10 (gitignore fix is a hard blocker for CI; clean codebase from Phase 9 required)
-**Requirements**: GH-02, GH-03, GH-04, GH-05
-**Success Criteria** (what must be TRUE):
-  1. Security pre-flight confirms zero real credentials in any tracked file before push (no `.env`, no untemplatized `application.yml` with real values)
-  2. `.github/workflows/ci.yml` exists, targets Java 21 Temurin with Maven cache, and runs `mvn --batch-mode verify`
-  3. Repository is accessible at `github.com/tbellin/<repo>` with full commit history
-  4. CI badge in `README.md` shows green (passing) after the first push triggers the workflow
-  5. `README.md` clone URL points to the live `github.com/tbellin/<repo>` address
-**Plans:** 3/3 plans complete
-Plans:
-- [ ] 11-01-PLAN.md — Disable pre-existing failing tests with @Disabled, create .github/workflows/ci.yml
-- [ ] 11-02-PLAN.md — Security pre-flight audit, confirm repo name, push to github.com/tbellin
-- [ ] 11-03-PLAN.md — Update README.md with CI badge and live GitHub repository clone URL
+</details>
 
 ## Progress
 
@@ -86,13 +42,15 @@ Plans:
 | 6. User Profile & Admin Operations | v1.0 | 4/4 | Complete | 2026-02-13 |
 | 7. API Documentation & Swagger | v1.0 | 3/3 | Complete | 2026-02-22 |
 | 8. Tooling & Project Documentation | v1.0 | 4/4 | Complete | 2026-02-22 |
-| 9. Package Rename + Version Bump | v1.2 | 1/1 | Complete | 2026-02-24 |
-| 10. Gmail SMTP Documentation + .gitignore Fix | v1.2 | 2/2 | Complete | 2026-02-24 |
-| 11. GitHub Repository Setup + CI + README | 3/3 | Complete   | 2026-02-24 | - |
+| 9. Package Rename + Version Bump | v1.2.0 | 1/1 | Complete | 2026-02-24 |
+| 10. Gmail SMTP Documentation + .gitignore Fix | v1.2.0 | 2/2 | Complete | 2026-02-24 |
+| 11. GitHub Repository Setup + CI + README | v1.2.0 | 3/3 | Complete | 2026-02-24 |
 
-Full v1.0 phase details: `.planning/milestones/v1.0-ROADMAP.md`
+Full phase details:
+- v1.0: `.planning/milestones/v1.0-ROADMAP.md`
+- v1.2.0: `.planning/milestones/v1.2.0-ROADMAP.md`
 
 ---
 *Roadmap created: 2026-01-28*
 *v1.0 shipped: 2026-02-23*
-*v1.2 roadmap added: 2026-02-23*
+*v1.2.0 shipped: 2026-02-24*
